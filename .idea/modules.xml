@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/comet-java-sdk.iml" filepath="$PROJECT_DIR$/comet-java-sdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/comet-sdk.iml" filepath="$PROJECT_DIR$/comet-sdk.iml" />
     </modules>
   </component>
 </project>

@@ -12,7 +12,7 @@ This project is the JAVA SDK and base client for the Comet Server API.
 The Comet Java SDK requires:
 - JDK 11
 - jackson-core 2.13.3
-- jackson-databind 2.13.3
+- jackson-databind 2.13.4.1
 
 ## Simple Usage Example
 ```java
