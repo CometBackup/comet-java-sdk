@@ -24,14 +24,26 @@ public class DispatcherVaultSnapshotsResponse {
 
 	public DispatcherVaultSnapshotsResponse(){ }
 
+	/**
+	* @return JSON representation of the DispatcherVaultSnapshotsResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a DispatcherVaultSnapshotsResponse
+	* @return The deserialized DispatcherVaultSnapshotsResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public DispatcherVaultSnapshotsResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,DispatcherVaultSnapshotsResponse.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometAPIResponseMessage
+	*/
 	public CometAPIResponseMessage GetEmbeddedCometAPIResponseMessage(){
 		var ret = new CometAPIResponseMessage();
 		ret.Status = this.Status;

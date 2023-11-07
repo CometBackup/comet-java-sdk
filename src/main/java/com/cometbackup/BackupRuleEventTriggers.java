@@ -23,10 +23,19 @@ public class BackupRuleEventTriggers {
 
 	public BackupRuleEventTriggers(){ }
 
+	/**
+	* @return JSON representation of the BackupRuleEventTriggers
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BackupRuleEventTriggers
+	* @return The deserialized BackupRuleEventTriggers
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BackupRuleEventTriggers fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BackupRuleEventTriggers.class);
 	}

@@ -50,10 +50,19 @@ public class ReplicatorStateAPIResponse {
 
 	public ReplicatorStateAPIResponse(){ }
 
+	/**
+	* @return JSON representation of the ReplicatorStateAPIResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ReplicatorStateAPIResponse
+	* @return The deserialized ReplicatorStateAPIResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ReplicatorStateAPIResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ReplicatorStateAPIResponse.class);
 	}

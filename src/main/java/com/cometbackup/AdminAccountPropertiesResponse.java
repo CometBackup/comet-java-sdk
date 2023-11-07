@@ -23,10 +23,19 @@ public class AdminAccountPropertiesResponse {
 
 	public AdminAccountPropertiesResponse(){ }
 
+	/**
+	* @return JSON representation of the AdminAccountPropertiesResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AdminAccountPropertiesResponse
+	* @return The deserialized AdminAccountPropertiesResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AdminAccountPropertiesResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AdminAccountPropertiesResponse.class);
 	}

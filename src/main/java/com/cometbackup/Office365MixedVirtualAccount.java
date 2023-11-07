@@ -56,10 +56,19 @@ public class Office365MixedVirtualAccount {
 
 	public Office365MixedVirtualAccount(){ }
 
+	/**
+	* @return JSON representation of the Office365MixedVirtualAccount
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a Office365MixedVirtualAccount
+	* @return The deserialized Office365MixedVirtualAccount
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public Office365MixedVirtualAccount fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,Office365MixedVirtualAccount.class);
 	}

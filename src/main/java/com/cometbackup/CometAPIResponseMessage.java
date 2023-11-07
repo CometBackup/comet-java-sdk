@@ -21,10 +21,19 @@ public class CometAPIResponseMessage {
 
 	public CometAPIResponseMessage(){ }
 
+	/**
+	* @return JSON representation of the CometAPIResponseMessage
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a CometAPIResponseMessage
+	* @return The deserialized CometAPIResponseMessage
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public CometAPIResponseMessage fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,CometAPIResponseMessage.class);
 	}

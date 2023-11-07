@@ -24,10 +24,19 @@ public class U2FRegisteredKey {
 
 	public U2FRegisteredKey(){ }
 
+	/**
+	* @return JSON representation of the U2FRegisteredKey
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a U2FRegisteredKey
+	* @return The deserialized U2FRegisteredKey
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public U2FRegisteredKey fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,U2FRegisteredKey.class);
 	}

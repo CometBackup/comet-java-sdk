@@ -38,10 +38,19 @@ public class PublicBrandingProperties {
 
 	public PublicBrandingProperties(){ }
 
+	/**
+	* @return JSON representation of the PublicBrandingProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a PublicBrandingProperties
+	* @return The deserialized PublicBrandingProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public PublicBrandingProperties fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,PublicBrandingProperties.class);
 	}

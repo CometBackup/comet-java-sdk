@@ -74,10 +74,19 @@ public class MongoDBConnection {
 
 	public MongoDBConnection(){ }
 
+	/**
+	* @return JSON representation of the MongoDBConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a MongoDBConnection
+	* @return The deserialized MongoDBConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public MongoDBConnection fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,MongoDBConnection.class);
 	}

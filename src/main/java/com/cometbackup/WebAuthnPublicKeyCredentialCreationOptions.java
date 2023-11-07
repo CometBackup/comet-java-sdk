@@ -41,10 +41,19 @@ public class WebAuthnPublicKeyCredentialCreationOptions {
 
 	public WebAuthnPublicKeyCredentialCreationOptions(){ }
 
+	/**
+	* @return JSON representation of the WebAuthnPublicKeyCredentialCreationOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WebAuthnPublicKeyCredentialCreationOptions
+	* @return The deserialized WebAuthnPublicKeyCredentialCreationOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WebAuthnPublicKeyCredentialCreationOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WebAuthnPublicKeyCredentialCreationOptions.class);
 	}

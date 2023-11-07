@@ -26,10 +26,19 @@ public class StorjVirtualStorageRoleSetting {
 
 	public StorjVirtualStorageRoleSetting(){ }
 
+	/**
+	* @return JSON representation of the StorjVirtualStorageRoleSetting
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a StorjVirtualStorageRoleSetting
+	* @return The deserialized StorjVirtualStorageRoleSetting
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public StorjVirtualStorageRoleSetting fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,StorjVirtualStorageRoleSetting.class);
 	}

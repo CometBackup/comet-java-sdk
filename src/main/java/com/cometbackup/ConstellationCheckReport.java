@@ -25,10 +25,19 @@ public class ConstellationCheckReport {
 
 	public ConstellationCheckReport(){ }
 
+	/**
+	* @return JSON representation of the ConstellationCheckReport
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ConstellationCheckReport
+	* @return The deserialized ConstellationCheckReport
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ConstellationCheckReport fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ConstellationCheckReport.class);
 	}

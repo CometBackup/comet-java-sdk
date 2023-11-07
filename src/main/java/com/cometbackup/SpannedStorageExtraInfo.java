@@ -17,10 +17,19 @@ public class SpannedStorageExtraInfo {
 
 	public SpannedStorageExtraInfo(){ }
 
+	/**
+	* @return JSON representation of the SpannedStorageExtraInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SpannedStorageExtraInfo
+	* @return The deserialized SpannedStorageExtraInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SpannedStorageExtraInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SpannedStorageExtraInfo.class);
 	}

@@ -54,10 +54,19 @@ public class RemoteServerAddress {
 
 	public RemoteServerAddress(){ }
 
+	/**
+	* @return JSON representation of the RemoteServerAddress
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a RemoteServerAddress
+	* @return The deserialized RemoteServerAddress
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public RemoteServerAddress fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,RemoteServerAddress.class);
 	}

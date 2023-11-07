@@ -27,10 +27,19 @@ public class U2FSignResponse {
 
 	public U2FSignResponse(){ }
 
+	/**
+	* @return JSON representation of the U2FSignResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a U2FSignResponse
+	* @return The deserialized U2FSignResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public U2FSignResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,U2FSignResponse.class);
 	}

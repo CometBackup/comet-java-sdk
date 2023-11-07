@@ -17,10 +17,19 @@ public class CustomRemoteBucketSettings {
 
 	public CustomRemoteBucketSettings(){ }
 
+	/**
+	* @return JSON representation of the CustomRemoteBucketSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a CustomRemoteBucketSettings
+	* @return The deserialized CustomRemoteBucketSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public CustomRemoteBucketSettings fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,CustomRemoteBucketSettings.class);
 	}

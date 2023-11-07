@@ -52,10 +52,19 @@ public class Partition {
 
 	public Partition(){ }
 
+	/**
+	* @return JSON representation of the Partition
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a Partition
+	* @return The deserialized Partition
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public Partition fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,Partition.class);
 	}

@@ -20,10 +20,19 @@ public class OidcClaim {
 
 	public OidcClaim(){ }
 
+	/**
+	* @return JSON representation of the OidcClaim
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a OidcClaim
+	* @return The deserialized OidcClaim
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public OidcClaim fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,OidcClaim.class);
 	}

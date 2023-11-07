@@ -20,10 +20,19 @@ public class DefaultSourceWithOSRestriction {
 
 	public DefaultSourceWithOSRestriction(){ }
 
+	/**
+	* @return JSON representation of the DefaultSourceWithOSRestriction
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a DefaultSourceWithOSRestriction
+	* @return The deserialized DefaultSourceWithOSRestriction
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public DefaultSourceWithOSRestriction fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,DefaultSourceWithOSRestriction.class);
 	}

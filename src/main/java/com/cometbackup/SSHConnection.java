@@ -41,10 +41,19 @@ public class SSHConnection {
 
 	public SSHConnection(){ }
 
+	/**
+	* @return JSON representation of the SSHConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SSHConnection
+	* @return The deserialized SSHConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SSHConnection fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SSHConnection.class);
 	}

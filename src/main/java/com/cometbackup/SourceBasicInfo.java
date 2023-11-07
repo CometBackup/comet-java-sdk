@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* SourceBasicInfo SourceBasicInfo is the minimal amount of information one device knows about another device's Protected
-* Items, in order to safely perform retention passes on their behalf.
+* SourceBasicInfo SourceBasicInfo is the minimal amount of information one device knows about another device&#39;s
+* Protected Items, in order to safely perform retention passes on their behalf.
 */
 public class SourceBasicInfo {
 	@JsonProperty("Description")
@@ -28,10 +28,19 @@ public class SourceBasicInfo {
 
 	public SourceBasicInfo(){ }
 
+	/**
+	* @return JSON representation of the SourceBasicInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SourceBasicInfo
+	* @return The deserialized SourceBasicInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SourceBasicInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SourceBasicInfo.class);
 	}

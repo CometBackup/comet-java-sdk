@@ -40,10 +40,19 @@ public class B2DestinationLocation {
 
 	public B2DestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the B2DestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a B2DestinationLocation
+	* @return The deserialized B2DestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public B2DestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,B2DestinationLocation.class);
 	}

@@ -48,14 +48,26 @@ public class UpdateCampaignStatus {
 
 	public UpdateCampaignStatus(){ }
 
+	/**
+	* @return JSON representation of the UpdateCampaignStatus
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a UpdateCampaignStatus
+	* @return The deserialized UpdateCampaignStatus
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public UpdateCampaignStatus fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,UpdateCampaignStatus.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded UpdateCampaignProperties
+	*/
 	public UpdateCampaignProperties GetEmbeddedUpdateCampaignProperties(){
 		var ret = new UpdateCampaignProperties();
 		ret.Active = this.Active;

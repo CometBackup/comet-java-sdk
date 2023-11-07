@@ -36,14 +36,26 @@ public class EmailReportGeneratedPreview {
 
 	public EmailReportGeneratedPreview(){ }
 
+	/**
+	* @return JSON representation of the EmailReportGeneratedPreview
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a EmailReportGeneratedPreview
+	* @return The deserialized EmailReportGeneratedPreview
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public EmailReportGeneratedPreview fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,EmailReportGeneratedPreview.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometAPIResponseMessage
+	*/
 	public CometAPIResponseMessage GetEmbeddedCometAPIResponseMessage(){
 		var ret = new CometAPIResponseMessage();
 		ret.Status = this.Status;

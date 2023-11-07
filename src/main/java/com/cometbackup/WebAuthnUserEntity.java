@@ -26,14 +26,26 @@ public class WebAuthnUserEntity {
 
 	public WebAuthnUserEntity(){ }
 
+	/**
+	* @return JSON representation of the WebAuthnUserEntity
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WebAuthnUserEntity
+	* @return The deserialized WebAuthnUserEntity
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WebAuthnUserEntity fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WebAuthnUserEntity.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded WebAuthnCredentialEntity
+	*/
 	public WebAuthnCredentialEntity GetEmbeddedWebAuthnCredentialEntity(){
 		var ret = new WebAuthnCredentialEntity();
 		ret.Name = this.Name;

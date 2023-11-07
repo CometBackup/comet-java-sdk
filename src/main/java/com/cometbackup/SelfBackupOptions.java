@@ -17,10 +17,19 @@ public class SelfBackupOptions {
 
 	public SelfBackupOptions(){ }
 
+	/**
+	* @return JSON representation of the SelfBackupOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SelfBackupOptions
+	* @return The deserialized SelfBackupOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SelfBackupOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SelfBackupOptions.class);
 	}

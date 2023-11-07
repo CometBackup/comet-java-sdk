@@ -45,10 +45,19 @@ public class BackupJobAdvancedOptions {
 
 	public BackupJobAdvancedOptions(){ }
 
+	/**
+	* @return JSON representation of the BackupJobAdvancedOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BackupJobAdvancedOptions
+	* @return The deserialized BackupJobAdvancedOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BackupJobAdvancedOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BackupJobAdvancedOptions.class);
 	}

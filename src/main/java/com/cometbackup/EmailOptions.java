@@ -45,14 +45,26 @@ public class EmailOptions {
 
 	public EmailOptions(){ }
 
+	/**
+	* @return JSON representation of the EmailOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a EmailOptions
+	* @return The deserialized EmailOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public EmailOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,EmailOptions.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded AdminEmailOptions
+	*/
 	public AdminEmailOptions GetEmbeddedAdminEmailOptions(){
 		var ret = new AdminEmailOptions();
 		ret.FromEmail = this.FromEmail;

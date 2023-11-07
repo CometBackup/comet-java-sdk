@@ -17,10 +17,19 @@ public class ServerConfigOptionsBrandingFragment {
 
 	public ServerConfigOptionsBrandingFragment(){ }
 
+	/**
+	* @return JSON representation of the ServerConfigOptionsBrandingFragment
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ServerConfigOptionsBrandingFragment
+	* @return The deserialized ServerConfigOptionsBrandingFragment
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ServerConfigOptionsBrandingFragment fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ServerConfigOptionsBrandingFragment.class);
 	}

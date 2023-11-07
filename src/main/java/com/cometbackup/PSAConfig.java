@@ -36,10 +36,19 @@ public class PSAConfig {
 
 	public PSAConfig(){ }
 
+	/**
+	* @return JSON representation of the PSAConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a PSAConfig
+	* @return The deserialized PSAConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public PSAConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,PSAConfig.class);
 	}

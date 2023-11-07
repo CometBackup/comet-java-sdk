@@ -17,10 +17,19 @@ public class ServerConfigOptionsSoftwareBuildRoleFragment {
 
 	public ServerConfigOptionsSoftwareBuildRoleFragment(){ }
 
+	/**
+	* @return JSON representation of the ServerConfigOptionsSoftwareBuildRoleFragment
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ServerConfigOptionsSoftwareBuildRoleFragment
+	* @return The deserialized ServerConfigOptionsSoftwareBuildRoleFragment
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ServerConfigOptionsSoftwareBuildRoleFragment fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ServerConfigOptionsSoftwareBuildRoleFragment.class);
 	}

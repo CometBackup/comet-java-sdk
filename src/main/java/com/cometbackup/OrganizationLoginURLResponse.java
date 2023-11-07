@@ -17,10 +17,19 @@ public class OrganizationLoginURLResponse {
 
 	public OrganizationLoginURLResponse(){ }
 
+	/**
+	* @return JSON representation of the OrganizationLoginURLResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a OrganizationLoginURLResponse
+	* @return The deserialized OrganizationLoginURLResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public OrganizationLoginURLResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,OrganizationLoginURLResponse.class);
 	}

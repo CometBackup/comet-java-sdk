@@ -26,10 +26,19 @@ public class ConstellationStatusAPIResponse {
 
 	public ConstellationStatusAPIResponse(){ }
 
+	/**
+	* @return JSON representation of the ConstellationStatusAPIResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ConstellationStatusAPIResponse
+	* @return The deserialized ConstellationStatusAPIResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ConstellationStatusAPIResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ConstellationStatusAPIResponse.class);
 	}

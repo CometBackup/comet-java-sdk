@@ -26,10 +26,19 @@ public class WebAuthnAuthenticatorSelection {
 
 	public WebAuthnAuthenticatorSelection(){ }
 
+	/**
+	* @return JSON representation of the WebAuthnAuthenticatorSelection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WebAuthnAuthenticatorSelection
+	* @return The deserialized WebAuthnAuthenticatorSelection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WebAuthnAuthenticatorSelection fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WebAuthnAuthenticatorSelection.class);
 	}

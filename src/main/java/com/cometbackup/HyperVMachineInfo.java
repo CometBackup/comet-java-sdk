@@ -20,10 +20,19 @@ public class HyperVMachineInfo {
 
 	public HyperVMachineInfo(){ }
 
+	/**
+	* @return JSON representation of the HyperVMachineInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a HyperVMachineInfo
+	* @return The deserialized HyperVMachineInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public HyperVMachineInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,HyperVMachineInfo.class);
 	}

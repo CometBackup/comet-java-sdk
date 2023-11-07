@@ -24,14 +24,26 @@ public class AdminResourceResponse {
 
 	public AdminResourceResponse(){ }
 
+	/**
+	* @return JSON representation of the AdminResourceResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AdminResourceResponse
+	* @return The deserialized AdminResourceResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AdminResourceResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AdminResourceResponse.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometAPIResponseMessage
+	*/
 	public CometAPIResponseMessage GetEmbeddedCometAPIResponseMessage(){
 		var ret = new CometAPIResponseMessage();
 		ret.Status = this.Status;

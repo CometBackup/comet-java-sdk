@@ -25,10 +25,19 @@ public class BucketUsageInfo {
 
 	public BucketUsageInfo(){ }
 
+	/**
+	* @return JSON representation of the BucketUsageInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BucketUsageInfo
+	* @return The deserialized BucketUsageInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BucketUsageInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BucketUsageInfo.class);
 	}

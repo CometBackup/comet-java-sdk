@@ -27,10 +27,19 @@ public class VSSComponent {
 
 	public VSSComponent(){ }
 
+	/**
+	* @return JSON representation of the VSSComponent
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a VSSComponent
+	* @return The deserialized VSSComponent
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public VSSComponent fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,VSSComponent.class);
 	}

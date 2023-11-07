@@ -29,10 +29,19 @@ public class StatResult {
 
 	public StatResult(){ }
 
+	/**
+	* @return JSON representation of the StatResult
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a StatResult
+	* @return The deserialized StatResult
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public StatResult fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,StatResult.class);
 	}

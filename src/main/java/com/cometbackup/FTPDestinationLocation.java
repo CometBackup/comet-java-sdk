@@ -46,10 +46,19 @@ public class FTPDestinationLocation {
 
 	public FTPDestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the FTPDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a FTPDestinationLocation
+	* @return The deserialized FTPDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public FTPDestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,FTPDestinationLocation.class);
 	}

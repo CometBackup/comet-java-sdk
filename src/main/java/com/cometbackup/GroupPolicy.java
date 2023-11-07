@@ -36,10 +36,19 @@ public class GroupPolicy {
 
 	public GroupPolicy(){ }
 
+	/**
+	* @return JSON representation of the GroupPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a GroupPolicy
+	* @return The deserialized GroupPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public GroupPolicy fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,GroupPolicy.class);
 	}

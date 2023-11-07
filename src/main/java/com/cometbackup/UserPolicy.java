@@ -119,10 +119,19 @@ public class UserPolicy {
 
 	public UserPolicy(){ }
 
+	/**
+	* @return JSON representation of the UserPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a UserPolicy
+	* @return The deserialized UserPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public UserPolicy fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,UserPolicy.class);
 	}

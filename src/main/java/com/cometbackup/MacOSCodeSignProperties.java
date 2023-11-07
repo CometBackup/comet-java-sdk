@@ -66,10 +66,19 @@ public class MacOSCodeSignProperties {
 
 	public MacOSCodeSignProperties(){ }
 
+	/**
+	* @return JSON representation of the MacOSCodeSignProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a MacOSCodeSignProperties
+	* @return The deserialized MacOSCodeSignProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public MacOSCodeSignProperties fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,MacOSCodeSignProperties.class);
 	}

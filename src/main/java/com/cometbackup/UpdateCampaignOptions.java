@@ -40,10 +40,19 @@ public class UpdateCampaignOptions {
 
 	public UpdateCampaignOptions(){ }
 
+	/**
+	* @return JSON representation of the UpdateCampaignOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a UpdateCampaignOptions
+	* @return The deserialized UpdateCampaignOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public UpdateCampaignOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,UpdateCampaignOptions.class);
 	}

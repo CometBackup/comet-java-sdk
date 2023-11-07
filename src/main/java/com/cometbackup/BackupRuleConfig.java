@@ -84,14 +84,26 @@ public class BackupRuleConfig {
 
 	public BackupRuleConfig(){ }
 
+	/**
+	* @return JSON representation of the BackupRuleConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BackupRuleConfig
+	* @return The deserialized BackupRuleConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BackupRuleConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BackupRuleConfig.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded BackupJobAdvancedOptions
+	*/
 	public BackupJobAdvancedOptions GetEmbeddedBackupJobAdvancedOptions(){
 		var ret = new BackupJobAdvancedOptions();
 		ret.SkipAlreadyRunning = this.SkipAlreadyRunning;

@@ -35,10 +35,19 @@ public class AmazonAWSVirtualStorageRoleSettings {
 
 	public AmazonAWSVirtualStorageRoleSettings(){ }
 
+	/**
+	* @return JSON representation of the AmazonAWSVirtualStorageRoleSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AmazonAWSVirtualStorageRoleSettings
+	* @return The deserialized AmazonAWSVirtualStorageRoleSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AmazonAWSVirtualStorageRoleSettings fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AmazonAWSVirtualStorageRoleSettings.class);
 	}

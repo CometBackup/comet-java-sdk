@@ -24,14 +24,26 @@ public class UpdateCampaignStatusDeviceEntry {
 
 	public UpdateCampaignStatusDeviceEntry(){ }
 
+	/**
+	* @return JSON representation of the UpdateCampaignStatusDeviceEntry
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a UpdateCampaignStatusDeviceEntry
+	* @return The deserialized UpdateCampaignStatusDeviceEntry
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public UpdateCampaignStatusDeviceEntry fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,UpdateCampaignStatusDeviceEntry.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded UpdateCampaignDeviceStatus
+	*/
 	public UpdateCampaignDeviceStatus GetEmbeddedUpdateCampaignDeviceStatus(){
 		var ret = new UpdateCampaignDeviceStatus();
 		ret.Status = this.Status;

@@ -35,10 +35,19 @@ public class HTTPConnectorOptions {
 
 	public HTTPConnectorOptions(){ }
 
+	/**
+	* @return JSON representation of the HTTPConnectorOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a HTTPConnectorOptions
+	* @return The deserialized HTTPConnectorOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public HTTPConnectorOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,HTTPConnectorOptions.class);
 	}

@@ -26,10 +26,19 @@ public class ExtraFileExclusion {
 
 	public ExtraFileExclusion(){ }
 
+	/**
+	* @return JSON representation of the ExtraFileExclusion
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ExtraFileExclusion
+	* @return The deserialized ExtraFileExclusion
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ExtraFileExclusion fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ExtraFileExclusion.class);
 	}

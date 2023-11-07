@@ -29,10 +29,19 @@ public class Office365Credential {
 
 	public Office365Credential(){ }
 
+	/**
+	* @return JSON representation of the Office365Credential
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a Office365Credential
+	* @return The deserialized Office365Credential
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public Office365Credential fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,Office365Credential.class);
 	}

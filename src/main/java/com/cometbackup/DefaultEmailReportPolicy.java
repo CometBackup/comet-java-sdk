@@ -24,14 +24,26 @@ public class DefaultEmailReportPolicy {
 
 	public DefaultEmailReportPolicy(){ }
 
+	/**
+	* @return JSON representation of the DefaultEmailReportPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a DefaultEmailReportPolicy
+	* @return The deserialized DefaultEmailReportPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public DefaultEmailReportPolicy fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,DefaultEmailReportPolicy.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded UserCustomEmailSettings
+	*/
 	public UserCustomEmailSettings GetEmbeddedUserCustomEmailSettings(){
 		var ret = new UserCustomEmailSettings();
 		ret.Reports = this.Reports;

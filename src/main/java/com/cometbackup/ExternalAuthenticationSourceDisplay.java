@@ -20,10 +20,19 @@ public class ExternalAuthenticationSourceDisplay {
 
 	public ExternalAuthenticationSourceDisplay(){ }
 
+	/**
+	* @return JSON representation of the ExternalAuthenticationSourceDisplay
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ExternalAuthenticationSourceDisplay
+	* @return The deserialized ExternalAuthenticationSourceDisplay
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ExternalAuthenticationSourceDisplay fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ExternalAuthenticationSourceDisplay.class);
 	}

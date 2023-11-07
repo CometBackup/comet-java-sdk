@@ -32,10 +32,19 @@ public class Office365Connection {
 
 	public Office365Connection(){ }
 
+	/**
+	* @return JSON representation of the Office365Connection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a Office365Connection
+	* @return The deserialized Office365Connection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public Office365Connection fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,Office365Connection.class);
 	}

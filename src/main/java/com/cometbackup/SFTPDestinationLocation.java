@@ -45,10 +45,19 @@ public class SFTPDestinationLocation {
 
 	public SFTPDestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the SFTPDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SFTPDestinationLocation
+	* @return The deserialized SFTPDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SFTPDestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SFTPDestinationLocation.class);
 	}

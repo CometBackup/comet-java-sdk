@@ -30,10 +30,19 @@ public class SingleFieldSource {
 
 	public SingleFieldSource(){ }
 
+	/**
+	* @return JSON representation of the SingleFieldSource
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SingleFieldSource
+	* @return The deserialized SingleFieldSource
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SingleFieldSource fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SingleFieldSource.class);
 	}

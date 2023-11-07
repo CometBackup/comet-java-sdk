@@ -23,10 +23,19 @@ public class PSAGroupedBy {
 
 	public PSAGroupedBy(){ }
 
+	/**
+	* @return JSON representation of the PSAGroupedBy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a PSAGroupedBy
+	* @return The deserialized PSAGroupedBy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public PSAGroupedBy fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,PSAGroupedBy.class);
 	}

@@ -24,10 +24,19 @@ public class NewsEntry {
 
 	public NewsEntry(){ }
 
+	/**
+	* @return JSON representation of the NewsEntry
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a NewsEntry
+	* @return The deserialized NewsEntry
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public NewsEntry fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,NewsEntry.class);
 	}

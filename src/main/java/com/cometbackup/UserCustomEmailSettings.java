@@ -17,10 +17,19 @@ public class UserCustomEmailSettings {
 
 	public UserCustomEmailSettings(){ }
 
+	/**
+	* @return JSON representation of the UserCustomEmailSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a UserCustomEmailSettings
+	* @return The deserialized UserCustomEmailSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public UserCustomEmailSettings fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,UserCustomEmailSettings.class);
 	}

@@ -21,10 +21,19 @@ public class RetentionPolicy {
 
 	public RetentionPolicy(){ }
 
+	/**
+	* @return JSON representation of the RetentionPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a RetentionPolicy
+	* @return The deserialized RetentionPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public RetentionPolicy fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,RetentionPolicy.class);
 	}

@@ -19,10 +19,19 @@ public class SessionOptions {
 
 	public SessionOptions(){ }
 
+	/**
+	* @return JSON representation of the SessionOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SessionOptions
+	* @return The deserialized SessionOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SessionOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SessionOptions.class);
 	}

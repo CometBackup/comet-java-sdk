@@ -37,10 +37,19 @@ public class DeviceConfig {
 
 	public DeviceConfig(){ }
 
+	/**
+	* @return JSON representation of the DeviceConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a DeviceConfig
+	* @return The deserialized DeviceConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public DeviceConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,DeviceConfig.class);
 	}

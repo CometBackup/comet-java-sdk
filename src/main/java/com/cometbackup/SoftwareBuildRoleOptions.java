@@ -20,10 +20,19 @@ public class SoftwareBuildRoleOptions {
 
 	public SoftwareBuildRoleOptions(){ }
 
+	/**
+	* @return JSON representation of the SoftwareBuildRoleOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SoftwareBuildRoleOptions
+	* @return The deserialized SoftwareBuildRoleOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SoftwareBuildRoleOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SoftwareBuildRoleOptions.class);
 	}

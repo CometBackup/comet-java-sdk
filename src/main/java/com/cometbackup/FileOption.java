@@ -36,10 +36,19 @@ public class FileOption {
 
 	public FileOption(){ }
 
+	/**
+	* @return JSON representation of the FileOption
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a FileOption
+	* @return The deserialized FileOption
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public FileOption fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,FileOption.class);
 	}

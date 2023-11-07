@@ -122,14 +122,26 @@ public class BrandingProperties {
 
 	public BrandingProperties(){ }
 
+	/**
+	* @return JSON representation of the BrandingProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BrandingProperties
+	* @return The deserialized BrandingProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BrandingProperties fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BrandingProperties.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded PublicBrandingProperties
+	*/
 	public PublicBrandingProperties GetEmbeddedPublicBrandingProperties(){
 		var ret = new PublicBrandingProperties();
 		ret.ProductName = this.ProductName;
@@ -153,6 +165,9 @@ public class BrandingProperties {
 		this.HideBackgroundLogo = other.HideBackgroundLogo;
 	}
 
+	/**
+	* @return Returns a copy of the embedded PrivateBrandingProperties
+	*/
 	public PrivateBrandingProperties GetEmbeddedPrivateBrandingProperties(){
 		var ret = new PrivateBrandingProperties();
 		ret.BuildMode = this.BuildMode;

@@ -17,10 +17,19 @@ public class RatelimitOptions {
 
 	public RatelimitOptions(){ }
 
+	/**
+	* @return JSON representation of the RatelimitOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a RatelimitOptions
+	* @return The deserialized RatelimitOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public RatelimitOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,RatelimitOptions.class);
 	}

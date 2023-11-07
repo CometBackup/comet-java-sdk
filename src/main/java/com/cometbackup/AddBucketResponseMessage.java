@@ -27,14 +27,26 @@ public class AddBucketResponseMessage {
 
 	public AddBucketResponseMessage(){ }
 
+	/**
+	* @return JSON representation of the AddBucketResponseMessage
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AddBucketResponseMessage
+	* @return The deserialized AddBucketResponseMessage
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AddBucketResponseMessage fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AddBucketResponseMessage.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometAPIResponseMessage
+	*/
 	public CometAPIResponseMessage GetEmbeddedCometAPIResponseMessage(){
 		var ret = new CometAPIResponseMessage();
 		ret.Status = this.Status;
@@ -46,6 +58,9 @@ public class AddBucketResponseMessage {
 		this.Message = other.Message;
 	}
 
+	/**
+	* @return Returns a copy of the embedded NewBucketDetail
+	*/
 	public NewBucketDetail GetEmbeddedNewBucketDetail(){
 		var ret = new NewBucketDetail();
 		ret.NewBucketID = this.NewBucketID;

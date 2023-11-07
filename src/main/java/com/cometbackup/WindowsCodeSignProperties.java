@@ -67,10 +67,19 @@ public class WindowsCodeSignProperties {
 
 	public WindowsCodeSignProperties(){ }
 
+	/**
+	* @return JSON representation of the WindowsCodeSignProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WindowsCodeSignProperties
+	* @return The deserialized WindowsCodeSignProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WindowsCodeSignProperties fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WindowsCodeSignProperties.class);
 	}

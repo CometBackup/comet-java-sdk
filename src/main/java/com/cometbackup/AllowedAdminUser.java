@@ -66,14 +66,26 @@ public class AllowedAdminUser {
 
 	public AllowedAdminUser(){ }
 
+	/**
+	* @return JSON representation of the AllowedAdminUser
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AllowedAdminUser
+	* @return The deserialized AllowedAdminUser
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AllowedAdminUser fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AllowedAdminUser.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded AdminSecurityOptions
+	*/
 	public AdminSecurityOptions GetEmbeddedAdminSecurityOptions(){
 		var ret = new AdminSecurityOptions();
 		ret.PasswordFormat = this.PasswordFormat;

@@ -51,10 +51,19 @@ public class LiveUserConnection {
 
 	public LiveUserConnection(){ }
 
+	/**
+	* @return JSON representation of the LiveUserConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a LiveUserConnection
+	* @return The deserialized LiveUserConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public LiveUserConnection fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,LiveUserConnection.class);
 	}

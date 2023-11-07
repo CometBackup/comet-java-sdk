@@ -30,10 +30,19 @@ public class Office365ObjectInfo {
 
 	public Office365ObjectInfo(){ }
 
+	/**
+	* @return JSON representation of the Office365ObjectInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a Office365ObjectInfo
+	* @return The deserialized Office365ObjectInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public Office365ObjectInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,Office365ObjectInfo.class);
 	}

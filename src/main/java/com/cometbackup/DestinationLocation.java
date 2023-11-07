@@ -191,14 +191,26 @@ public class DestinationLocation {
 
 	public DestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the DestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a DestinationLocation
+	* @return The deserialized DestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public DestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,DestinationLocation.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometDestinationLocation
+	*/
 	public CometDestinationLocation GetEmbeddedCometDestinationLocation(){
 		var ret = new CometDestinationLocation();
 		ret.CometServer = this.CometServer;
@@ -212,6 +224,9 @@ public class DestinationLocation {
 		this.CometBucketKey = other.CometBucketKey;
 	}
 
+	/**
+	* @return Returns a copy of the embedded S3DestinationLocation
+	*/
 	public S3DestinationLocation GetEmbeddedS3DestinationLocation(){
 		var ret = new S3DestinationLocation();
 		ret.S3Server = this.S3Server;
@@ -241,6 +256,9 @@ public class DestinationLocation {
 		this.S3ObjectLockDays = other.S3ObjectLockDays;
 	}
 
+	/**
+	* @return Returns a copy of the embedded SFTPDestinationLocation
+	*/
 	public SFTPDestinationLocation GetEmbeddedSFTPDestinationLocation(){
 		var ret = new SFTPDestinationLocation();
 		ret.SFTPServer = this.SFTPServer;
@@ -264,6 +282,9 @@ public class DestinationLocation {
 		this.SFTPCustomAuth_KnownHostsFile = other.SFTPCustomAuth_KnownHostsFile;
 	}
 
+	/**
+	* @return Returns a copy of the embedded FTPDestinationLocation
+	*/
 	public FTPDestinationLocation GetEmbeddedFTPDestinationLocation(){
 		var ret = new FTPDestinationLocation();
 		ret.FTPServer = this.FTPServer;
@@ -289,6 +310,9 @@ public class DestinationLocation {
 		this.FTPAcceptInvalidSSL = other.FTPAcceptInvalidSSL;
 	}
 
+	/**
+	* @return Returns a copy of the embedded AzureDestinationLocation
+	*/
 	public AzureDestinationLocation GetEmbeddedAzureDestinationLocation(){
 		var ret = new AzureDestinationLocation();
 		ret.AZBAccountName = this.AZBAccountName;
@@ -306,6 +330,9 @@ public class DestinationLocation {
 		this.AZBPrefix = other.AZBPrefix;
 	}
 
+	/**
+	* @return Returns a copy of the embedded LocalDestinationLocation
+	*/
 	public LocalDestinationLocation GetEmbeddedLocalDestinationLocation(){
 		var ret = new LocalDestinationLocation();
 		ret.LocalcopyPath = this.LocalcopyPath;
@@ -321,6 +348,9 @@ public class DestinationLocation {
 		this.LocalcopyWinSMBPasswordFormat = other.LocalcopyWinSMBPasswordFormat;
 	}
 
+	/**
+	* @return Returns a copy of the embedded SpannedDestinationLocation
+	*/
 	public SpannedDestinationLocation GetEmbeddedSpannedDestinationLocation(){
 		var ret = new SpannedDestinationLocation();
 		ret.SpanTargets = this.SpanTargets;

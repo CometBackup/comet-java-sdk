@@ -31,10 +31,19 @@ public class SpannedDestinationLocation {
 
 	public SpannedDestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the SpannedDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SpannedDestinationLocation
+	* @return The deserialized SpannedDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SpannedDestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SpannedDestinationLocation.class);
 	}

@@ -35,10 +35,19 @@ public class StreamableEvent {
 
 	public StreamableEvent(){ }
 
+	/**
+	* @return JSON representation of the StreamableEvent
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a StreamableEvent
+	* @return The deserialized StreamableEvent
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public StreamableEvent fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,StreamableEvent.class);
 	}

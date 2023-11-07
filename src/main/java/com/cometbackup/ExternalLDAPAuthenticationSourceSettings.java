@@ -42,14 +42,26 @@ public class ExternalLDAPAuthenticationSourceSettings {
 
 	public ExternalLDAPAuthenticationSourceSettings(){ }
 
+	/**
+	* @return JSON representation of the ExternalLDAPAuthenticationSourceSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ExternalLDAPAuthenticationSourceSettings
+	* @return The deserialized ExternalLDAPAuthenticationSourceSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ExternalLDAPAuthenticationSourceSettings fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ExternalLDAPAuthenticationSourceSettings.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded ExternalLDAPAuthenticationSourceServer
+	*/
 	public ExternalLDAPAuthenticationSourceServer GetEmbeddedExternalLDAPAuthenticationSourceServer(){
 		var ret = new ExternalLDAPAuthenticationSourceServer();
 		ret.Hostname = this.Hostname;

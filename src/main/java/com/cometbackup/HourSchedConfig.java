@@ -20,10 +20,19 @@ public class HourSchedConfig {
 
 	public HourSchedConfig(){ }
 
+	/**
+	* @return JSON representation of the HourSchedConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a HourSchedConfig
+	* @return The deserialized HourSchedConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public HourSchedConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,HourSchedConfig.class);
 	}

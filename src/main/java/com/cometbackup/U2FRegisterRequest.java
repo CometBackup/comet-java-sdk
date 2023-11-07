@@ -21,10 +21,19 @@ public class U2FRegisterRequest {
 
 	public U2FRegisterRequest(){ }
 
+	/**
+	* @return JSON representation of the U2FRegisterRequest
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a U2FRegisterRequest
+	* @return The deserialized U2FRegisterRequest
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public U2FRegisterRequest fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,U2FRegisterRequest.class);
 	}

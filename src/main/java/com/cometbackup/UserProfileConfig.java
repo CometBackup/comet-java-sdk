@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* UserProfileConfig This is the main data structure for a user's profile.
+* UserProfileConfig This is the main data structure for a user&#39;s profile.
 */
 public class UserProfileConfig {
 	//The name for this account. It uniquely identifies this UserProfileConfig across the entire Comet Server. It cannot be
@@ -154,10 +154,19 @@ public class UserProfileConfig {
 
 	public UserProfileConfig(){ }
 
+	/**
+	* @return JSON representation of the UserProfileConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a UserProfileConfig
+	* @return The deserialized UserProfileConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public UserProfileConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,UserProfileConfig.class);
 	}

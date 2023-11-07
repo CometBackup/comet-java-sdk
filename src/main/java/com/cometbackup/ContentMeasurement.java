@@ -25,10 +25,19 @@ public class ContentMeasurement {
 
 	public ContentMeasurement(){ }
 
+	/**
+	* @return JSON representation of the ContentMeasurement
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ContentMeasurement
+	* @return The deserialized ContentMeasurement
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ContentMeasurement fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ContentMeasurement.class);
 	}

@@ -28,10 +28,19 @@ public class StorageRoleOptions {
 
 	public StorageRoleOptions(){ }
 
+	/**
+	* @return JSON representation of the StorageRoleOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a StorageRoleOptions
+	* @return The deserialized StorageRoleOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public StorageRoleOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,StorageRoleOptions.class);
 	}

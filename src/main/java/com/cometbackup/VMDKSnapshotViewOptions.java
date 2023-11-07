@@ -29,10 +29,19 @@ public class VMDKSnapshotViewOptions {
 
 	public VMDKSnapshotViewOptions(){ }
 
+	/**
+	* @return JSON representation of the VMDKSnapshotViewOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a VMDKSnapshotViewOptions
+	* @return The deserialized VMDKSnapshotViewOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public VMDKSnapshotViewOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,VMDKSnapshotViewOptions.class);
 	}

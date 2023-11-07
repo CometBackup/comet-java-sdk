@@ -50,10 +50,19 @@ public class Organization {
 
 	public Organization(){ }
 
+	/**
+	* @return JSON representation of the Organization
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a Organization
+	* @return The deserialized Organization
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public Organization fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,Organization.class);
 	}

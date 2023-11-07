@@ -57,14 +57,26 @@ public class ExternalAuthenticationSource {
 
 	public ExternalAuthenticationSource(){ }
 
+	/**
+	* @return JSON representation of the ExternalAuthenticationSource
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ExternalAuthenticationSource
+	* @return The deserialized ExternalAuthenticationSource
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ExternalAuthenticationSource fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ExternalAuthenticationSource.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded RemoteServerAddress
+	*/
 	public RemoteServerAddress GetEmbeddedRemoteServerAddress(){
 		var ret = new RemoteServerAddress();
 		ret.Type = this.Type;

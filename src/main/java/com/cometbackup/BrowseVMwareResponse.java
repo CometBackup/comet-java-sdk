@@ -24,14 +24,26 @@ public class BrowseVMwareResponse {
 
 	public BrowseVMwareResponse(){ }
 
+	/**
+	* @return JSON representation of the BrowseVMwareResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BrowseVMwareResponse
+	* @return The deserialized BrowseVMwareResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BrowseVMwareResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BrowseVMwareResponse.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometAPIResponseMessage
+	*/
 	public CometAPIResponseMessage GetEmbeddedCometAPIResponseMessage(){
 		var ret = new CometAPIResponseMessage();
 		ret.Status = this.Status;

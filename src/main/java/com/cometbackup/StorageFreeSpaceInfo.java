@@ -29,10 +29,19 @@ public class StorageFreeSpaceInfo {
 
 	public StorageFreeSpaceInfo(){ }
 
+	/**
+	* @return JSON representation of the StorageFreeSpaceInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a StorageFreeSpaceInfo
+	* @return The deserialized StorageFreeSpaceInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public StorageFreeSpaceInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,StorageFreeSpaceInfo.class);
 	}

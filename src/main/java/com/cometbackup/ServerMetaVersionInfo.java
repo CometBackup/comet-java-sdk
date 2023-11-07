@@ -96,10 +96,19 @@ public class ServerMetaVersionInfo {
 
 	public ServerMetaVersionInfo(){ }
 
+	/**
+	* @return JSON representation of the ServerMetaVersionInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ServerMetaVersionInfo
+	* @return The deserialized ServerMetaVersionInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ServerMetaVersionInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ServerMetaVersionInfo.class);
 	}

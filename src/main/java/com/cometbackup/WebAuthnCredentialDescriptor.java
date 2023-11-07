@@ -23,10 +23,19 @@ public class WebAuthnCredentialDescriptor {
 
 	public WebAuthnCredentialDescriptor(){ }
 
+	/**
+	* @return JSON representation of the WebAuthnCredentialDescriptor
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WebAuthnCredentialDescriptor
+	* @return The deserialized WebAuthnCredentialDescriptor
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WebAuthnCredentialDescriptor fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WebAuthnCredentialDescriptor.class);
 	}

@@ -23,10 +23,19 @@ public class B2TransactionTotals {
 
 	public B2TransactionTotals(){ }
 
+	/**
+	* @return JSON representation of the B2TransactionTotals
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a B2TransactionTotals
+	* @return The deserialized B2TransactionTotals
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public B2TransactionTotals fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,B2TransactionTotals.class);
 	}

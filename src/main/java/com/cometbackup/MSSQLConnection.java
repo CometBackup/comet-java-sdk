@@ -36,10 +36,19 @@ public class MSSQLConnection {
 
 	public MSSQLConnection(){ }
 
+	/**
+	* @return JSON representation of the MSSQLConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a MSSQLConnection
+	* @return The deserialized MSSQLConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public MSSQLConnection fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,MSSQLConnection.class);
 	}

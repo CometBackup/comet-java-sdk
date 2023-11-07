@@ -43,10 +43,19 @@ public class MySQLConnection {
 
 	public MySQLConnection(){ }
 
+	/**
+	* @return JSON representation of the MySQLConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a MySQLConnection
+	* @return The deserialized MySQLConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public MySQLConnection fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,MySQLConnection.class);
 	}

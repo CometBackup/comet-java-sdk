@@ -63,14 +63,26 @@ public class RemoteStorageOption {
 
 	public RemoteStorageOption(){ }
 
+	/**
+	* @return JSON representation of the RemoteStorageOption
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a RemoteStorageOption
+	* @return The deserialized RemoteStorageOption
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public RemoteStorageOption fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,RemoteStorageOption.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded RemoteServerAddress
+	*/
 	public RemoteServerAddress GetEmbeddedRemoteServerAddress(){
 		var ret = new RemoteServerAddress();
 		ret.Type = this.Type;

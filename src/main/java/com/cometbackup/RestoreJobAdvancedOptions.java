@@ -97,10 +97,19 @@ public class RestoreJobAdvancedOptions {
 
 	public RestoreJobAdvancedOptions(){ }
 
+	/**
+	* @return JSON representation of the RestoreJobAdvancedOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a RestoreJobAdvancedOptions
+	* @return The deserialized RestoreJobAdvancedOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public RestoreJobAdvancedOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,RestoreJobAdvancedOptions.class);
 	}

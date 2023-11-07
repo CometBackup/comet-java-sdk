@@ -17,10 +17,19 @@ public class GlobalOverrideOptions {
 
 	public GlobalOverrideOptions(){ }
 
+	/**
+	* @return JSON representation of the GlobalOverrideOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a GlobalOverrideOptions
+	* @return The deserialized GlobalOverrideOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public GlobalOverrideOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,GlobalOverrideOptions.class);
 	}

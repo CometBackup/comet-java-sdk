@@ -42,10 +42,19 @@ public class SearchClause {
 
 	public SearchClause(){ }
 
+	/**
+	* @return JSON representation of the SearchClause
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SearchClause
+	* @return The deserialized SearchClause
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SearchClause fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SearchClause.class);
 	}

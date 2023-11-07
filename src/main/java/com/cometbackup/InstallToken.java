@@ -37,10 +37,19 @@ public class InstallToken {
 
 	public InstallToken(){ }
 
+	/**
+	* @return JSON representation of the InstallToken
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a InstallToken
+	* @return The deserialized InstallToken
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public InstallToken fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,InstallToken.class);
 	}

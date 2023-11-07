@@ -243,14 +243,26 @@ public class DestinationConfig {
 
 	public DestinationConfig(){ }
 
+	/**
+	* @return JSON representation of the DestinationConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a DestinationConfig
+	* @return The deserialized DestinationConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public DestinationConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,DestinationConfig.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded DestinationLocation
+	*/
 	public DestinationLocation GetEmbeddedDestinationLocation(){
 		var ret = new DestinationLocation();
 		ret.DestinationType = this.DestinationType;

@@ -31,10 +31,19 @@ public class Office365CustomSettingV2 {
 
 	public Office365CustomSettingV2(){ }
 
+	/**
+	* @return JSON representation of the Office365CustomSettingV2
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a Office365CustomSettingV2
+	* @return The deserialized Office365CustomSettingV2
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public Office365CustomSettingV2 fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,Office365CustomSettingV2.class);
 	}

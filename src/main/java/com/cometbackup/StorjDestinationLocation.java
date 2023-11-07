@@ -29,10 +29,19 @@ public class StorjDestinationLocation {
 
 	public StorjDestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the StorjDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a StorjDestinationLocation
+	* @return The deserialized StorjDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public StorjDestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,StorjDestinationLocation.class);
 	}

@@ -25,10 +25,19 @@ public class AdminU2FRegistration {
 
 	public AdminU2FRegistration(){ }
 
+	/**
+	* @return JSON representation of the AdminU2FRegistration
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AdminU2FRegistration
+	* @return The deserialized AdminU2FRegistration
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AdminU2FRegistration fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AdminU2FRegistration.class);
 	}

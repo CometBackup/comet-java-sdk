@@ -35,10 +35,19 @@ public class WasabiVirtualStorageRoleSettings {
 
 	public WasabiVirtualStorageRoleSettings(){ }
 
+	/**
+	* @return JSON representation of the WasabiVirtualStorageRoleSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WasabiVirtualStorageRoleSettings
+	* @return The deserialized WasabiVirtualStorageRoleSettings
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WasabiVirtualStorageRoleSettings fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WasabiVirtualStorageRoleSettings.class);
 	}

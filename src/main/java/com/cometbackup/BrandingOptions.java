@@ -144,14 +144,26 @@ public class BrandingOptions {
 
 	public BrandingOptions(){ }
 
+	/**
+	* @return JSON representation of the BrandingOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BrandingOptions
+	* @return The deserialized BrandingOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BrandingOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BrandingOptions.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded WebInterfaceBrandingProperties
+	*/
 	public WebInterfaceBrandingProperties GetEmbeddedWebInterfaceBrandingProperties(){
 		var ret = new WebInterfaceBrandingProperties();
 		ret.BrandingStyleType = this.BrandingStyleType;
@@ -173,6 +185,9 @@ public class BrandingOptions {
 		this.HideNewsArea = other.HideNewsArea;
 	}
 
+	/**
+	* @return Returns a copy of the embedded BrandingProperties
+	*/
 	public BrandingProperties GetEmbeddedBrandingProperties(){
 		var ret = new BrandingProperties();
 		ret.ProductName = this.ProductName;

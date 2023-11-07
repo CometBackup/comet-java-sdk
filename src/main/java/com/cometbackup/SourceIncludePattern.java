@@ -24,10 +24,19 @@ public class SourceIncludePattern {
 
 	public SourceIncludePattern(){ }
 
+	/**
+	* @return JSON representation of the SourceIncludePattern
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SourceIncludePattern
+	* @return The deserialized SourceIncludePattern
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SourceIncludePattern fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SourceIncludePattern.class);
 	}

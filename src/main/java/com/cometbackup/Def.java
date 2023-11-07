@@ -21,12 +21,12 @@ public class Def {
 	public final long BACKUPJOBAUTORETENTION_IMMEDIATE = 1;
 
 	/**
-	* AutoRetentionLevel: The system will follow the automatic ruleset for a 'High Power' device.
+	* AutoRetentionLevel: The system will follow the automatic ruleset for a &#39;High Power&#39; device.
 	*/
 	public final long BACKUPJOBAUTORETENTION_MORE_OFTEN = 2;
 
 	/**
-	* AutoRetentionLevel: The system will follow the automatic ruleset for a 'Low Power' device.
+	* AutoRetentionLevel: The system will follow the automatic ruleset for a &#39;Low Power&#39; device.
 	*/
 	public final long BACKUPJOBAUTORETENTION_LESS_OFTEN = 3;
 
@@ -182,7 +182,7 @@ public class Def {
 	public final long DESTINATIONTYPE_LATEST = 1100;
 
 	/**
-	* When defining a schedule via policy, use this option to create a schedule for each Storage Vault in the user's
+	* When defining a schedule via policy, use this option to create a schedule for each Storage Vault in the user&#39;s
 	* profile.
 	*/
 	public final long DESTINATIONTYPE_ALL = 1101;
@@ -215,7 +215,7 @@ public class Def {
 
 	/**
 	* EmailDeliveryType: If this is for the top-level Organization, email is disabled. If this is for an Organization, use
-	* the parent's email settings.
+	* the parent&#39;s email settings.
 	*/
 	public final String EMAIL_DELIVERY_INHERIT = "";
 
@@ -404,7 +404,7 @@ public class Def {
 	public final long JOB_CLASSIFICATION_DELETE_CUSTOM = 4005;
 
 	/**
-	* JobClassification: Explicitly re-measuring the size of a Vault (right-click > Advanced menu).
+	* JobClassification: Explicitly re-measuring the size of a Vault (right-click &gt; Advanced menu).
 	*/
 	public final long JOB_CLASSIFICATION_REMEASURE = 4006;
 
@@ -499,7 +499,8 @@ public class Def {
 	public final long JOB_STATUS_FAILED_ERROR = 7002;
 
 	/**
-	* JobStatus: During a backup job either the "All protected items" quota or "Storage Vault" quota was exceeded.
+	* JobStatus: During a backup job either the &#34;All protected items&#34; quota or &#34;Storage Vault&#34; quota was
+	* exceeded.
 	*/
 	public final long JOB_STATUS_FAILED_QUOTA = 7003;
 
@@ -514,8 +515,8 @@ public class Def {
 	public final long JOB_STATUS_FAILED_CANCELLED = 7005;
 
 	/**
-	* JobStatus: The backup job was skipped as there was already a backup running and the "Skip if already running" option
-	* was enabled.
+	* JobStatus: The backup job was skipped as there was already a backup running and the &#34;Skip if already running&#34;
+	* option was enabled.
 	*/
 	public final long JOB_STATUS_FAILED_SKIPALREADYRUNNING = 7006;
 
@@ -938,22 +939,22 @@ public class Def {
 	public final long SCHEDULE_FREQUENCY_ONCEONLY = 8010;
 
 	/**
-	* SecondsPast is the number of seconds past 00:00, in the device's local timezone.
+	* SecondsPast is the number of seconds past 00:00, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_DAILY = 8011;
 
 	/**
-	* SecondsPast is the number of seconds past *:00, in the device's local timezone.
+	* SecondsPast is the number of seconds past *:00, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_HOURLY = 8012;
 
 	/**
-	* SecondsPast is the number of seconds past 00:00 Sunday, in the device's local timezone.
+	* SecondsPast is the number of seconds past 00:00 Sunday, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_WEEKLY = 8013;
 
 	/**
-	* SecondsPast is the number of seconds past 00:00 1st, in the device's local timezone.
+	* SecondsPast is the number of seconds past 00:00 1st, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_MONTHLY = 8014;
 
@@ -1562,8 +1563,8 @@ public class Def {
 	public final String STREAMER_TYPE_FILE = "file";
 
 	/**
-	* If an API response returns in failure, but it includes this value in the CometAPIResponseMessage->Message parameter,
-	* it indicates that your supplied authentication was insufficient, and you must supply additional two-factor
+	* If an API response returns in failure, but it includes this value in the CometAPIResponseMessage-&gt;Message
+	* parameter, it indicates that your supplied authentication was insufficient, and you must supply additional two-factor
 	* authentication credentials.
 	*/
 	public final String TOTPRequiredError = "ERR_TOTP_REQUIRED";
@@ -1574,7 +1575,8 @@ public class Def {
 	public final int UPDATESTATUS_NOT_SEEN = 0;
 
 	/**
-	* UpdateStatus: The selected device does not meet the filter criteria from the Bulk Update Campaign's configuration.
+	* UpdateStatus: The selected device does not meet the filter criteria from the Bulk Update Campaign&#39;s
+	* configuration.
 	*/
 	public final int UPDATESTATUS_INELIGIBLE = 1;
 
@@ -1591,7 +1593,8 @@ public class Def {
 
 	/**
 	* UpdateStatus: An update signal was sent to the device, but when it reconnected, it did not advertise the target
-	* software version. It's likely that the update failed - please check the device's Update log for more information.
+	* software version. It&#39;s likely that the update failed - please check the device&#39;s Update log for more
+	* information.
 	*/
 	public final int UPDATESTATUS_UPDATE_FAILED = 4;
 
@@ -1602,8 +1605,8 @@ public class Def {
 	public final int USERNAME_MAX_LENGTH = 255;
 
 	/**
-	* If an API response returns in failure, but it includes this value in the CometAPIResponseMessage->Message parameter,
-	* it indicates that the specified Device ID was invalid or not found.
+	* If an API response returns in failure, but it includes this value in the CometAPIResponseMessage-&gt;Message
+	* parameter, it indicates that the specified Device ID was invalid or not found.
 	*/
 	public final String UnknownDeviceError = "ERR_UNKNOWN_DEVICE";
 	public final String UnsupportVhdxFileSystem = "ERR_UNSUPPORT_VHDX_FILE_SYSTEM";

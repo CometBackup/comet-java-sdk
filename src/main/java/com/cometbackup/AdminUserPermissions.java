@@ -62,10 +62,19 @@ public class AdminUserPermissions {
 
 	public AdminUserPermissions(){ }
 
+	/**
+	* @return JSON representation of the AdminUserPermissions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AdminUserPermissions
+	* @return The deserialized AdminUserPermissions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AdminUserPermissions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AdminUserPermissions.class);
 	}

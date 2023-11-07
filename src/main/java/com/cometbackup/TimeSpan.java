@@ -22,10 +22,19 @@ public class TimeSpan {
 
 	public TimeSpan(){ }
 
+	/**
+	* @return JSON representation of the TimeSpan
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a TimeSpan
+	* @return The deserialized TimeSpan
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public TimeSpan fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,TimeSpan.class);
 	}

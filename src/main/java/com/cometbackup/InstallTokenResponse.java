@@ -24,14 +24,26 @@ public class InstallTokenResponse {
 
 	public InstallTokenResponse(){ }
 
+	/**
+	* @return JSON representation of the InstallTokenResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a InstallTokenResponse
+	* @return The deserialized InstallTokenResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public InstallTokenResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,InstallTokenResponse.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometAPIResponseMessage
+	*/
 	public CometAPIResponseMessage GetEmbeddedCometAPIResponseMessage(){
 		var ret = new CometAPIResponseMessage();
 		ret.Status = this.Status;

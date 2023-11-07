@@ -30,10 +30,19 @@ public class WinSMBAuth {
 
 	public WinSMBAuth(){ }
 
+	/**
+	* @return JSON representation of the WinSMBAuth
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WinSMBAuth
+	* @return The deserialized WinSMBAuth
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WinSMBAuth fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WinSMBAuth.class);
 	}

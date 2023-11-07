@@ -49,10 +49,19 @@ public class SearchResultFileInfo {
 
 	public SearchResultFileInfo(){ }
 
+	/**
+	* @return JSON representation of the SearchResultFileInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SearchResultFileInfo
+	* @return The deserialized SearchResultFileInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SearchResultFileInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SearchResultFileInfo.class);
 	}

@@ -24,14 +24,26 @@ public class BrowseOffice365ObjectsResponse {
 
 	public BrowseOffice365ObjectsResponse(){ }
 
+	/**
+	* @return JSON representation of the BrowseOffice365ObjectsResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BrowseOffice365ObjectsResponse
+	* @return The deserialized BrowseOffice365ObjectsResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BrowseOffice365ObjectsResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BrowseOffice365ObjectsResponse.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometAPIResponseMessage
+	*/
 	public CometAPIResponseMessage GetEmbeddedCometAPIResponseMessage(){
 		var ret = new CometAPIResponseMessage();
 		ret.Status = this.Status;

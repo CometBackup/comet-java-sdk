@@ -52,14 +52,26 @@ public class SelfBackupTarget {
 
 	public SelfBackupTarget(){ }
 
+	/**
+	* @return JSON representation of the SelfBackupTarget
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SelfBackupTarget
+	* @return The deserialized SelfBackupTarget
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SelfBackupTarget fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SelfBackupTarget.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded SelfBackupExportOptions
+	*/
 	public SelfBackupExportOptions GetEmbeddedSelfBackupExportOptions(){
 		var ret = new SelfBackupExportOptions();
 		ret.Location = this.Location;

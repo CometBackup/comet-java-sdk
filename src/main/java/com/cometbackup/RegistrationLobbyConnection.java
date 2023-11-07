@@ -41,10 +41,19 @@ public class RegistrationLobbyConnection {
 
 	public RegistrationLobbyConnection(){ }
 
+	/**
+	* @return JSON representation of the RegistrationLobbyConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a RegistrationLobbyConnection
+	* @return The deserialized RegistrationLobbyConnection
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public RegistrationLobbyConnection fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,RegistrationLobbyConnection.class);
 	}

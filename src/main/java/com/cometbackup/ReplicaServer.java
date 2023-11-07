@@ -57,14 +57,26 @@ public class ReplicaServer {
 
 	public ReplicaServer(){ }
 
+	/**
+	* @return JSON representation of the ReplicaServer
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ReplicaServer
+	* @return The deserialized ReplicaServer
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ReplicaServer fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ReplicaServer.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded RemoteServerAddress
+	*/
 	public RemoteServerAddress GetEmbeddedRemoteServerAddress(){
 		var ret = new RemoteServerAddress();
 		ret.Type = this.Type;

@@ -20,10 +20,19 @@ public class StorageVaultProviderPolicy {
 
 	public StorageVaultProviderPolicy(){ }
 
+	/**
+	* @return JSON representation of the StorageVaultProviderPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a StorageVaultProviderPolicy
+	* @return The deserialized StorageVaultProviderPolicy
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public StorageVaultProviderPolicy fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,StorageVaultProviderPolicy.class);
 	}

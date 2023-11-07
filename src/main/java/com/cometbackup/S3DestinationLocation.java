@@ -48,10 +48,19 @@ public class S3DestinationLocation {
 
 	public S3DestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the S3DestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a S3DestinationLocation
+	* @return The deserialized S3DestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public S3DestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,S3DestinationLocation.class);
 	}

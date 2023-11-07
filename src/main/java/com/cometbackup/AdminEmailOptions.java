@@ -20,10 +20,19 @@ public class AdminEmailOptions {
 
 	public AdminEmailOptions(){ }
 
+	/**
+	* @return JSON representation of the AdminEmailOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AdminEmailOptions
+	* @return The deserialized AdminEmailOptions
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AdminEmailOptions fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AdminEmailOptions.class);
 	}

@@ -26,10 +26,19 @@ public class ExternalAuthenticationSourceResponse {
 
 	public ExternalAuthenticationSourceResponse(){ }
 
+	/**
+	* @return JSON representation of the ExternalAuthenticationSourceResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ExternalAuthenticationSourceResponse
+	* @return The deserialized ExternalAuthenticationSourceResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ExternalAuthenticationSourceResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ExternalAuthenticationSourceResponse.class);
 	}

@@ -23,14 +23,26 @@ public class WebAuthnRelyingPartyEntity {
 
 	public WebAuthnRelyingPartyEntity(){ }
 
+	/**
+	* @return JSON representation of the WebAuthnRelyingPartyEntity
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WebAuthnRelyingPartyEntity
+	* @return The deserialized WebAuthnRelyingPartyEntity
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WebAuthnRelyingPartyEntity fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WebAuthnRelyingPartyEntity.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded WebAuthnCredentialEntity
+	*/
 	public WebAuthnCredentialEntity GetEmbeddedWebAuthnCredentialEntity(){
 		var ret = new WebAuthnCredentialEntity();
 		ret.Name = this.Name;

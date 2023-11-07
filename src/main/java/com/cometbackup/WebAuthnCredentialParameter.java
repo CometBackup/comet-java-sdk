@@ -20,10 +20,19 @@ public class WebAuthnCredentialParameter {
 
 	public WebAuthnCredentialParameter(){ }
 
+	/**
+	* @return JSON representation of the WebAuthnCredentialParameter
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WebAuthnCredentialParameter
+	* @return The deserialized WebAuthnCredentialParameter
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WebAuthnCredentialParameter fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WebAuthnCredentialParameter.class);
 	}

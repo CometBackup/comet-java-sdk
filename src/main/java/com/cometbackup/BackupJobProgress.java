@@ -33,10 +33,19 @@ public class BackupJobProgress {
 
 	public BackupJobProgress(){ }
 
+	/**
+	* @return JSON representation of the BackupJobProgress
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a BackupJobProgress
+	* @return The deserialized BackupJobProgress
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public BackupJobProgress fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,BackupJobProgress.class);
 	}

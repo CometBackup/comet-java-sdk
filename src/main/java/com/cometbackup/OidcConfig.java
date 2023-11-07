@@ -50,10 +50,19 @@ public class OidcConfig {
 
 	public OidcConfig(){ }
 
+	/**
+	* @return JSON representation of the OidcConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a OidcConfig
+	* @return The deserialized OidcConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public OidcConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,OidcConfig.class);
 	}

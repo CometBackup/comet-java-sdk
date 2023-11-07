@@ -34,10 +34,19 @@ public class MSSQLLoginArgs {
 
 	public MSSQLLoginArgs(){ }
 
+	/**
+	* @return JSON representation of the MSSQLLoginArgs
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a MSSQLLoginArgs
+	* @return The deserialized MSSQLLoginArgs
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public MSSQLLoginArgs fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,MSSQLLoginArgs.class);
 	}

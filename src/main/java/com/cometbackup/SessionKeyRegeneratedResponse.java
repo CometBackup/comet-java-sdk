@@ -28,14 +28,26 @@ public class SessionKeyRegeneratedResponse {
 
 	public SessionKeyRegeneratedResponse(){ }
 
+	/**
+	* @return JSON representation of the SessionKeyRegeneratedResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SessionKeyRegeneratedResponse
+	* @return The deserialized SessionKeyRegeneratedResponse
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SessionKeyRegeneratedResponse fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SessionKeyRegeneratedResponse.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded CometAPIResponseMessage
+	*/
 	public CometAPIResponseMessage GetEmbeddedCometAPIResponseMessage(){
 		var ret = new CometAPIResponseMessage();
 		ret.Status = this.Status;

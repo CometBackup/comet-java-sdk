@@ -31,10 +31,19 @@ public class AzureDestinationLocation {
 
 	public AzureDestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the AzureDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a AzureDestinationLocation
+	* @return The deserialized AzureDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public AzureDestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,AzureDestinationLocation.class);
 	}

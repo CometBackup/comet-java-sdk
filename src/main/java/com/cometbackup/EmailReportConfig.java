@@ -29,10 +29,19 @@ public class EmailReportConfig {
 
 	public EmailReportConfig(){ }
 
+	/**
+	* @return JSON representation of the EmailReportConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a EmailReportConfig
+	* @return The deserialized EmailReportConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public EmailReportConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,EmailReportConfig.class);
 	}

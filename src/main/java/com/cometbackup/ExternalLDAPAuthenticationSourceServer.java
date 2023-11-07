@@ -27,10 +27,19 @@ public class ExternalLDAPAuthenticationSourceServer {
 
 	public ExternalLDAPAuthenticationSourceServer(){ }
 
+	/**
+	* @return JSON representation of the ExternalLDAPAuthenticationSourceServer
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ExternalLDAPAuthenticationSourceServer
+	* @return The deserialized ExternalLDAPAuthenticationSourceServer
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ExternalLDAPAuthenticationSourceServer fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ExternalLDAPAuthenticationSourceServer.class);
 	}

@@ -41,10 +41,19 @@ public class ScheduleConfig {
 
 	public ScheduleConfig(){ }
 
+	/**
+	* @return JSON representation of the ScheduleConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a ScheduleConfig
+	* @return The deserialized ScheduleConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public ScheduleConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,ScheduleConfig.class);
 	}

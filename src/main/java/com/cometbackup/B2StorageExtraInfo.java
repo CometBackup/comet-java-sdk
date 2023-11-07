@@ -17,10 +17,19 @@ public class B2StorageExtraInfo {
 
 	public B2StorageExtraInfo(){ }
 
+	/**
+	* @return JSON representation of the B2StorageExtraInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a B2StorageExtraInfo
+	* @return The deserialized B2StorageExtraInfo
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public B2StorageExtraInfo fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,B2StorageExtraInfo.class);
 	}

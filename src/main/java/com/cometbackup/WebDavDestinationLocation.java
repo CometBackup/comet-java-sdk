@@ -31,10 +31,19 @@ public class WebDavDestinationLocation {
 
 	public WebDavDestinationLocation(){ }
 
+	/**
+	* @return JSON representation of the WebDavDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a WebDavDestinationLocation
+	* @return The deserialized WebDavDestinationLocation
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public WebDavDestinationLocation fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,WebDavDestinationLocation.class);
 	}

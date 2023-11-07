@@ -26,10 +26,19 @@ public class VaultSnapshot {
 
 	public VaultSnapshot(){ }
 
+	/**
+	* @return JSON representation of the VaultSnapshot
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a VaultSnapshot
+	* @return The deserialized VaultSnapshot
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public VaultSnapshot fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,VaultSnapshot.class);
 	}

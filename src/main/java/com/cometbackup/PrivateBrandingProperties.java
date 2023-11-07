@@ -98,14 +98,26 @@ public class PrivateBrandingProperties {
 
 	public PrivateBrandingProperties(){ }
 
+	/**
+	* @return JSON representation of the PrivateBrandingProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a PrivateBrandingProperties
+	* @return The deserialized PrivateBrandingProperties
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public PrivateBrandingProperties fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,PrivateBrandingProperties.class);
 	}
 
+	/**
+	* @return Returns a copy of the embedded WindowsCodeSignProperties
+	*/
 	public WindowsCodeSignProperties GetEmbeddedWindowsCodeSignProperties(){
 		var ret = new WindowsCodeSignProperties();
 		ret.WindowsCodeSignMethod = this.WindowsCodeSignMethod;

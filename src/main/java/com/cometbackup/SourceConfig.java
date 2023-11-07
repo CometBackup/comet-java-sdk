@@ -101,10 +101,19 @@ public class SourceConfig {
 
 	public SourceConfig(){ }
 
+	/**
+	* @return JSON representation of the SourceConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	public String toJson() throws JsonProcessingException {
 		return CometAPI.getObjectMapper().writeValueAsString(this);
 	}
 
+	/**
+	* @param jsStr JSON representation of a SourceConfig
+	* @return The deserialized SourceConfig
+	* @throws JsonProcessingException If JSON is malformed (should not happen)
+	*/
 	static public SourceConfig fromJson(String jsStr) throws JsonProcessingException {
 		return CometAPI.getObjectMapper().readValue(jsStr,SourceConfig.class);
 	}
