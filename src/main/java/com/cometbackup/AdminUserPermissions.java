@@ -59,6 +59,9 @@ public class AdminUserPermissions {
 	@JsonProperty("AllowedProvidersWhenRestricted")
 	public ArrayList<Long> AllowedProvidersWhenRestricted;
 
+	@JsonProperty("AllowedUserPolicies")
+	public ArrayList<String> AllowedUserPolicies;
+
 
 	public AdminUserPermissions(){ }
 

@@ -15,10 +15,11 @@ public class PSAConfig {
 	@JsonProperty("AlertsDisabled")
 	public boolean AlertsDisabled;
 
+	//Custom headers to send with each PSA request
 	@JsonProperty("CustomHeaders")
 	public HashMap<String, String> CustomHeaders;
 
-	//Specified credentials for the target PSA
+	//Specified API key for the target PSA
 	@JsonProperty("PartnerKey")
 	public String PartnerKey = "";
 
@@ -26,7 +27,7 @@ public class PSAConfig {
 	@JsonProperty("Type")
 	public int Type;
 
-	//For PSA_TYPE_GENERIC
+	//The URL or subdomain for outbound PSA requests
 	@JsonProperty("URL")
 	public String URL = "";
 

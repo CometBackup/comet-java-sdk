@@ -15,6 +15,8 @@ public class VMwareConnection {
 	@JsonProperty("ConnectionType")
 	public String ConnectionType = "";
 
+
+	// deprecated since Comet version 23.9.11
 	@JsonProperty("SSH")
 	public SSHConnection SSH;
 

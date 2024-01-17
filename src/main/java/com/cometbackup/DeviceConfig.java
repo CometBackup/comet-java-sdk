@@ -34,6 +34,9 @@ public class DeviceConfig {
 	@JsonProperty("ClientVersion")
 	public String ClientVersion = "";
 
+	@JsonProperty("SyncroUUID")
+	public String SyncroUUID = "";
+
 
 	public DeviceConfig(){ }
 

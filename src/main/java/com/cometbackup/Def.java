@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "23.9.8";
+	public final String APPLICATION_VERSION = "23.12.3";
 	public final int APPLICATION_VERSION_MAJOR = 23;
-	public final int APPLICATION_VERSION_MINOR = 9;
-	public final int APPLICATION_VERSION_REVISION = 8;
+	public final int APPLICATION_VERSION_MINOR = 12;
+	public final int APPLICATION_VERSION_REVISION = 3;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -655,6 +655,11 @@ public class Def {
 	public final String PROVIDER_GOOGLE = "google";
 
 	/**
+	* OidcProvider
+	*/
+	public final String PROVIDER_DASHBOARD = "dashboard";
+
+	/**
 	* PSAType
 	*/
 	public final int PSA_TYPE_GENERIC = 0;
@@ -663,6 +668,11 @@ public class Def {
 	* PSAType
 	*/
 	public final int PSA_TYPE_GRADIENT = 1;
+
+	/**
+	* PSAType
+	*/
+	public final int PSA_TYPE_SYNCRO = 2;
 	public final String RELEASE_CODENAME = "Voyager";
 
 	/**
