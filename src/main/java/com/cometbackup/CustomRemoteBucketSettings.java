@@ -14,6 +14,9 @@ public class CustomRemoteBucketSettings {
 	@JsonProperty("URL")
 	public String URL = "";
 
+	@JsonProperty("CustomHeaders")
+	public HashMap<String, String> CustomHeaders;
+
 
 	public CustomRemoteBucketSettings(){ }
 

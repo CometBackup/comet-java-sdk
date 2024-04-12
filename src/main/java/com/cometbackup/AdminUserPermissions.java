@@ -44,6 +44,9 @@ public class AdminUserPermissions {
 	@JsonProperty("DenyViewServerInfo")
 	public boolean DenyViewServerInfo;
 
+	@JsonProperty("PreventDeleteStorageVault")
+	public boolean PreventDeleteStorageVault;
+
 	@JsonProperty("PreventRequestStorageVault")
 	public boolean PreventRequestStorageVault;
 

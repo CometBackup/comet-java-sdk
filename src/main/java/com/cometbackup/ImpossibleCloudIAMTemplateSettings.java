@@ -8,24 +8,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* AmazonAWSVirtualStorageRoleSettings
+* ImpossibleCloudIAMTemplateSettings
+* @since Version : 24.3.1
 */
-public class AmazonAWSVirtualStorageRoleSettings {
-	//If set, the Storage Template will generate Storage Vaults pointing to a subdirectory within this bucket. A single
-	//dynamic IAM policy will cover all created Storage Vaults.
-	//This is preferable for platforms that have limits on the total number of IAM policies. However, it requires a high
-	//level of IAM compatibility.
-	//If left blank, the Storage Template will generate Storage Vaults pointing to new, separate S3 buckets each time. An
-	//additional IAM policy is created for each new Storage Vault.
-	//This is preferable for platforms that have a lower level of IAM compatibility.
-	@JsonProperty("MasterBucket")
-	public String MasterBucket = "";
-
+public class ImpossibleCloudIAMTemplateSettings {
 	@JsonProperty("AccessKey")
 	public String AccessKey = "";
 
 	@JsonProperty("SecretKey")
 	public String SecretKey = "";
+
+	//Optional. The region for both IAM communication and for provisioning new buckets. If blank, uses the default region
+	//for Impossible Cloud (eu-central-2).
+	@JsonProperty("Region")
+	public String Region = "";
 
 
 	// deprecated since Comet version 23.x.x
@@ -47,10 +43,10 @@ public class AmazonAWSVirtualStorageRoleSettings {
 	public boolean RemoveDeleted;
 
 
-	public AmazonAWSVirtualStorageRoleSettings(){ }
+	public ImpossibleCloudIAMTemplateSettings(){ }
 
 	/**
-	* @return JSON representation of the AmazonAWSVirtualStorageRoleSettings
+	* @return JSON representation of the ImpossibleCloudIAMTemplateSettings
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
 	public String toJson() throws JsonProcessingException {
@@ -58,12 +54,12 @@ public class AmazonAWSVirtualStorageRoleSettings {
 	}
 
 	/**
-	* @param jsStr JSON representation of a AmazonAWSVirtualStorageRoleSettings
-	* @return The deserialized AmazonAWSVirtualStorageRoleSettings
+	* @param jsStr JSON representation of a ImpossibleCloudIAMTemplateSettings
+	* @return The deserialized ImpossibleCloudIAMTemplateSettings
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
-	static public AmazonAWSVirtualStorageRoleSettings fromJson(String jsStr) throws JsonProcessingException {
-		return CometAPI.getObjectMapper().readValue(jsStr,AmazonAWSVirtualStorageRoleSettings.class);
+	static public ImpossibleCloudIAMTemplateSettings fromJson(String jsStr) throws JsonProcessingException {
+		return CometAPI.getObjectMapper().readValue(jsStr,ImpossibleCloudIAMTemplateSettings.class);
 	}
 
 	/**

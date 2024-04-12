@@ -168,6 +168,9 @@ public class DestinationLocation {
 	@JsonProperty("Storj")
 	public StorjDestinationLocation Storj;
 
+	@JsonProperty("SMB")
+	public SMBDestinationLocation SMB;
+
 	//A list of underlying destinations, that will be combined and presented as one.
 	@JsonProperty("SpanTargets")
 	public ArrayList<DestinationLocation> SpanTargets;

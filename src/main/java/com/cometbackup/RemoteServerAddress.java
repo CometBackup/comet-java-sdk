@@ -17,12 +17,15 @@ public class RemoteServerAddress {
 	@JsonProperty("Description")
 	public String Description = "";
 
+	//For use with Comet Server (Storage Role / Auth Role)
 	@JsonProperty("RemoteAddress")
 	public String RemoteAddress = "";
 
+	//For use with Comet Server (Storage Role / Auth Role)
 	@JsonProperty("Username")
 	public String Username = "";
 
+	//For use with Comet Server (Storage Role / Auth Role)
 	@JsonProperty("Password")
 	public String Password = "";
 
@@ -32,24 +35,37 @@ public class RemoteServerAddress {
 	@JsonProperty("OIDC")
 	public OidcConfig OIDC;
 
+	//Backblaze B2 (Storage Template / Constellation)
 	@JsonProperty("B2")
 	public B2VirtualStorageRoleSettings B2;
 
+	//Wasabi, or Comet Storage powered by Wasabi (Storage Template / Constellation)
 	@JsonProperty("Wasabi")
 	public WasabiVirtualStorageRoleSettings Wasabi;
 
+	//Custom Remote Bucket HTTP protocol (Storage Template)
 	@JsonProperty("Custom")
 	public CustomRemoteBucketSettings Custom;
 
+	//IDrive e2, or Custom IAM-compatible (Storage Template / Constellation)
 	@JsonProperty("S3")
 	public S3GenericVirtualStorageRole S3;
 
-	//Amazon AWS - Virtual Storage Role
+	//Amazon AWS (Storage Template / Constellation)
 	@JsonProperty("AWS")
 	public AmazonAWSVirtualStorageRoleSettings AWS;
 
+	//Storj (Storage Template / Constellation)
 	@JsonProperty("Storj")
 	public StorjVirtualStorageRoleSetting Storj;
+
+	//Impossible Cloud Partner API (Storage Template / Constellation)
+	@JsonProperty("ImpPartner")
+	public ImpossibleCloudPartnerTemplateSettings ImpPartner;
+
+	//Impossible Cloud IAM API (Storage Template / Constellation)
+	@JsonProperty("ImpUser")
+	public ImpossibleCloudIAMTemplateSettings ImpUser;
 
 
 	public RemoteServerAddress(){ }

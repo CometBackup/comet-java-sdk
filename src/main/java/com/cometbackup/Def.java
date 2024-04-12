@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "23.12.3";
-	public final int APPLICATION_VERSION_MAJOR = 23;
-	public final int APPLICATION_VERSION_MINOR = 12;
-	public final int APPLICATION_VERSION_REVISION = 3;
+	public final String APPLICATION_VERSION = "24.3.5";
+	public final int APPLICATION_VERSION_MAJOR = 24;
+	public final int APPLICATION_VERSION_MINOR = 3;
+	public final int APPLICATION_VERSION_REVISION = 5;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -174,6 +174,11 @@ public class Def {
 	*/
 	public final long DESTINATIONTYPE_STORJ = 1009;
 	public final long DESTINATIONTYPE_WEBDAV = 1010;
+
+	/**
+	* SMB Path
+	*/
+	public final long DESTINATIONTYPE_SMB = 1011;
 
 	/**
 	* When defining a schedule via policy, use this option to dynamically select the Storage Vault that was created most
@@ -594,6 +599,11 @@ public class Def {
 	* MSSQLRestoreOpt
 	*/
 	public final String MSSQL_RESTORE_NORECOVERY = "NO_RECOVERY";
+
+	/**
+	* Enable Object Lock capability if the corresponding Days field is greater than zero.
+	* New code should explicitly use OBJECT_LOCK_ON / OBJECT_LOCK_OFF instead.
+	*/
 	public final short OBJECT_LOCK_LEGACY = 0;
 	public final short OBJECT_LOCK_ON = 1;
 	public final short OBJECT_LOCK_OFF = 2;
@@ -676,59 +686,69 @@ public class Def {
 	public final String RELEASE_CODENAME = "Voyager";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: Comet Server
 	*/
 	public final String REMOTESERVER_COMET = "comet";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: Comet Storage powered by Wasabi
 	*/
 	public final String REMOTESERVER_COMET_STORAGE = "cometstorage";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: LDAP (Lightweight Directory Access Protocol)
 	*/
 	public final String REMOTESERVER_LDAP = "ldap";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: OpenID Connect
 	*/
 	public final String REMOTESERVER_OIDC = "oidc";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: Backblaze B2
 	*/
 	public final String REMOTESERVER_B2 = "b2";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: Wasabi Cloud Storage
 	*/
 	public final String REMOTESERVER_WASABI = "wasabi";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: Custom Remote Bucket HTTP protocol
 	*/
 	public final String REMOTESERVER_CUSTOM = "custom";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: Custom IAM-Compatible
 	*/
 	public final String REMOTESERVER_S3_GENERIC = "s3";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: Amazon Web Services
 	*/
 	public final String REMOTESERVER_AWS = "aws";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: Storj DCS
 	*/
 	public final String REMOTESERVER_STORJ = "storj";
 
 	/**
-	* RemoteServerType
+	* RemoteServerType: IDrive e2
 	*/
 	public final String REMOTESERVER_IDRIVEE2 = "idrivee2";
+
+	/**
+	* RemoteServerType: Impossible Cloud (Partner API)
+	*/
+	public final String REMOTESERVER_IMPOSSIBLECLOUD_PARTNER = "impossiblecloud-partner";
+
+	/**
+	* RemoteServerType: Impossible Cloud
+	*/
+	public final String REMOTESERVER_IMPOSSIBLECLOUD_IAM = "impossiblecloud-iam";
 
 	/**
 	* ReplicatorState
@@ -1188,6 +1208,11 @@ public class Def {
 	/**
 	* Severity
 	*/
+	public final String SEVERITY_DEBUG = "D";
+
+	/**
+	* Severity
+	*/
 	public final String SEVERITY_INFO = "I";
 
 	/**
@@ -1451,6 +1476,16 @@ public class Def {
 	* StoredObjectType
 	*/
 	public final String STOREDOBJECTTYPE_WINEFS = "winefs";
+
+	/**
+	* StoredObjectType
+	*/
+	public final String STOREDOBJECTTYPE_WINDOWSFILE = "winfile";
+
+	/**
+	* StoredObjectType
+	*/
+	public final String STOREDOBJECTTYPE_WINDOWSDIR = "windir";
 
 	/**
 	* StoredObjectType
