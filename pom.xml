@@ -25,6 +25,12 @@
       <organization>Comet</organization>
       <organizationUrl>https://github.com/peter-cometbackup</organizationUrl>
     </developer>
+    <developer>
+      <name>Comet Backup</name>
+      <email>suppliers+sonatype@cometbackup.com</email>
+      <organization>Comet</organization>
+      <organizationUrl>https://github.com/CometBackup</organizationUrl>
+    </developer>
   </developers>
 
   <scm>
