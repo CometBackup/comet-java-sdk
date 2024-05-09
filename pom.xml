@@ -117,6 +117,13 @@
             <goals>
               <goal>sign</goal>
             </goals>
+            <configuration>
+              <!-- This is necessary for gpg to accept a passphrase from the environment -->
+              <gpgArguments>
+                <arg>--pinentry-mode</arg>
+                <arg>loopback</arg>
+              </gpgArguments>
+            </configuration>
           </execution>
         </executions>
       </plugin>
