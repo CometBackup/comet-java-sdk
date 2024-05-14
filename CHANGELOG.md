@@ -4,6 +4,7 @@
 
 - Based on Comet 24.3.7
 - Added support for configuring concurrency in Microsoft 365 Protected Items
+- Normalise formatting
 
 ## 2024-05-02 v0.4.0
 
