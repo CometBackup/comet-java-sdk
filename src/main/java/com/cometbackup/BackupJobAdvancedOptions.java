@@ -39,6 +39,11 @@ public class BackupJobAdvancedOptions {
 	@JsonProperty("AutoRetentionLevel")
 	public long AutoRetentionLevel;
 
+	//Desired concurrency count. If Zero, uses mode defaults
+	@JsonProperty("ConcurrencyCount")
+	public long ConcurrencyCount;
+
+	//Log verbosity level. LOG_DEBUG has the greatest verbosity
 	@JsonProperty("LogLevel")
 	public String LogLevel = "";
 

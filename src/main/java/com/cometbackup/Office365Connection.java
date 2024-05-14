@@ -11,8 +11,8 @@ import java.util.*;
 * Office365Connection
 */
 public class Office365Connection {
-	@JsonProperty("FeatureFlag")
-	public String FeatureFlag = "";
+	@JsonProperty("Concurrency")
+	public int Concurrency;
 
 	@JsonProperty("Credential")
 	public Office365Credential Credential;
@@ -20,14 +20,20 @@ public class Office365Connection {
 	@JsonProperty("CustomSetting")
 	public Office365CustomSetting CustomSetting;
 
+	@JsonProperty("CustomSettingV2")
+	public Office365CustomSettingV2 CustomSettingV2;
+
+	@JsonProperty("FeatureFlag")
+	public String FeatureFlag = "";
+
+	@JsonProperty("LogLevel")
+	public String LogLevel = "";
+
 	@JsonProperty("MailboxUniqueMembers")
 	public ArrayList<String> MailboxUniqueMembers;
 
 	@JsonProperty("SiteUniqueMembers")
 	public ArrayList<String> SiteUniqueMembers;
-
-	@JsonProperty("CustomSettingV2")
-	public Office365CustomSettingV2 CustomSettingV2;
 
 
 	public Office365Connection(){ }
