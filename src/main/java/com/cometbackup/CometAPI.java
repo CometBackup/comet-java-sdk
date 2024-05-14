@@ -150,10 +150,10 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* @return an AdminAccountPropertiesResponse
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public AdminAccountPropertiesResponse AdminAccountProperties() throws InterruptedException, ExecutionException{
+	public AdminAccountPropertiesResponse AdminAccountProperties() throws ExecutionException, InterruptedException{
 		return AdminAccountPropertiesAsync().get();
 	}
 
@@ -255,10 +255,10 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* @param SelfAddress (Optional) External URL of this server
 	* @return a SessionKeyRegeneratedResponse
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public SessionKeyRegeneratedResponse AdminAccountSessionStart(String SelfAddress) throws InterruptedException, ExecutionException{
+	public SessionKeyRegeneratedResponse AdminAccountSessionStart(String SelfAddress) throws ExecutionException, InterruptedException{
 		return AdminAccountSessionStartAsync(SelfAddress).get();
 	}
 
@@ -292,8 +292,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* @param TargetUser Target account username
 	* @return a SessionKeyRegeneratedResponse
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public SessionKeyRegeneratedResponse AdminAccountSessionStartAsUser(String TargetUser) throws ExecutionException, InterruptedException{
 		return AdminAccountSessionStartAsUserAsync(TargetUser).get();
@@ -377,7 +377,7 @@ public class CometAPI {
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminAccountSetProperties(AdminSecurityOptions Security) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminAccountSetProperties(AdminSecurityOptions Security) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminAccountSetPropertiesAsync(Security).get();
 	}
 
@@ -475,7 +475,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminAccountU2fSubmitChallengeResponse(String U2FChallengeID, String U2FClientData, String U2FRegistrationData, String U2FVersion, String Description) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminAccountU2fSubmitChallengeResponse(String U2FChallengeID, String U2FClientData, String U2FRegistrationData, String U2FVersion, String Description) throws ExecutionException, InterruptedException{
 		return AdminAccountU2fSubmitChallengeResponseAsync(U2FChallengeID, U2FClientData, U2FRegistrationData, U2FVersion, Description).get();
 	}
 
@@ -592,7 +592,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminAccountWebauthnSubmitChallengeResponse(String SelfAddress, String ChallengeID, String Credential) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminAccountWebauthnSubmitChallengeResponse(String SelfAddress, String ChallengeID, String Credential) throws ExecutionException, InterruptedException{
 		return AdminAccountWebauthnSubmitChallengeResponseAsync(SelfAddress, ChallengeID, Credential).get();
 	}
 
@@ -651,7 +651,7 @@ public class CometAPI {
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminAddUser(String TargetUser, String TargetPassword, Integer StoreRecoveryCode, Integer RequirePasswordChange, String TargetOrganization) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminAddUser(String TargetUser, String TargetPassword, Integer StoreRecoveryCode, Integer RequirePasswordChange, String TargetOrganization) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminAddUserAsync(TargetUser, TargetPassword, StoreRecoveryCode, RequirePasswordChange, TargetOrganization).get();
 	}
 
@@ -706,7 +706,7 @@ public class CometAPI {
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminAddUserFromProfile(String TargetUser, UserProfileConfig ProfileData, String TargetOrganization) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminAddUserFromProfile(String TargetUser, UserProfileConfig ProfileData, String TargetOrganization) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminAddUserFromProfileAsync(TargetUser, ProfileData, TargetOrganization).get();
 	}
 
@@ -915,11 +915,11 @@ public class CometAPI {
 	* @param Platform The selected download platform, from the AdminBrandingAvailablePlatforms API
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts
 	* @return a byte[]
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public byte[] AdminBrandingGenerateClientByPlatform(Integer Platform, String SelfAddress) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public byte[] AdminBrandingGenerateClientByPlatform(Integer Platform, String SelfAddress) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminBrandingGenerateClientByPlatformAsync(Platform, SelfAddress).get();
 	}
 
@@ -962,7 +962,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public byte[] AdminBrandingGenerateClientLinuxDeb(String SelfAddress) throws InterruptedException, ExecutionException{
+	public byte[] AdminBrandingGenerateClientLinuxDeb(String SelfAddress) throws ExecutionException, InterruptedException{
 		return AdminBrandingGenerateClientLinuxDebAsync(SelfAddress).get();
 	}
 
@@ -1088,10 +1088,10 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts
 	* @return a byte[]
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public byte[] AdminBrandingGenerateClientMacosX8664(String SelfAddress) throws InterruptedException, ExecutionException{
+	public byte[] AdminBrandingGenerateClientMacosX8664(String SelfAddress) throws ExecutionException, InterruptedException{
 		return AdminBrandingGenerateClientMacosX8664Async(SelfAddress).get();
 	}
 
@@ -1131,8 +1131,8 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts
 	* @return a byte[]
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public byte[] AdminBrandingGenerateClientSpkDsm6(String SelfAddress) throws ExecutionException, InterruptedException{
 		return AdminBrandingGenerateClientSpkDsm6Async(SelfAddress).get();
@@ -1221,11 +1221,11 @@ public class CometAPI {
 	* @param Platform The selected download platform, from the AdminBrandingAvailablePlatforms API
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminBrandingGenerateClientTest(Integer Platform, String SelfAddress) throws JsonProcessingException, InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminBrandingGenerateClientTest(Integer Platform, String SelfAddress) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminBrandingGenerateClientTestAsync(Platform, SelfAddress).get();
 	}
 
@@ -1269,8 +1269,8 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts
 	* @return a byte[]
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public byte[] AdminBrandingGenerateClientWindowsAnycpuExe(String SelfAddress) throws ExecutionException, InterruptedException{
 		return AdminBrandingGenerateClientWindowsAnycpuExeAsync(SelfAddress).get();
@@ -1366,7 +1366,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public byte[] AdminBrandingGenerateClientWindowsX8632Exe(String SelfAddress) throws InterruptedException, ExecutionException{
+	public byte[] AdminBrandingGenerateClientWindowsX8632Exe(String SelfAddress) throws ExecutionException, InterruptedException{
 		return AdminBrandingGenerateClientWindowsX8632ExeAsync(SelfAddress).get();
 	}
 
@@ -1410,10 +1410,10 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts
 	* @return a byte[]
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public byte[] AdminBrandingGenerateClientWindowsX8632Zip(String SelfAddress) throws InterruptedException, ExecutionException{
+	public byte[] AdminBrandingGenerateClientWindowsX8632Zip(String SelfAddress) throws ExecutionException, InterruptedException{
 		return AdminBrandingGenerateClientWindowsX8632ZipAsync(SelfAddress).get();
 	}
 
@@ -1583,7 +1583,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public ConstellationCheckReport AdminConstellationLastReport() throws InterruptedException, ExecutionException{
+	public ConstellationCheckReport AdminConstellationLastReport() throws ExecutionException, InterruptedException{
 		return AdminConstellationLastReportAsync().get();
 	}
 
@@ -1728,7 +1728,7 @@ public class CometAPI {
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CountJobsResponse AdminCountJobsForCustomSearch(SearchClause Query) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CountJobsResponse AdminCountJobsForCustomSearch(SearchClause Query) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminCountJobsForCustomSearchAsync(Query).get();
 	}
 
@@ -1829,11 +1829,11 @@ public class CometAPI {
 	* @param TargetUser Selected account username
 	* @param UninstallConfig (Optional) Uninstall software configuration (&gt;= 20.3.5)
 	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public CometAPIResponseMessage AdminDeleteUser(String TargetUser, UninstallConfig UninstallConfig) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public CometAPIResponseMessage AdminDeleteUser(String TargetUser, UninstallConfig UninstallConfig) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDeleteUserAsync(TargetUser, UninstallConfig).get();
 	}
 
@@ -1957,8 +1957,8 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public CometAPIResponseMessage AdminDispatcherDeepverifyStorageVault(String TargetID, String Destination) throws ExecutionException, InterruptedException{
 		return AdminDispatcherDeepverifyStorageVaultAsync(TargetID, Destination).get();
@@ -2050,11 +2050,11 @@ public class CometAPI {
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotIDs The backup job snapshot IDs to delete
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherDeleteSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public CometAPIResponseMessage AdminDispatcherDeleteSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherDeleteSnapshotsAsync(TargetID, DestinationID, SnapshotIDs).get();
 	}
 
@@ -2230,7 +2230,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminDispatcherImportApply(String TargetID, String ImportSourceID) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminDispatcherImportApply(String TargetID, String ImportSourceID) throws ExecutionException, InterruptedException{
 		return AdminDispatcherImportApplyAsync(TargetID, ImportSourceID).get();
 	}
 
@@ -2355,9 +2355,9 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ListVirtualAccountsResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
 	public BrowseOffice365ListVirtualAccountsResponse AdminDispatcherOffice365ListVirtualAccounts(String TargetID, Office365Credential Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherOffice365ListVirtualAccountsAsync(TargetID, Credentials).get();
@@ -2399,11 +2399,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param ExtraData The destination location settings
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherPingDestination(String TargetID, DestinationLocation ExtraData) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminDispatcherPingDestination(String TargetID, DestinationLocation ExtraData) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherPingDestinationAsync(TargetID, ExtraData).get();
 	}
 
@@ -2441,8 +2441,8 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public CometAPIResponseMessage AdminDispatcherRefetchProfile(String TargetID) throws ExecutionException, InterruptedException{
 		return AdminDispatcherRefetchProfileAsync(TargetID).get();
@@ -2666,7 +2666,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public BrowseEDBResponse AdminDispatcherRequestBrowseExchangeEdb(String TargetID) throws InterruptedException, ExecutionException{
+	public BrowseEDBResponse AdminDispatcherRequestBrowseExchangeEdb(String TargetID) throws ExecutionException, InterruptedException{
 		return AdminDispatcherRequestBrowseExchangeEdbAsync(TargetID).get();
 	}
 
@@ -2702,8 +2702,8 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @return a BrowseHVResponse
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public BrowseHVResponse AdminDispatcherRequestBrowseHyperv(String TargetID) throws ExecutionException, InterruptedException{
 		return AdminDispatcherRequestBrowseHypervAsync(TargetID).get();
@@ -2747,11 +2747,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The Mongo database authentication settings
 	* @return a BrowseSQLServerResponse
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public BrowseSQLServerResponse AdminDispatcherRequestBrowseMongodb(String TargetID, MongoDBConnection Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseSQLServerResponse AdminDispatcherRequestBrowseMongodb(String TargetID, MongoDBConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRequestBrowseMongodbAsync(TargetID, Credentials).get();
 	}
 
@@ -2793,9 +2793,9 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The MSSQL database authentication settings
 	* @return a BrowseSQLServerResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
 	public BrowseSQLServerResponse AdminDispatcherRequestBrowseMssql(String TargetID, MSSQLConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRequestBrowseMssqlAsync(TargetID, Credentials).get();
@@ -2839,11 +2839,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The MySQL database authentication settings
 	* @return a BrowseSQLServerResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseSQLServerResponse AdminDispatcherRequestBrowseMysql(String TargetID, MySQLConnection Credentials) throws JsonProcessingException, InterruptedException, ExecutionException{
+	public BrowseSQLServerResponse AdminDispatcherRequestBrowseMysql(String TargetID, MySQLConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRequestBrowseMysqlAsync(TargetID, Credentials).get();
 	}
 
@@ -2885,11 +2885,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @return a BrowseVMwareResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseVMwareResponse AdminDispatcherRequestBrowseVmware(String TargetID, VMwareConnection Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseVMwareResponse AdminDispatcherRequestBrowseVmware(String TargetID, VMwareConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRequestBrowseVmwareAsync(TargetID, Credentials).get();
 	}
 
@@ -2930,7 +2930,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public BrowseVSSResponse AdminDispatcherRequestBrowseVssAaw(String TargetID) throws InterruptedException, ExecutionException{
+	public BrowseVSSResponse AdminDispatcherRequestBrowseVssAaw(String TargetID) throws ExecutionException, InterruptedException{
 		return AdminDispatcherRequestBrowseVssAawAsync(TargetID).get();
 	}
 
@@ -3055,11 +3055,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ObjectsResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseOffice365ObjectsResponse AdminDispatcherRequestOffice365Accounts(String TargetID, Office365Credential Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseOffice365ObjectsResponse AdminDispatcherRequestOffice365Accounts(String TargetID, Office365Credential Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRequestOffice365AccountsAsync(TargetID, Credentials).get();
 	}
 
@@ -3101,11 +3101,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ObjectsResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseOffice365ObjectsResponse AdminDispatcherRequestOffice365Sites(String TargetID, Office365Credential Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseOffice365ObjectsResponse AdminDispatcherRequestOffice365Sites(String TargetID, Office365Credential Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRequestOffice365SitesAsync(TargetID, Credentials).get();
 	}
 
@@ -3166,11 +3166,11 @@ public class CometAPI {
 	* restore, it should be the disk image&#39;s subtree ID.
 	* @param Options (Optional) Request a list of stored objects in vmdk file
 	* @return a DispatcherStoredObjectsResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public DispatcherStoredObjectsResponse AdminDispatcherRequestStoredObjects(String TargetID, String Destination, String SnapshotID, String TreeID, VMDKSnapshotViewOptions Options) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public DispatcherStoredObjectsResponse AdminDispatcherRequestStoredObjects(String TargetID, String Destination, String SnapshotID, String TreeID, VMDKSnapshotViewOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRequestStoredObjectsAsync(TargetID, Destination, SnapshotID, TreeID, Options).get();
 	}
 
@@ -3298,10 +3298,10 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param BackupRule The schedule GUID
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminDispatcherRunBackup(String TargetID, String BackupRule) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminDispatcherRunBackup(String TargetID, String BackupRule) throws ExecutionException, InterruptedException{
 		return AdminDispatcherRunBackupAsync(TargetID, BackupRule).get();
 	}
 
@@ -3347,11 +3347,11 @@ public class CometAPI {
 	* @param Destination The Storage Vault GUID
 	* @param Options (Optional) Extra job parameters (&gt;= 19.3.6)
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherRunBackupCustom(String TargetID, String Source, String Destination, BackupJobAdvancedOptions Options) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public CometAPIResponseMessage AdminDispatcherRunBackupCustom(String TargetID, String Source, String Destination, BackupJobAdvancedOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRunBackupCustomAsync(TargetID, Source, Destination, Options).get();
 	}
 
@@ -3407,11 +3407,11 @@ public class CometAPI {
 	* selected Protected Item + Storage Vault pair
 	* @param Paths (Optional) If present, restore these paths only. Otherwise, restore all data (&gt;= 19.3.0)
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherRunRestore(String TargetID, String Path, String Source, String Destination, String Snapshot, String[] Paths) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminDispatcherRunRestore(String TargetID, String Path, String Source, String Destination, String Snapshot, String[] Paths) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRunRestoreAsync(TargetID, Path, Source, Destination, Snapshot, Paths).get();
 	}
 
@@ -3482,11 +3482,11 @@ public class CometAPI {
 	* @param KnownDirCount (Optional) The number of directories to restore, if known. Supplying this means we don&#39;t
 	* need to walk the entire tree just to find the number of directories and will speed up the restoration process.
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherRunRestoreCustom(String TargetID, String Source, String Destination, RestoreJobAdvancedOptions Options, String Snapshot, String[] Paths, Integer KnownFileCount, Integer KnownByteCount, Integer KnownDirCount) throws JsonProcessingException, InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminDispatcherRunRestoreCustom(String TargetID, String Source, String Destination, RestoreJobAdvancedOptions Options, String Snapshot, String[] Paths, Integer KnownFileCount, Integer KnownByteCount, Integer KnownDirCount) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRunRestoreCustomAsync(TargetID, Source, Destination, Options, Snapshot, Paths, KnownFileCount, KnownByteCount, KnownDirCount).get();
 	}
 
@@ -3532,11 +3532,11 @@ public class CometAPI {
 	* @param SnapshotIDs Snapshots to search
 	* @param Filter The search filter
 	* @return a SearchSnapshotsResponse
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public SearchSnapshotsResponse AdminDispatcherSearchSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs, SearchClause Filter) throws JsonProcessingException, InterruptedException, ExecutionException{
+	public SearchSnapshotsResponse AdminDispatcherSearchSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs, SearchClause Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherSearchSnapshotsAsync(TargetID, DestinationID, SnapshotIDs, Filter).get();
 	}
 
@@ -3576,11 +3576,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param RemoveConfigFile Determine if the config.dat file will be deleted at the same time
 	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public CometAPIResponseMessage AdminDispatcherUninstallSoftware(String TargetID, Boolean RemoveConfigFile) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public CometAPIResponseMessage AdminDispatcherUninstallSoftware(String TargetID, Boolean RemoveConfigFile) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherUninstallSoftwareAsync(TargetID, RemoveConfigFile).get();
 	}
 
@@ -3677,11 +3677,11 @@ public class CometAPI {
 	* @param NewURL The new external URL of this server
 	* @param Force (Optional) No checks will be done using previous URL
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherUpdateLoginUrl(String TargetID, String NewURL, Boolean Force) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminDispatcherUpdateLoginUrl(String TargetID, String NewURL, Boolean Force) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherUpdateLoginUrlAsync(TargetID, NewURL, Force).get();
 	}
 
@@ -3722,8 +3722,8 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts (&gt;= 19.3.11)
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public CometAPIResponseMessage AdminDispatcherUpdateSoftware(String TargetID, String SelfAddress) throws ExecutionException, InterruptedException{
 		return AdminDispatcherUpdateSoftwareAsync(TargetID, SelfAddress).get();
@@ -3759,10 +3759,10 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* @param SourceID (No description available)
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminExternalAuthSourcesDelete(String SourceID) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminExternalAuthSourcesDelete(String SourceID) throws ExecutionException, InterruptedException{
 		return AdminExternalAuthSourcesDeleteAsync(SourceID).get();
 	}
 
@@ -3833,11 +3833,11 @@ public class CometAPI {
 	* @param Source (No description available)
 	* @param SourceID (Optional) (No description available)
 	* @return an ExternalAuthenticationSourceResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public ExternalAuthenticationSourceResponse AdminExternalAuthSourcesNew(ExternalAuthenticationSource Source, String SourceID) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public ExternalAuthenticationSourceResponse AdminExternalAuthSourcesNew(ExternalAuthenticationSource Source, String SourceID) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminExternalAuthSourcesNewAsync(Source, SourceID).get();
 	}
 
@@ -3876,9 +3876,9 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* @param Sources (No description available)
 	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
 	public CometAPIResponseMessage AdminExternalAuthSourcesSet(HashMap<String,ExternalAuthenticationSource> Sources) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminExternalAuthSourcesSetAsync(Sources).get();
@@ -4000,10 +4000,10 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param JobID Selected job ID
 	* @return a BackupJobDetail
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public BackupJobDetail AdminGetJobProperties(String JobID) throws InterruptedException, ExecutionException{
+	public BackupJobDetail AdminGetJobProperties(String JobID) throws ExecutionException, InterruptedException{
 		return AdminGetJobPropertiesAsync(JobID).get();
 	}
 
@@ -4039,7 +4039,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public BackupJobDetail[] AdminGetJobsAll() throws InterruptedException, ExecutionException{
+	public BackupJobDetail[] AdminGetJobsAll() throws ExecutionException, InterruptedException{
 		return AdminGetJobsAllAsync().get();
 	}
 
@@ -4078,11 +4078,11 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param Query (No description available)
 	* @return a BackupJobDetail[]
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public BackupJobDetail[] AdminGetJobsForCustomSearch(SearchClause Query) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BackupJobDetail[] AdminGetJobsForCustomSearch(SearchClause Query) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminGetJobsForCustomSearchAsync(Query).get();
 	}
 
@@ -4148,7 +4148,7 @@ public class CometAPI {
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BackupJobDetail[] AdminGetJobsForDateRange(Integer Start, Integer End) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BackupJobDetail[] AdminGetJobsForDateRange(Integer Start, Integer End) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminGetJobsForDateRangeAsync(Start, End).get();
 	}
 
@@ -4222,8 +4222,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
 	* @return a BackupJobDetail[]
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public BackupJobDetail[] AdminGetJobsRecent() throws ExecutionException, InterruptedException{
 		return AdminGetJobsRecentAsync().get();
@@ -4581,8 +4581,8 @@ public class CometAPI {
 	* @param TargetUser Username
 	* @param JobID Job ID
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public CometAPIResponseMessage AdminJobCancel(String TargetUser, String JobID) throws ExecutionException, InterruptedException{
 		return AdminJobCancelAsync(TargetUser, JobID).get();
@@ -4730,9 +4730,9 @@ public class CometAPI {
 	* Access to this API may be prevented on a per-administrator basis.
 	* @param BrandingConfig Updated configuration content
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
 	public CometAPIResponseMessage AdminMetaBrandingConfigSet(BrandingOptions BrandingConfig) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaBrandingConfigSetAsync(BrandingConfig).get();
@@ -4805,11 +4805,11 @@ public class CometAPI {
 	* Access to this API may be prevented on a per-administrator basis.
 	* @param SoftwareBuildRoleConfig Updated configuration content
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaBuildConfigSet(SoftwareBuildRoleOptions SoftwareBuildRoleConfig) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminMetaBuildConfigSet(SoftwareBuildRoleOptions SoftwareBuildRoleConfig) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaBuildConfigSetAsync(SoftwareBuildRoleConfig).get();
 	}
 
@@ -4843,7 +4843,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public ConstellationRoleOptions AdminMetaConstellationConfigGet() throws InterruptedException, ExecutionException{
+	public ConstellationRoleOptions AdminMetaConstellationConfigGet() throws ExecutionException, InterruptedException{
 		return AdminMetaConstellationConfigGetAsync().get();
 	}
 
@@ -4880,11 +4880,11 @@ public class CometAPI {
 	* This API requires the Constellation Role to be enabled.
 	* @param ConstellationRoleOptions Constellation role options to set
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaConstellationConfigSet(ConstellationRoleOptions ConstellationRoleOptions) throws JsonProcessingException, InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminMetaConstellationConfigSet(ConstellationRoleOptions ConstellationRoleOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaConstellationConfigSetAsync(ConstellationRoleOptions).get();
 	}
 
@@ -4955,11 +4955,11 @@ public class CometAPI {
 	* Access to this API may be prevented on a per-administrator basis.
 	* @param EmailOptions The replacement email reporting options.
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaEmailOptionsSet(EmailOptions EmailOptions) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminMetaEmailOptionsSet(EmailOptions EmailOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaEmailOptionsSetAsync(EmailOptions).get();
 	}
 
@@ -5064,7 +5064,7 @@ public class CometAPI {
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaPsaConfigListSet(PSAConfig[] PSAConfigList) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminMetaPsaConfigListSet(PSAConfig[] PSAConfigList) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaPsaConfigListSetAsync(PSAConfigList).get();
 	}
 
@@ -5187,11 +5187,11 @@ public class CometAPI {
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param Log A log day, selected from the options returned by the Get Log Files API
 	* @return a byte[]
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public byte[] AdminMetaReadLogs(Integer Log) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public byte[] AdminMetaReadLogs(Integer Log) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaReadLogsAsync(Log).get();
 	}
 
@@ -5236,11 +5236,11 @@ public class CometAPI {
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param Logs An array of log days, selected from the options returned by the Get Log Files API
 	* @return a byte[]
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public byte[] AdminMetaReadSelectLogs(int[] Logs) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public byte[] AdminMetaReadSelectLogs(int[] Logs) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaReadSelectLogsAsync(Logs).get();
 	}
 
@@ -5311,11 +5311,11 @@ public class CometAPI {
 	* Access to this API may be prevented on a per-administrator basis.
 	* @param RemoteStorageOptions Updated configuration content
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaRemoteStorageVaultSet(RemoteStorageOption[] RemoteStorageOptions) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public CometAPIResponseMessage AdminMetaRemoteStorageVaultSet(RemoteStorageOption[] RemoteStorageOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaRemoteStorageVaultSetAsync(RemoteStorageOptions).get();
 	}
 
@@ -5352,11 +5352,11 @@ public class CometAPI {
 	* Access to this API may be prevented on a per-administrator basis.
 	* @param TemplateOptions Storage Template Vault Options
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaRemoteStorageVaultTest(RemoteStorageOption TemplateOptions) throws JsonProcessingException, InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminMetaRemoteStorageVaultTest(RemoteStorageOption TemplateOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaRemoteStorageVaultTestAsync(TemplateOptions).get();
 	}
 
@@ -5515,11 +5515,11 @@ public class CometAPI {
 	* @param EmailOptions Updated configuration content
 	* @param Recipient Target email address to send test email
 	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public CometAPIResponseMessage AdminMetaSendTestEmail(EmailOptions EmailOptions, String Recipient) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminMetaSendTestEmail(EmailOptions EmailOptions, String Recipient) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaSendTestEmailAsync(EmailOptions, Recipient).get();
 	}
 
@@ -5563,11 +5563,11 @@ public class CometAPI {
 	* @param TargetOrganization (Optional) If present, Testing email with a target organization. Only allowed for top-level
 	* admins. (&gt;= 24.3.0)
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaSendTestReport(EmailReportingOption EmailReportingOption, String TargetOrganization) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminMetaSendTestReport(EmailReportingOption EmailReportingOption, String TargetOrganization) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaSendTestReportAsync(EmailReportingOption, TargetOrganization).get();
 	}
 
@@ -5600,8 +5600,8 @@ public class CometAPI {
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @return a ServerConfigOptions
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public ServerConfigOptions AdminMetaServerConfigGet() throws ExecutionException, InterruptedException{
 		return AdminMetaServerConfigGetAsync().get();
@@ -5688,11 +5688,11 @@ public class CometAPI {
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param Config Updated configuration content
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaServerConfigSet(ServerConfigOptions Config) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminMetaServerConfigSet(ServerConfigOptions Config) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaServerConfigSetAsync(Config).get();
 	}
 
@@ -5806,11 +5806,11 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* @param Simple Remove redundant statistics
 	* @return a HashMap&lt;Long,StatResult&gt;
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public HashMap<Long,StatResult> AdminMetaStats(Boolean Simple) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public HashMap<Long,StatResult> AdminMetaStats(Boolean Simple) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaStatsAsync(Simple).get();
 	}
 
@@ -5876,10 +5876,10 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* @return a HashMap&lt;String,WebhookOption&gt;
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public HashMap<String,WebhookOption> AdminMetaWebhookOptionsGet() throws InterruptedException, ExecutionException{
+	public HashMap<String,WebhookOption> AdminMetaWebhookOptionsGet() throws ExecutionException, InterruptedException{
 		return AdminMetaWebhookOptionsGetAsync().get();
 	}
 
@@ -5918,11 +5918,11 @@ public class CometAPI {
 	* Access to this API may be prevented on a per-administrator basis.
 	* @param WebhookOptions The replacement webhook target options.
 	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public CometAPIResponseMessage AdminMetaWebhookOptionsSet(HashMap<String,WebhookOption> WebhookOptions) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminMetaWebhookOptionsSet(HashMap<String,WebhookOption> WebhookOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminMetaWebhookOptionsSetAsync(WebhookOptions).get();
 	}
 
@@ -6032,10 +6032,10 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param NewsContent Content of news item
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminNewsSubmit(String NewsContent) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminNewsSubmit(String NewsContent) throws ExecutionException, InterruptedException{
 		return AdminNewsSubmitAsync(NewsContent).get();
 	}
 
@@ -6081,11 +6081,11 @@ public class CometAPI {
 	* @param OrganizationID (Optional) (No description available)
 	* @param UninstallConfig (Optional) Uninstall software configuration
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminOrganizationDelete(String OrganizationID, UninstallConfig UninstallConfig) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminOrganizationDelete(String OrganizationID, UninstallConfig UninstallConfig) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminOrganizationDeleteAsync(OrganizationID, UninstallConfig).get();
 	}
 
@@ -6122,11 +6122,11 @@ public class CometAPI {
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param Options The export config options
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminOrganizationExport(SelfBackupExportOptions Options) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminOrganizationExport(SelfBackupExportOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminOrganizationExportAsync(Options).get();
 	}
 
@@ -6205,11 +6205,11 @@ public class CometAPI {
 	* @param OrganizationID (Optional) (No description available)
 	* @param Organization (Optional) (No description available)
 	* @return an OrganizationResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public OrganizationResponse AdminOrganizationSet(String OrganizationID, Organization Organization) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public OrganizationResponse AdminOrganizationSet(String OrganizationID, Organization Organization) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminOrganizationSetAsync(OrganizationID, Organization).get();
 	}
 
@@ -6245,8 +6245,8 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param PolicyID The policy ID to update or create
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public CometAPIResponseMessage AdminPoliciesDelete(String PolicyID) throws ExecutionException, InterruptedException{
 		return AdminPoliciesDeleteAsync(PolicyID).get();
@@ -6332,8 +6332,8 @@ public class CometAPI {
 	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization. (&gt;= 22.3.7)
 	* @return a HashMap&lt;String,String&gt;
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public HashMap<String,String> AdminPoliciesList(String TargetOrganization) throws ExecutionException, InterruptedException{
 		return AdminPoliciesListAsync(TargetOrganization).get();
@@ -6418,11 +6418,11 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param Policy The policy data
 	* @return a CreateGroupPolicyResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CreateGroupPolicyResponse AdminPoliciesNew(GroupPolicy Policy) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CreateGroupPolicyResponse AdminPoliciesNew(GroupPolicy Policy) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminPoliciesNewAsync(Policy).get();
 	}
 
@@ -6473,7 +6473,7 @@ public class CometAPI {
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminPoliciesSet(String PolicyID, GroupPolicy Policy, String CheckPolicyHash) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminPoliciesSet(String PolicyID, GroupPolicy Policy, String CheckPolicyHash) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminPoliciesSetAsync(PolicyID, Policy, CheckPolicyHash).get();
 	}
 
@@ -6516,11 +6516,11 @@ public class CometAPI {
 	* @param EmailReportConfig Email report configuration to preview
 	* @param EmailAddress (Optional) Email address that may be included in the report body (&gt;= 20.3.3)
 	* @return an EmailReportGeneratedPreview
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public EmailReportGeneratedPreview AdminPreviewUserEmailReport(String TargetUser, EmailReportConfig EmailReportConfig, String EmailAddress) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public EmailReportGeneratedPreview AdminPreviewUserEmailReport(String TargetUser, EmailReportConfig EmailReportConfig, String EmailAddress) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminPreviewUserEmailReportAsync(TargetUser, EmailReportConfig, EmailAddress).get();
 	}
 
@@ -6776,7 +6776,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminSelfBackupStart() throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage AdminSelfBackupStart() throws ExecutionException, InterruptedException{
 		return AdminSelfBackupStartAsync().get();
 	}
 
@@ -6816,11 +6816,11 @@ public class CometAPI {
 	* @param TargetUser Selected account username
 	* @param ProfileData Modified user profile
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminSetUserProfile(String TargetUser, UserProfileConfig ProfileData) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminSetUserProfile(String TargetUser, UserProfileConfig ProfileData) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminSetUserProfileAsync(TargetUser, ProfileData).get();
 	}
 
@@ -6871,11 +6871,11 @@ public class CometAPI {
 	* @param ProfileData Modified user profile
 	* @param RequireHash Previous hash parameter
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminSetUserProfileHash(String TargetUser, UserProfileConfig ProfileData, String RequireHash) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage AdminSetUserProfileHash(String TargetUser, UserProfileConfig ProfileData, String RequireHash) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminSetUserProfileHashAsync(TargetUser, ProfileData, RequireHash).get();
 	}
 
@@ -6923,11 +6923,11 @@ public class CometAPI {
 	* timestamp. Timestamps in the future may produce a result clamped down to the Comet Server&#39;s current time. If not
 	* present, the size measurement may be arbitrarily stale.
 	* @return a BucketProperties
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BucketProperties AdminStorageBucketProperties(String BucketID, Integer AfterTimestamp) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BucketProperties AdminStorageBucketProperties(String BucketID, Integer AfterTimestamp) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminStorageBucketPropertiesAsync(BucketID, AfterTimestamp).get();
 	}
 
@@ -7043,8 +7043,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
 	* @return a HashMap&lt;String,BucketProperties&gt;
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public HashMap<String,BucketProperties> AdminStorageListBuckets() throws ExecutionException, InterruptedException{
 		return AdminStorageListBucketsAsync().get();
@@ -7085,9 +7085,9 @@ public class CometAPI {
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param ExtraData The destination location settings
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
 	public CometAPIResponseMessage AdminStoragePingDestination(DestinationLocation ExtraData) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminStoragePingDestinationAsync(ExtraData).get();
@@ -7143,7 +7143,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public AddBucketResponseMessage AdminStorageRegisterBucket(String SetBucketValue, String SetKeyHashFormat, String SetKeyHashValue, String SetOrganizationID) throws InterruptedException, ExecutionException{
+	public AddBucketResponseMessage AdminStorageRegisterBucket(String SetBucketValue, String SetKeyHashFormat, String SetKeyHashValue, String SetOrganizationID) throws ExecutionException, InterruptedException{
 		return AdminStorageRegisterBucketAsync(SetBucketValue, SetKeyHashFormat, SetKeyHashValue, SetOrganizationID).get();
 	}
 
@@ -7184,11 +7184,11 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param Options Configure targets for the software update campaign
 	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public CometAPIResponseMessage AdminUpdateCampaignStart(UpdateCampaignOptions Options) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public CometAPIResponseMessage AdminUpdateCampaignStart(UpdateCampaignOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminUpdateCampaignStartAsync(Options).get();
 	}
 
@@ -7223,8 +7223,8 @@ public class CometAPI {
 	* This API requires the Software Build Role to be enabled.
 	* This API requires the Auth Role to be enabled.
 	* @return an UpdateCampaignStatus
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public UpdateCampaignStatus AdminUpdateCampaignStatus() throws ExecutionException, InterruptedException{
 		return AdminUpdateCampaignStatusAsync().get();
@@ -7478,7 +7478,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage UserWebAccountValidateTotp(String ProfileHash, String TOTPCode) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage UserWebAccountValidateTotp(String ProfileHash, String TOTPCode) throws ExecutionException, InterruptedException{
 		return UserWebAccountValidateTotpAsync(ProfileHash, TOTPCode).get();
 	}
 
@@ -7522,10 +7522,10 @@ public class CometAPI {
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotID The backup job snapshot ID to delete
 	* @return a CometAPIResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage UserWebDispatcherDeleteSnapshot(String TargetID, String DestinationID, String SnapshotID) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage UserWebDispatcherDeleteSnapshot(String TargetID, String DestinationID, String SnapshotID) throws ExecutionException, InterruptedException{
 		return UserWebDispatcherDeleteSnapshotAsync(TargetID, DestinationID, SnapshotID).get();
 	}
 
@@ -7572,11 +7572,11 @@ public class CometAPI {
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotIDs The backup job snapshot IDs to delete
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage UserWebDispatcherDeleteSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public CometAPIResponseMessage UserWebDispatcherDeleteSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherDeleteSnapshotsAsync(TargetID, DestinationID, SnapshotIDs).get();
 	}
 
@@ -7610,10 +7610,10 @@ public class CometAPI {
 	* access.
 	* This API requires the Auth Role to be enabled.
 	* @return a HashMap&lt;String,LiveUserConnection&gt;
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public HashMap<String,LiveUserConnection> UserWebDispatcherListActive() throws InterruptedException, ExecutionException{
+	public HashMap<String,LiveUserConnection> UserWebDispatcherListActive() throws ExecutionException, InterruptedException{
 		return UserWebDispatcherListActiveAsync().get();
 	}
 
@@ -7657,11 +7657,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ListVirtualAccountsResponse
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public BrowseOffice365ListVirtualAccountsResponse UserWebDispatcherOffice365ListVirtualAccounts(String TargetID, Office365Credential Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseOffice365ListVirtualAccountsResponse UserWebDispatcherOffice365ListVirtualAccounts(String TargetID, Office365Credential Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherOffice365ListVirtualAccountsAsync(TargetID, Credentials).get();
 	}
 
@@ -7703,11 +7703,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param ExtraData The destination location settings
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage UserWebDispatcherPingDestination(String TargetID, DestinationLocation ExtraData) throws InterruptedException, ExecutionException, JsonProcessingException{
+	public CometAPIResponseMessage UserWebDispatcherPingDestination(String TargetID, DestinationLocation ExtraData) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherPingDestinationAsync(TargetID, ExtraData).get();
 	}
 
@@ -7806,8 +7806,8 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Continuation The ID returned from the AdminDispatcherRegisterOfficeApplicationBegin endpoint
 	* @return a RegisterOfficeApplicationCheckResponse
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public RegisterOfficeApplicationCheckResponse UserWebDispatcherRegisterOfficeApplicationCheck(String TargetID, String Continuation) throws ExecutionException, InterruptedException{
 		return UserWebDispatcherRegisterOfficeApplicationCheckAsync(TargetID, Continuation).get();
@@ -7976,11 +7976,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The MongoDB database authentication settings
 	* @return a BrowseSQLServerResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseSQLServerResponse UserWebDispatcherRequestBrowseMongodb(String TargetID, MongoDBConnection Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseSQLServerResponse UserWebDispatcherRequestBrowseMongodb(String TargetID, MongoDBConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestBrowseMongodbAsync(TargetID, Credentials).get();
 	}
 
@@ -8022,11 +8022,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The MSSQL database authentication settings
 	* @return a BrowseSQLServerResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseSQLServerResponse UserWebDispatcherRequestBrowseMssql(String TargetID, MSSQLConnection Credentials) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public BrowseSQLServerResponse UserWebDispatcherRequestBrowseMssql(String TargetID, MSSQLConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestBrowseMssqlAsync(TargetID, Credentials).get();
 	}
 
@@ -8068,11 +8068,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The MySQL database authentication settings
 	* @return a BrowseSQLServerResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseSQLServerResponse UserWebDispatcherRequestBrowseMysql(String TargetID, MySQLConnection Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseSQLServerResponse UserWebDispatcherRequestBrowseMysql(String TargetID, MySQLConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestBrowseMysqlAsync(TargetID, Credentials).get();
 	}
 
@@ -8114,11 +8114,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMWare ESXi connection settings
 	* @return a BrowseVMwareResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseVMwareResponse UserWebDispatcherRequestBrowseVmware(String TargetID, VMwareConnection Credentials) throws InterruptedException, JsonProcessingException, ExecutionException{
+	public BrowseVMwareResponse UserWebDispatcherRequestBrowseVmware(String TargetID, VMwareConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestBrowseVmwareAsync(TargetID, Credentials).get();
 	}
 
@@ -8203,11 +8203,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ObjectsResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseOffice365ObjectsResponse UserWebDispatcherRequestOffice365Accounts(String TargetID, Office365Credential Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseOffice365ObjectsResponse UserWebDispatcherRequestOffice365Accounts(String TargetID, Office365Credential Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestOffice365AccountsAsync(TargetID, Credentials).get();
 	}
 
@@ -8249,11 +8249,11 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ObjectsResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseOffice365ObjectsResponse UserWebDispatcherRequestOffice365Sites(String TargetID, Office365Credential Credentials) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public BrowseOffice365ObjectsResponse UserWebDispatcherRequestOffice365Sites(String TargetID, Office365Credential Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestOffice365SitesAsync(TargetID, Credentials).get();
 	}
 
@@ -8308,11 +8308,11 @@ public class CometAPI {
 	* restore, it should be the disk image&#39;s subtree ID.
 	* @param Options (Optional) Request a list of stored objects in vmdk file
 	* @return a DispatcherStoredObjectsResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public DispatcherStoredObjectsResponse UserWebDispatcherRequestStoredObjects(String TargetID, String Destination, String SnapshotID, String TreeID, VMDKSnapshotViewOptions Options) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public DispatcherStoredObjectsResponse UserWebDispatcherRequestStoredObjects(String TargetID, String Destination, String SnapshotID, String TreeID, VMDKSnapshotViewOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestStoredObjectsAsync(TargetID, Destination, SnapshotID, TreeID, Options).get();
 	}
 
@@ -8353,10 +8353,10 @@ public class CometAPI {
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault ID
 	* @return a DispatcherVaultSnapshotsResponse
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public DispatcherVaultSnapshotsResponse UserWebDispatcherRequestVaultSnapshots(String TargetID, String Destination) throws InterruptedException, ExecutionException{
+	public DispatcherVaultSnapshotsResponse UserWebDispatcherRequestVaultSnapshots(String TargetID, String Destination) throws ExecutionException, InterruptedException{
 		return UserWebDispatcherRequestVaultSnapshotsAsync(TargetID, Destination).get();
 	}
 
@@ -8449,7 +8449,7 @@ public class CometAPI {
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage UserWebDispatcherRunBackup(String TargetID, String BackupRule) throws InterruptedException, ExecutionException{
+	public CometAPIResponseMessage UserWebDispatcherRunBackup(String TargetID, String BackupRule) throws ExecutionException, InterruptedException{
 		return UserWebDispatcherRunBackupAsync(TargetID, BackupRule).get();
 	}
 
@@ -8497,11 +8497,11 @@ public class CometAPI {
 	* @param Destination The Storage Vault GUID
 	* @param Options (Optional) Extra job parameters (&gt;= 19.3.6)
 	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
-	* @throws ExecutionException if the future completed exceptionally
 	*/
-	public CometAPIResponseMessage UserWebDispatcherRunBackupCustom(String TargetID, String Source, String Destination, BackupJobAdvancedOptions Options) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage UserWebDispatcherRunBackupCustom(String TargetID, String Source, String Destination, BackupJobAdvancedOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRunBackupCustomAsync(TargetID, Source, Destination, Options).get();
 	}
 
@@ -8557,11 +8557,11 @@ public class CometAPI {
 	* selected Protected Item + Storage Vault pair
 	* @param Paths (Optional) If present, restore these paths only. Otherwise, restore all data (&gt;= 19.3.0)
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage UserWebDispatcherRunRestore(String TargetID, String Path, String Source, String Destination, String Snapshot, String[] Paths) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage UserWebDispatcherRunRestore(String TargetID, String Path, String Source, String Destination, String Snapshot, String[] Paths) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRunRestoreAsync(TargetID, Path, Source, Destination, Snapshot, Paths).get();
 	}
 
@@ -8634,11 +8634,11 @@ public class CometAPI {
 	* @param KnownDirCount (Optional) The number of directories to restore, if known. Supplying this means we don&#39;t
 	* need to walk the entire tree just to find the number of directories and will speed up the restoration process.
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage UserWebDispatcherRunRestoreCustom(String TargetID, String Source, String Destination, RestoreJobAdvancedOptions Options, String Snapshot, String[] Paths, Integer KnownFileCount, Integer KnownByteCount, Integer KnownDirCount) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage UserWebDispatcherRunRestoreCustom(String TargetID, String Source, String Destination, RestoreJobAdvancedOptions Options, String Snapshot, String[] Paths, Integer KnownFileCount, Integer KnownByteCount, Integer KnownDirCount) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRunRestoreCustomAsync(TargetID, Source, Destination, Options, Snapshot, Paths, KnownFileCount, KnownByteCount, KnownDirCount).get();
 	}
 
@@ -8686,9 +8686,9 @@ public class CometAPI {
 	* @param SnapshotIDs Snapshots to search
 	* @param Filter The search filter
 	* @return a SearchSnapshotsResponse
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
 	public SearchSnapshotsResponse UserWebDispatcherSearchSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs, SearchClause Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherSearchSnapshotsAsync(TargetID, DestinationID, SnapshotIDs, Filter).get();
@@ -8816,8 +8816,8 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param JobID Selected job GUID
 	* @return a BackupJobDetail
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public BackupJobDetail UserWebGetJobProperties(String JobID) throws ExecutionException, InterruptedException{
 		return UserWebGetJobPropertiesAsync(JobID).get();
@@ -9016,8 +9016,8 @@ public class CometAPI {
 	* access.
 	* This API requires the Auth Role to be enabled.
 	* @return a HashMap&lt;String,NewsEntry&gt;
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public HashMap<String,NewsEntry> UserWebNewsGetAll() throws ExecutionException, InterruptedException{
 		return UserWebNewsGetAllAsync().get();
@@ -9112,10 +9112,10 @@ public class CometAPI {
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
 	* @return a RequestStorageVaultResponseMessage
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public RequestStorageVaultResponseMessage UserWebRequestStorageVault(String StorageProvider, String SelfAddress) throws InterruptedException, ExecutionException{
+	public RequestStorageVaultResponseMessage UserWebRequestStorageVault(String StorageProvider, String SelfAddress) throws ExecutionException, InterruptedException{
 		return UserWebRequestStorageVaultAsync(StorageProvider, SelfAddress).get();
 	}
 
@@ -9149,10 +9149,10 @@ public class CometAPI {
 	* access.
 	* This API requires the Auth Role to be enabled.
 	* @return a HashMap&lt;String,String&gt;
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public HashMap<String,String> UserWebRequestStorageVaultProviders() throws InterruptedException, ExecutionException{
+	public HashMap<String,String> UserWebRequestStorageVaultProviders() throws ExecutionException, InterruptedException{
 		return UserWebRequestStorageVaultProvidersAsync().get();
 	}
 
@@ -9221,8 +9221,8 @@ public class CometAPI {
 	* access.
 	* This API requires the Auth Role to be enabled.
 	* @return a SessionKeyRegeneratedResponse
-	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public SessionKeyRegeneratedResponse UserWebSessionStart() throws ExecutionException, InterruptedException{
 		return UserWebSessionStartAsync().get();
@@ -9266,11 +9266,11 @@ public class CometAPI {
 	* @param ProfileData Updated account profile
 	* @param ProfileHash Previous account profile hash
 	* @return a CometAPIResponseMessage
-	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage UserWebSetProfileHash(UserProfileConfig ProfileData, String ProfileHash) throws JsonProcessingException, ExecutionException, InterruptedException{
+	public CometAPIResponseMessage UserWebSetProfileHash(UserProfileConfig ProfileData, String ProfileHash) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebSetProfileHashAsync(ProfileData, ProfileHash).get();
 	}
 
