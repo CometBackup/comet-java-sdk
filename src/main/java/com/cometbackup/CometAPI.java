@@ -26,90 +26,90 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
  */
 public class CometAPI {
 
-    private final String serverURL;
-    private final String username;
-    private final String password;
+	private final String serverURL;
+	private final String username;
+	private final String password;
 	static private ObjectMapper objectMapper;
 
-    public CometAPI(String serverURL, String username, String password){
-        this.serverURL = serverURL;
-        this.username = username;
-        this.password = password;
-    }
+	public CometAPI(String serverURL, String username, String password){
+		this.serverURL = serverURL;
+		this.username = username;
+		this.password = password;
+	}
 
 	/**
-    * request: Makes an Http request to the Comet Server.
-    * @param contentType HTTP content type 
+	* request: Makes an Http request to the Comet Server.
+	* @param contentType HTTP content type 
 	* @param method HTTP method
 	* @param path the path to use
-    * @param data form data to send
-    * @return A CompletableFuture which returns the response from the server 
-    */
-    public CompletableFuture<HttpResponse<String>> request(String contentType, String method, String path, Map<String, String> data) {
-        URI uri = URI.create(serverURL + (path.startsWith("/") ? "" : "/") + path);
-        data = data != null ? data : new HashMap<>();
+	* @param data form data to send
+	* @return A CompletableFuture which returns the response from the server 
+	*/
+	public CompletableFuture<HttpResponse<String>> request(String contentType, String method, String path, Map<String, String> data) {
+		URI uri = URI.create(serverURL + (path.startsWith("/") ? "" : "/") + path);
+		data = data != null ? data : new HashMap<>();
 
-        var requestBuilder = HttpRequest.newBuilder()
-                .uri(uri)
-                .method(method, HttpRequest.BodyPublishers.noBody());
+		var requestBuilder = HttpRequest.newBuilder()
+				.uri(uri)
+				.method(method, HttpRequest.BodyPublishers.noBody());
 
-        switch (contentType) {
-            case "application/x-www-form-urlencoded":
-                data.put("AuthType", "Password");
-                data.put("Username", username);
-                data.put("Password", password);
+		switch (contentType) {
+			case "application/x-www-form-urlencoded":
+				data.put("AuthType", "Password");
+				data.put("Username", username);
+				data.put("Password", password);
 
-                String formData = data.entrySet().stream()
-                        .map(entry -> entry.getKey() + "=" + entry.getValue())
-                        .reduce((param1, param2) -> param1 + "&" + param2)
-                        .orElse("");
-                requestBuilder.header("Content-Type", contentType)
-                        .POST(HttpRequest.BodyPublishers.ofString(formData, StandardCharsets.UTF_8));
-                break;
+				String formData = data.entrySet().stream()
+						.map(entry -> entry.getKey() + "=" + entry.getValue())
+						.reduce((param1, param2) -> param1 + "&" + param2)
+						.orElse("");
+				requestBuilder.header("Content-Type", contentType)
+						.POST(HttpRequest.BodyPublishers.ofString(formData, StandardCharsets.UTF_8));
+				break;
 
-            case "multipart/form-data":
-                byte[] multipartBytes = createMultipartFormData(data);
-                requestBuilder.header("X-Comet-Admin-AuthType", "Password")
-                        .header("X-Comet-Admin-Username", username)
-                        .header("X-Comet-Admin-Password", password)
-                        .header("Content-Type", contentType)
-                        .POST(HttpRequest.BodyPublishers.ofByteArray(multipartBytes));
-                break;
+			case "multipart/form-data":
+				byte[] multipartBytes = createMultipartFormData(data);
+				requestBuilder.header("X-Comet-Admin-AuthType", "Password")
+						.header("X-Comet-Admin-Username", username)
+						.header("X-Comet-Admin-Password", password)
+						.header("Content-Type", contentType)
+						.POST(HttpRequest.BodyPublishers.ofByteArray(multipartBytes));
+				break;
 
-            default:
-                throw new IllegalArgumentException("Unexpected content type: " + contentType);
-        }
+			default:
+				throw new IllegalArgumentException("Unexpected content type: " + contentType);
+		}
 
-        HttpRequest request = requestBuilder.build();
-        return HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString());
-    }
+		HttpRequest request = requestBuilder.build();
+		return HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString());
+	}
 
-    private byte[] createMultipartFormData(Map<String, String> data) {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            String boundary = "Boundary-" + System.currentTimeMillis();
-            String charset = StandardCharsets.UTF_8.name();
+	private byte[] createMultipartFormData(Map<String, String> data) {
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			String boundary = "Boundary-" + System.currentTimeMillis();
+			String charset = StandardCharsets.UTF_8.name();
 
-            for (Map.Entry<String, String> entry : data.entrySet()) {
-                String field = entry.getKey();
-                String value = entry.getValue();
+			for (Map.Entry<String, String> entry : data.entrySet()) {
+				String field = entry.getKey();
+				String value = entry.getValue();
 
-                outputStream.write(("--" + boundary + "\r\n").getBytes(charset));
-                outputStream.write(("Content-Disposition: form-data; name=\"" + field + "\"\r\n").getBytes(charset));
-                outputStream.write(("Content-Type: text/plain; charset=" + charset + "\r\n").getBytes(charset));
-                outputStream.write(("\r\n" + value + "\r\n").getBytes(charset));
-            }
+				outputStream.write(("--" + boundary + "\r\n").getBytes(charset));
+				outputStream.write(("Content-Disposition: form-data; name=\"" + field + "\"\r\n").getBytes(charset));
+				outputStream.write(("Content-Type: text/plain; charset=" + charset + "\r\n").getBytes(charset));
+				outputStream.write(("\r\n" + value + "\r\n").getBytes(charset));
+			}
 
-            outputStream.write(("--" + boundary + "--\r\n").getBytes(charset));
-            return outputStream.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("Error creating multipart/form-data", e);
-        }
-    }
+			outputStream.write(("--" + boundary + "--\r\n").getBytes(charset));
+			return outputStream.toByteArray();
+		} catch (IOException e) {
+			throw new RuntimeException("Error creating multipart/form-data", e);
+		}
+	}
 
 	/**
-     * Get a cached, lazily constructed instance of the Jackson ObjectMapper class
-     * @return ObjectMapper singleton
-     */
+	 * Get a cached, lazily constructed instance of the Jackson ObjectMapper class
+	 * @return ObjectMapper singleton
+	 */
 	public static ObjectMapper getObjectMapper(){
 		if(objectMapper == null){
 			objectMapper = new ObjectMapper();
