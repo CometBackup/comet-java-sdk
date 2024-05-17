@@ -11,6 +11,9 @@ import java.util.*;
 * SourceStatistics
 */
 public class SourceStatistics {
+	@JsonProperty("LastStartTime")
+	public long LastStartTime;
+
 	@JsonProperty("LastBackupJob")
 	public BackupJobDetail LastBackupJob;
 
