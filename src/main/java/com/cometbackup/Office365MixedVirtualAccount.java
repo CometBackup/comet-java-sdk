@@ -11,35 +11,38 @@ import java.util.*;
 * Office365MixedVirtualAccount
 */
 public class Office365MixedVirtualAccount {
-	@JsonProperty("id")
-	public String ID = "";
-
-	@JsonProperty("Type")
-	public long Type;
+	@JsonProperty("DefaultDriveID")
+	public String DefaultDriveID = "";
 
 	@JsonProperty("DisplayName")
 	public String DisplayName = "";
 
-	@JsonProperty("Mail")
-	public String Mail = "";
+	@JsonProperty("EnabledServiceOption")
+	public long EnabledServiceOption;
+
+	@JsonProperty("id")
+	public String ID = "";
 
 	@JsonProperty("JobTitle")
 	public String JobTitle = "";
 
+	@JsonProperty("Mail")
+	public String Mail = "";
+
 	@JsonProperty("SiteID")
 	public String SiteID = "";
+
+	@JsonProperty("Type")
+	public long Type;
+
+	@JsonProperty("UserPrincipalName")
+	public String UserPrincipalName = "";
 
 	@JsonProperty("WebID")
 	public String WebID = "";
 
 	@JsonProperty("WebURL")
 	public String WebURL = "";
-
-	@JsonProperty("UserPrincipalName")
-	public String UserPrincipalName = "";
-
-	@JsonProperty("EnabledServiceOption")
-	public long EnabledServiceOption;
 
 	@JsonProperty("Members")
 	public ArrayList<String> Members;

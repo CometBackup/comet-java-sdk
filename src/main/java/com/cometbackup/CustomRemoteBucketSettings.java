@@ -17,6 +17,12 @@ public class CustomRemoteBucketSettings {
 	@JsonProperty("CustomHeaders")
 	public HashMap<String, String> CustomHeaders;
 
+	@JsonProperty("CustomBody")
+	public String CustomBody = "";
+
+	@JsonProperty("CustomBodyType")
+	public String CustomBodyType = "";
+
 
 	public CustomRemoteBucketSettings(){ }
 

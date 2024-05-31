@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "24.3.9";
+	public final String APPLICATION_VERSION = "24.5.0";
 	public final int APPLICATION_VERSION_MAJOR = 24;
-	public final int APPLICATION_VERSION_MINOR = 3;
-	public final int APPLICATION_VERSION_REVISION = 9;
+	public final int APPLICATION_VERSION_MINOR = 5;
+	public final int APPLICATION_VERSION_REVISION = 0;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -101,6 +101,26 @@ public class Def {
 	* CompressMode
 	*/
 	public final int COMPRESS_DEFAULT = 4;
+
+	/**
+	* CustomRemoteBucketCustomBodyType
+	*/
+	public final String CUSTOMREMOTEBUCKET_CUSTOMBODY_NONE = "none";
+
+	/**
+	* CustomRemoteBucketCustomBodyType
+	*/
+	public final String CUSTOMREMOTEBUCKET_CUSTOMBODY_JSON = "json";
+
+	/**
+	* CustomRemoteBucketCustomBodyType
+	*/
+	public final String CUSTOMREMOTEBUCKET_CUSTOMBODY_URLENC = "urlencoded";
+
+	/**
+	* CustomRemoteBucketCustomBodyType
+	*/
+	public final String CUSTOMREMOTEBUCKET_CUSTOMBODY_FORM = "form";
 
 	/**
 	* LanguageCode
@@ -683,7 +703,7 @@ public class Def {
 	* PSAType
 	*/
 	public final int PSA_TYPE_SYNCRO = 2;
-	public final String RELEASE_CODENAME = "Voyager";
+	public final String RELEASE_CODENAME = "Enceladus";
 
 	/**
 	* RemoteServerType: Comet Server
