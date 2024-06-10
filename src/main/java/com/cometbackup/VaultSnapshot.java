@@ -14,6 +14,9 @@ public class VaultSnapshot {
 	@JsonProperty("Snapshot")
 	public String Snapshot = "";
 
+	@JsonProperty("EngineType")
+	public String EngineType = "";
+
 	@JsonProperty("Source")
 	public String Source = "";
 

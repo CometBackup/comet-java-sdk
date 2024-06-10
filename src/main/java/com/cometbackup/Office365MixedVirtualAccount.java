@@ -14,6 +14,9 @@ public class Office365MixedVirtualAccount {
 	@JsonProperty("DefaultDriveID")
 	public String DefaultDriveID = "";
 
+	@JsonProperty("Disabled")
+	public boolean Disabled;
+
 	@JsonProperty("DisplayName")
 	public String DisplayName = "";
 

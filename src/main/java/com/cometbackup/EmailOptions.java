@@ -42,6 +42,10 @@ public class EmailOptions {
 	@JsonProperty("SMTPAllowUnencrypted")
 	public boolean SMTPAllowUnencrypted;
 
+	//Override the HELO/EHLO hostname for SMTP or MX Direct modes. If blank, uses system default HELO/EHLO hostname.
+	@JsonProperty("SMTPCustomEhlo")
+	public String SMTPCustomEhlo = "";
+
 
 	public EmailOptions(){ }
 

@@ -3,9 +3,9 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "24.5.0";
+	public final String APPLICATION_VERSION = "24.6.0";
 	public final int APPLICATION_VERSION_MAJOR = 24;
-	public final int APPLICATION_VERSION_MINOR = 5;
+	public final int APPLICATION_VERSION_MINOR = 6;
 	public final int APPLICATION_VERSION_REVISION = 0;
 
 	/**
@@ -703,7 +703,7 @@ public class Def {
 	* PSAType
 	*/
 	public final int PSA_TYPE_SYNCRO = 2;
-	public final String RELEASE_CODENAME = "Enceladus";
+	public final String RELEASE_CODENAME = "Voyager";
 
 	/**
 	* RemoteServerType: Comet Server
