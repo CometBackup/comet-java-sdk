@@ -65,6 +65,9 @@ public class AdminUserPermissions {
 	@JsonProperty("AllowedUserPolicies")
 	public ArrayList<String> AllowedUserPolicies;
 
+	@JsonProperty("DenySoftwareBuildRole")
+	public boolean DenySoftwareBuildRole;
+
 
 	public AdminUserPermissions(){ }
 
