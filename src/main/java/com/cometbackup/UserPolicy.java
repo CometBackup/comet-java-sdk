@@ -47,6 +47,15 @@ public class UserPolicy {
 	@JsonProperty("ModeScheduleSkipAlreadyRunning")
 	public int ModeScheduleSkipAlreadyRunning;
 
+	@JsonProperty("ModeScheduleLastJobFailDoRetry")
+	public int ModeScheduleLastJobFailDoRetry;
+
+	@JsonProperty("ModeLastJobFailDoRetryTime")
+	public long ModeLastJobFailDoRetryTime;
+
+	@JsonProperty("ModeLastJobFailDoRetryCount")
+	public long ModeLastJobFailDoRetryCount;
+
 	@JsonProperty("ModeAdminResetPassword")
 	public int ModeAdminResetPassword;
 

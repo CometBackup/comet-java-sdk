@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "24.6.4";
+	public final String APPLICATION_VERSION = "24.6.6";
 	public final int APPLICATION_VERSION_MAJOR = 24;
 	public final int APPLICATION_VERSION_MINOR = 6;
-	public final int APPLICATION_VERSION_REVISION = 4;
+	public final int APPLICATION_VERSION_REVISION = 6;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -121,6 +121,16 @@ public class Def {
 	* CustomRemoteBucketCustomBodyType
 	*/
 	public final String CUSTOMREMOTEBUCKET_CUSTOMBODY_FORM = "form";
+
+	/**
+	* The number of retry attempts a backup job can do
+	*/
+	public final int DEFAULT_RETRY_COUNT = 1;
+
+	/**
+	* The number of minutes between backup job retry attempts
+	*/
+	public final int DEFAULT_RETRY_TIME = 30;
 
 	/**
 	* LanguageCode
@@ -499,6 +509,11 @@ public class Def {
 	public final long JOB_STATUS_RUNNING_REVIVED = 6002;
 
 	/**
+	* JobStatus: The job has encountered an error and will wait to retry.
+	*/
+	public final long JOB_STATUS_RUNNING_TRYAGAIN = 6003;
+
+	/**
 	* JobStatus
 	*/
 	public final long JOB_STATUS_RUNNING__MAX = 6999;
@@ -584,6 +599,8 @@ public class Def {
 	* MacOSCodesignLevel: Sign, notarize, and staple
 	*/
 	public final int MACOSCODESIGN_LEVEL_SIGN_NOTARISE_STAPLE = 2;
+	public final int MIN_BUILD_NUMBER_WIN_SERVER_2016 = 14393;
+	public final int MIN_BUILD_NUMBER_WIN_10 = 10240;
 	public final long MIXED_VIRTUAL_ACCOUNT_TYPE_USER = 1;
 	public final long MIXED_VIRTUAL_ACCOUNT_TYPE_GROUP = 2;
 	public final long MIXED_VIRTUAL_ACCOUNT_TYPE_TEAM_GROUP = 3;

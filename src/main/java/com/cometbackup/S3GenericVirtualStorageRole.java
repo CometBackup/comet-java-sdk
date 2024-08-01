@@ -59,6 +59,10 @@ public class S3GenericVirtualStorageRole {
 	@JsonProperty("Region")
 	public String Region = "";
 
+	//Optional. Prefix to use for bucket paths.
+	@JsonProperty("Prefix")
+	public String Prefix = "";
+
 
 	public S3GenericVirtualStorageRole(){ }
 

@@ -20,6 +20,18 @@ public class BackupRuleEventTriggers {
 	@JsonProperty("OnPCBootIfLastJobMissed")
 	public boolean OnPCBootIfLastJobMissed;
 
+	//The option to enable retrying when a backup job failed.
+	@JsonProperty("OnLastJobFailDoRetry")
+	public boolean OnLastJobFailDoRetry;
+
+	//The number of retries when the backup job fails.
+	@JsonProperty("LastJobFailDoRetryCount")
+	public long LastJobFailDoRetryCount;
+
+	//The number of minutes before retrying when the backup job fails.
+	@JsonProperty("LastJobFailDoRetryTime")
+	public long LastJobFailDoRetryTime;
+
 
 	public BackupRuleEventTriggers(){ }
 

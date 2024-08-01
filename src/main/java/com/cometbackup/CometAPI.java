@@ -1692,6 +1692,46 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminConvertStorageRoleAsync: Convert IAM Storage Role vault to its underlying S3 type
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* @param TargetUser The user to receive the new Storage Vault
+	* @param DestinationId The id of the old storage role destination to convert
+	* @return CompletableFuture yielding a RequestStorageVaultResponseMessage
+	*/
+	public CompletableFuture<RequestStorageVaultResponseMessage> AdminConvertStorageRoleAsync(String TargetUser, String DestinationId)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetUser", TargetUser);
+		data.put("DestinationId", DestinationId);
+		var resultFuture = new CompletableFuture<RequestStorageVaultResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/convert-storage-role", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, RequestStorageVaultResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminConvertStorageRole: Convert IAM Storage Role vault to its underlying S3 type
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* @param TargetUser The user to receive the new Storage Vault
+	* @param DestinationId The id of the old storage role destination to convert
+	* @return a RequestStorageVaultResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public RequestStorageVaultResponseMessage AdminConvertStorageRole(String TargetUser, String DestinationId) throws ExecutionException, InterruptedException{
+		return AdminConvertStorageRoleAsync(TargetUser, DestinationId).get();
+	}
+
+	/**
 	* AdminCountJobsForCustomSearchAsync: Count jobs (for custom search)
 	* 
 	* You must supply administrator authentication credentials to use this API.

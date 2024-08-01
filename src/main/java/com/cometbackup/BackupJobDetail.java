@@ -31,6 +31,9 @@ public class BackupJobDetail {
 	@JsonProperty("EndTime")
 	public long EndTime;
 
+	@JsonProperty("RetryCount")
+	public long RetryCount;
+
 	//The Protected Item that this job is for
 	@JsonProperty("SourceGUID")
 	public String SourceGUID = "";
@@ -44,6 +47,10 @@ public class BackupJobDetail {
 
 	@JsonProperty("SnapshotID")
 	public String SnapshotID = "";
+
+	//The ID of the backup rule that contains the schedule that triggered this job
+	@JsonProperty("BackupRuleGUID")
+	public String BackupRuleGUID = "";
 
 	@JsonProperty("ClientVersion")
 	public String ClientVersion = "";
