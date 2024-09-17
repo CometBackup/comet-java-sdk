@@ -12,11 +12,17 @@ import java.util.*;
 * Protected Items, in order to safely perform retention passes on their behalf.
 */
 public class SourceBasicInfo {
+	@JsonProperty("Engine")
+	public String Engine = "";
+
 	@JsonProperty("Description")
 	public String Description = "";
 
 	@JsonProperty("O365AccountCount")
 	public long O365AccountCount;
+
+	@JsonProperty("TotalVmCount")
+	public long TotalVmCount;
 
 	//Bytes
 	@JsonProperty("Size")
