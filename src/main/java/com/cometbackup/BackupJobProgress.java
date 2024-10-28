@@ -30,6 +30,9 @@ public class BackupJobProgress {
 	@JsonProperty("ItemsDone")
 	public long ItemsDone;
 
+	@JsonProperty("ItemsTotal")
+	public long ItemsTotal;
+
 
 	public BackupJobProgress(){ }
 

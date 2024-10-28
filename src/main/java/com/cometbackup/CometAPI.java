@@ -3581,6 +3581,50 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminDispatcherTestSmbAuthAsync: Test a set of Windows SMB credentials
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Wsa The target credentials to test
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherTestSmbAuthAsync(String TargetID, WinSMBAuth Wsa) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Wsa", CometAPI.getObjectMapper().writeValueAsString(Wsa));
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/test-smb-auth", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherTestSmbAuth: Test a set of Windows SMB credentials
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Wsa The target credentials to test
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CometAPIResponseMessage AdminDispatcherTestSmbAuth(String TargetID, WinSMBAuth Wsa) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherTestSmbAuthAsync(TargetID, Wsa).get();
+	}
+
+	/**
 	* AdminDispatcherUninstallSoftwareAsync: Instruct a live connected device to self-uninstall the software
 	* 
 	* You must supply administrator authentication credentials to use this API.
@@ -8732,6 +8776,52 @@ public class CometAPI {
 	*/
 	public SearchSnapshotsResponse UserWebDispatcherSearchSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs, SearchClause Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherSearchSnapshotsAsync(TargetID, DestinationID, SnapshotIDs, Filter).get();
+	}
+
+	/**
+	* UserWebDispatcherTestSmbAuthAsync: Test a set of Windows SMB credentials
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Wsa The target credentials to test
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<CometAPIResponseMessage> UserWebDispatcherTestSmbAuthAsync(String TargetID, WinSMBAuth Wsa) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Wsa", CometAPI.getObjectMapper().writeValueAsString(Wsa));
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/test-smb-auth", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherTestSmbAuth: Test a set of Windows SMB credentials
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Wsa The target credentials to test
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CometAPIResponseMessage UserWebDispatcherTestSmbAuth(String TargetID, WinSMBAuth Wsa) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherTestSmbAuthAsync(TargetID, Wsa).get();
 	}
 
 	/**

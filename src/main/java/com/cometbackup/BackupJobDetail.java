@@ -97,6 +97,10 @@ public class BackupJobDetail {
 	@JsonProperty("TotalUnlicensedMailsCount")
 	public long TotalUnlicensedMailsCount;
 
+	//If this field is present, this job did not perform some work because the Storage Vault is currently busy.
+	@JsonProperty("ConflictingJobID")
+	public String ConflictingJobID = "";
+
 	//If this field is present, it is possible to request cancellation of this job via the API.
 	@JsonProperty("CancellationID")
 	public String CancellationID = "";

@@ -26,21 +26,34 @@ public class DiskDrive {
 	@JsonProperty("SerialNumber")
 	public String SerialNumber = "";
 
+	//Bytes
 	@JsonProperty("Size")
 	public long Size;
 
 	@JsonProperty("Partitions")
 	public ArrayList<Partition> Partitions;
 
+	//For physical disks, this array will be empty. For virtual disks, RAID devices or Linux DM devices, this array may
+	//contain the DeviceName of the parent device.
+	@JsonProperty("DeviceParents")
+	public ArrayList<String> DeviceParents;
+
+	//See WINDISKFLAG_ constants
 	@JsonProperty("Flags")
 	public long Flags;
 
+
+	// deprecated since Comet version 24.6.x This value is reported from the disk driver if available. Otherwise emulates a value based on modern LBA addressing. The field value is not used.
 	@JsonProperty("Cylinders")
 	public long Cylinders;
 
+
+	// deprecated since Comet version 24.6.x This value is reported from the disk driver if available. Otherwise emulates a value based on modern LBA addressing. The field value is not used.
 	@JsonProperty("Heads")
 	public long Heads;
 
+
+	// deprecated since Comet version 24.6.x This value is reported from the disk driver if available. Otherwise emulates a value based on modern LBA addressing. The field value is not used.
 	@JsonProperty("Sectors")
 	public long Sectors;
 
