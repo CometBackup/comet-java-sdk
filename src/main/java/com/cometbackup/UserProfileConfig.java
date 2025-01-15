@@ -33,11 +33,14 @@ public class UserProfileConfig {
 	@JsonProperty("OrganizationID")
 	public String OrganizationID = "";
 
+	@JsonProperty("GroupID")
+	public String GroupID = "";
+
 	//A list of email addresses to send reports to.
 	@JsonProperty("Emails")
 	public ArrayList<String> Emails;
 
-	//By default, all the email addresses in the Emails field will receieve the policy-default or server-wide-default style
+	//By default, all the email addresses in the Emails field will receive the policy-default or server-wide-default style
 	//of email report. Add an override for a specific email address in here to allow customizing the email report that will
 	//be received.
 	@JsonProperty("OverrideEmailSettings")
@@ -51,6 +54,10 @@ public class UserProfileConfig {
 	//The string keys can be any unique key. Using a GUID is recommended, but optional.
 	@JsonProperty("Destinations")
 	public HashMap<String, DestinationConfig> Destinations;
+
+	//Leave as true
+	@JsonProperty("SupportsDeviceAssociations")
+	public boolean SupportsDeviceAssociations;
 
 	//Protected Items
 	//The string keys can be any unique key. Using a GUID is recommended, but optional.
@@ -130,6 +137,7 @@ public class UserProfileConfig {
 	@JsonProperty("PasswordRecovery")
 	public String PasswordRecovery = "";
 
+	//Allow login using the password alone. Set this to false if the password alone should not be sufficient.
 	@JsonProperty("AllowPasswordLogin")
 	public boolean AllowPasswordLogin;
 
@@ -160,6 +168,9 @@ public class UserProfileConfig {
 	//Additional server-wide settings that are enforced for this user profile
 	@JsonProperty("ServerConfig")
 	public UserServerConfig ServerConfig;
+
+	@JsonProperty("AutoStorageTemplateGUID")
+	public String AutoStorageTemplateGUID = "";
 
 
 	public UserProfileConfig(){ }

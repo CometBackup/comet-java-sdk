@@ -597,6 +597,42 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminAddFirstAdminUserAsync: Add first admin user account on new server
+	* @param TargetUser the username for this new admin
+	* @param TargetPassword the password for this new admin user
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminAddFirstAdminUserAsync(String TargetUser, String TargetPassword)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetUser", TargetUser);
+		data.put("TargetPassword", TargetPassword);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/add-first-admin-user", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminAddFirstAdminUser: Add first admin user account on new server
+	* @param TargetUser the username for this new admin
+	* @param TargetPassword the password for this new admin user
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage AdminAddFirstAdminUser(String TargetUser, String TargetPassword) throws ExecutionException, InterruptedException{
+		return AdminAddFirstAdminUserAsync(TargetUser, TargetPassword).get();
+	}
+
+	/**
 	* AdminAddUserAsync: Add a new user account
 	* 
 	* You must supply administrator authentication credentials to use this API.
@@ -3060,6 +3096,7 @@ public class CometAPI {
 	/**
 	* AdminDispatcherRequestOffice365AccountsAsync: Request a list of Office365 mailbox accounts
 	* The remote device must have given consent for an MSP to browse their files.
+	* This is primarily used for testing the connection to Graph API, not for actual listing
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
@@ -3089,6 +3126,7 @@ public class CometAPI {
 	/**
 	* AdminDispatcherRequestOffice365Accounts: Request a list of Office365 mailbox accounts
 	* The remote device must have given consent for an MSP to browse their files.
+	* This is primarily used for testing the connection to Graph API, not for actual listing
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
@@ -5368,13 +5406,16 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* @param RemoteStorageOptions Updated configuration content
+	* @param ReplacementAutoVaultID (Optional) Replacement Storage Template ID for auto Storage Vault configurations that
+	* use deleted Storage Templates
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminMetaRemoteStorageVaultSetAsync(RemoteStorageOption[] RemoteStorageOptions) throws JsonProcessingException {
+	public CompletableFuture<CometAPIResponseMessage> AdminMetaRemoteStorageVaultSetAsync(RemoteStorageOption[] RemoteStorageOptions, String ReplacementAutoVaultID) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("RemoteStorageOptions", CometAPI.getObjectMapper().writeValueAsString(RemoteStorageOptions));
+		if (ReplacementAutoVaultID != null) data.put("ReplacementAutoVaultID",  ReplacementAutoVaultID);
 		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/meta/remote-storage-vault/set", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -5394,13 +5435,15 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* @param RemoteStorageOptions Updated configuration content
+	* @param ReplacementAutoVaultID (Optional) Replacement Storage Template ID for auto Storage Vault configurations that
+	* use deleted Storage Templates
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaRemoteStorageVaultSet(RemoteStorageOption[] RemoteStorageOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
-		return AdminMetaRemoteStorageVaultSetAsync(RemoteStorageOptions).get();
+	public CometAPIResponseMessage AdminMetaRemoteStorageVaultSet(RemoteStorageOption[] RemoteStorageOptions, String ReplacementAutoVaultID) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminMetaRemoteStorageVaultSetAsync(RemoteStorageOptions, ReplacementAutoVaultID).get();
 	}
 
 	/**
@@ -6654,14 +6697,16 @@ public class CometAPI {
 	* @param TargetUser The user to receive the new Storage Vault
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
+	* @param DeviceID (Optional) The ID of the device to be added as a associated device of the Storage Vault
 	* @return CompletableFuture yielding a RequestStorageVaultResponseMessage
 	*/
-	public CompletableFuture<RequestStorageVaultResponseMessage> AdminRequestStorageVaultAsync(String TargetUser, String StorageProvider, String SelfAddress)  {
+	public CompletableFuture<RequestStorageVaultResponseMessage> AdminRequestStorageVaultAsync(String TargetUser, String StorageProvider, String SelfAddress, String DeviceID)  {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetUser", TargetUser);
 		data.put("StorageProvider", StorageProvider);
 		data.put("SelfAddress", (SelfAddress == null) ? this.serverURL : SelfAddress);
+		if (DeviceID != null) data.put("DeviceID",  DeviceID);
 		var resultFuture = new CompletableFuture<RequestStorageVaultResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/request-storage-vault", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -6687,12 +6732,13 @@ public class CometAPI {
 	* @param TargetUser The user to receive the new Storage Vault
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
+	* @param DeviceID (Optional) The ID of the device to be added as a associated device of the Storage Vault
 	* @return a RequestStorageVaultResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public RequestStorageVaultResponseMessage AdminRequestStorageVault(String TargetUser, String StorageProvider, String SelfAddress) throws ExecutionException, InterruptedException{
-		return AdminRequestStorageVaultAsync(TargetUser, StorageProvider, SelfAddress).get();
+	public RequestStorageVaultResponseMessage AdminRequestStorageVault(String TargetUser, String StorageProvider, String SelfAddress, String DeviceID) throws ExecutionException, InterruptedException{
+		return AdminRequestStorageVaultAsync(TargetUser, StorageProvider, SelfAddress, DeviceID).get();
 	}
 
 	/**
@@ -7312,6 +7358,317 @@ public class CometAPI {
 	*/
 	public UpdateCampaignStatus AdminUpdateCampaignStatus() throws ExecutionException, InterruptedException{
 		return AdminUpdateCampaignStatusAsync().get();
+	}
+
+	/**
+	* AdminUserGroupsDeleteAsync: Delete an existing user group object
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param GroupID The user group ID to delete
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminUserGroupsDeleteAsync(String GroupID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("GroupID", GroupID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/user-groups/delete", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminUserGroupsDelete: Delete an existing user group object
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param GroupID The user group ID to delete
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage AdminUserGroupsDelete(String GroupID) throws ExecutionException, InterruptedException{
+		return AdminUserGroupsDeleteAsync(GroupID).get();
+	}
+
+	/**
+	* AdminUserGroupsGetAsync: Retrieve a single user group object
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param GroupID The user group ID to retrieve
+	* @param IncludeUsers (Optional) If present, includes the users array in the response.
+	* @return CompletableFuture yielding a GetUserGroupWithUsersResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<GetUserGroupWithUsersResponse> AdminUserGroupsGetAsync(String GroupID, Boolean IncludeUsers) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("GroupID", GroupID);
+		if (IncludeUsers != null) data.put("IncludeUsers", CometAPI.getObjectMapper().writeValueAsString(IncludeUsers));
+		var resultFuture = new CompletableFuture<GetUserGroupWithUsersResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/user-groups/get", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, GetUserGroupWithUsersResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminUserGroupsGet: Retrieve a single user group object
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param GroupID The user group ID to retrieve
+	* @param IncludeUsers (Optional) If present, includes the users array in the response.
+	* @return a GetUserGroupWithUsersResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public GetUserGroupWithUsersResponse AdminUserGroupsGet(String GroupID, Boolean IncludeUsers) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminUserGroupsGetAsync(GroupID, IncludeUsers).get();
+	}
+
+	/**
+	* AdminUserGroupsListAsync: List all user group names
+	* For the top-level organization, the API result includes all user groups for all organizations, unless the
+	* TargetOrganization parameter is present.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetOrganization (Optional) If present, list the user groups belonging to another organization. Only allowed
+	* for administrator accounts in the top-level organization.
+	* @return CompletableFuture yielding a HashMap&lt;String,String&gt;
+	*/
+	public CompletableFuture<HashMap<String,String>> AdminUserGroupsListAsync(String TargetOrganization)  {
+		var data = new HashMap<String,String>();
+
+		if (TargetOrganization != null) data.put("TargetOrganization",  TargetOrganization);
+		var resultFuture = new CompletableFuture<HashMap<String,String>>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/user-groups/list", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				var type = getObjectMapper().getTypeFactory().constructMapType(HashMap.class, String.class, String.class);
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, type));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminUserGroupsList: List all user group names
+	* For the top-level organization, the API result includes all user groups for all organizations, unless the
+	* TargetOrganization parameter is present.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetOrganization (Optional) If present, list the user groups belonging to another organization. Only allowed
+	* for administrator accounts in the top-level organization.
+	* @return a HashMap&lt;String,String&gt;
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public HashMap<String,String> AdminUserGroupsList(String TargetOrganization) throws ExecutionException, InterruptedException{
+		return AdminUserGroupsListAsync(TargetOrganization).get();
+	}
+
+	/**
+	* AdminUserGroupsListFullAsync: Get all user group objects
+	* For the top-level organization, the API result includes all user groups for all organizations, unless the
+	* TargetOrganization parameter is present.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetOrganization (Optional) If present, list the user groups belonging to the specified organization. Only
+	* allowed for administrator accounts in the top-level organization.
+	* @return CompletableFuture yielding a HashMap&lt;String,UserGroup&gt;
+	*/
+	public CompletableFuture<HashMap<String,UserGroup>> AdminUserGroupsListFullAsync(String TargetOrganization)  {
+		var data = new HashMap<String,String>();
+
+		if (TargetOrganization != null) data.put("TargetOrganization",  TargetOrganization);
+		var resultFuture = new CompletableFuture<HashMap<String,UserGroup>>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/user-groups/list-full", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				var type = getObjectMapper().getTypeFactory().constructMapType(HashMap.class, String.class, UserGroup.class);
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, type));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminUserGroupsListFull: Get all user group objects
+	* For the top-level organization, the API result includes all user groups for all organizations, unless the
+	* TargetOrganization parameter is present.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetOrganization (Optional) If present, list the user groups belonging to the specified organization. Only
+	* allowed for administrator accounts in the top-level organization.
+	* @return a HashMap&lt;String,UserGroup&gt;
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public HashMap<String,UserGroup> AdminUserGroupsListFull(String TargetOrganization) throws ExecutionException, InterruptedException{
+		return AdminUserGroupsListFullAsync(TargetOrganization).get();
+	}
+
+	/**
+	* AdminUserGroupsNewAsync: Create a new user group object
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param Name this is the name of the group.
+	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
+	* for administrator accounts in the top-level organization.
+	* @return CompletableFuture yielding a CreateUserGroupResponse
+	*/
+	public CompletableFuture<CreateUserGroupResponse> AdminUserGroupsNewAsync(String Name, String TargetOrganization)  {
+		var data = new HashMap<String,String>();
+
+		data.put("Name", Name);
+		if (TargetOrganization != null) data.put("TargetOrganization",  TargetOrganization);
+		var resultFuture = new CompletableFuture<CreateUserGroupResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/user-groups/new", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CreateUserGroupResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminUserGroupsNew: Create a new user group object
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param Name this is the name of the group.
+	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
+	* for administrator accounts in the top-level organization.
+	* @return a CreateUserGroupResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CreateUserGroupResponse AdminUserGroupsNew(String Name, String TargetOrganization) throws ExecutionException, InterruptedException{
+		return AdminUserGroupsNewAsync(Name, TargetOrganization).get();
+	}
+
+	/**
+	* AdminUserGroupsSetAsync: Update an existing user group or create a new user group
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param GroupID The user group ID to update or create
+	* @param Group The user group data
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminUserGroupsSetAsync(String GroupID, UserGroup Group) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("GroupID", GroupID);
+		data.put("Group", CometAPI.getObjectMapper().writeValueAsString(Group));
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/user-groups/set", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminUserGroupsSet: Update an existing user group or create a new user group
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param GroupID The user group ID to update or create
+	* @param Group The user group data
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CometAPIResponseMessage AdminUserGroupsSet(String GroupID, UserGroup Group) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminUserGroupsSetAsync(GroupID, Group).get();
+	}
+
+	/**
+	* AdminUserGroupsSetUsersForGroupAsync: Update the users in the specified group
+	* The provided list of users will be moved into the specified group, and any users
+	* already in the group who are not in the list of usernames will be removed.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param GroupID The user group ID to update
+	* @param Users An array of usernames.
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminUserGroupsSetUsersForGroupAsync(String GroupID, String[] Users) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("GroupID", GroupID);
+		data.put("Users", CometAPI.getObjectMapper().writeValueAsString(Users));
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/user-groups/set-users-for-group", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminUserGroupsSetUsersForGroup: Update the users in the specified group
+	* The provided list of users will be moved into the specified group, and any users
+	* already in the group who are not in the list of usernames will be removed.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param GroupID The user group ID to update
+	* @param Users An array of usernames.
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CometAPIResponseMessage AdminUserGroupsSetUsersForGroup(String GroupID, String[] Users) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminUserGroupsSetUsersForGroupAsync(GroupID, Users).get();
 	}
 
 	/**
@@ -9210,13 +9567,15 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
+	* @param DeviceID (Optional) The ID of the device to be added as a associated device of the Storage Vault
 	* @return CompletableFuture yielding a RequestStorageVaultResponseMessage
 	*/
-	public CompletableFuture<RequestStorageVaultResponseMessage> UserWebRequestStorageVaultAsync(String StorageProvider, String SelfAddress)  {
+	public CompletableFuture<RequestStorageVaultResponseMessage> UserWebRequestStorageVaultAsync(String StorageProvider, String SelfAddress, String DeviceID)  {
 		var data = new HashMap<String,String>();
 
 		data.put("StorageProvider", StorageProvider);
 		data.put("SelfAddress", (SelfAddress == null) ? this.serverURL : SelfAddress);
+		if (DeviceID != null) data.put("DeviceID",  DeviceID);
 		var resultFuture = new CompletableFuture<RequestStorageVaultResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/request-storage-vault", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -9241,12 +9600,13 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
+	* @param DeviceID (Optional) The ID of the device to be added as a associated device of the Storage Vault
 	* @return a RequestStorageVaultResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public RequestStorageVaultResponseMessage UserWebRequestStorageVault(String StorageProvider, String SelfAddress) throws ExecutionException, InterruptedException{
-		return UserWebRequestStorageVaultAsync(StorageProvider, SelfAddress).get();
+	public RequestStorageVaultResponseMessage UserWebRequestStorageVault(String StorageProvider, String SelfAddress, String DeviceID) throws ExecutionException, InterruptedException{
+		return UserWebRequestStorageVaultAsync(StorageProvider, SelfAddress, DeviceID).get();
 	}
 
 	/**

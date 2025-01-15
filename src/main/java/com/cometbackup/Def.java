@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "24.9.6";
+	public final String APPLICATION_VERSION = "24.12.2";
 	public final int APPLICATION_VERSION_MAJOR = 24;
-	public final int APPLICATION_VERSION_MINOR = 9;
-	public final int APPLICATION_VERSION_REVISION = 6;
+	public final int APPLICATION_VERSION_MINOR = 12;
+	public final int APPLICATION_VERSION_REVISION = 2;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -331,7 +331,7 @@ public class Def {
 	public final String ENGINE_BUILTIN_MSSQL = "engine1/mssql";
 
 	/**
-	* Windows System Backup
+	* Windows System Backup, deprecated from version 24.12.2
 	*/
 	public final String ENGINE_BUILTIN_WINDOWSSYSTEM = "engine1/windowssystem";
 
@@ -636,6 +636,21 @@ public class Def {
 	* MSSQLRestoreOpt
 	*/
 	public final String MSSQL_RESTORE_NORECOVERY = "NO_RECOVERY";
+
+	/**
+	* Used in policy to define that the automatic Storage Vaults for new devices is not enforced by the policy
+	*/
+	public final String NEW_STORAGE_VAULT_MODE_USER = "user_controlled";
+
+	/**
+	* No Storage Vault will be created when a new device is added
+	*/
+	public final String NEW_STORAGE_VAULT_MODE_NONE = "none";
+
+	/**
+	* When a new device is added, a Storage Vault will be created using the servers default Storage Template
+	*/
+	public final String NEW_STORAGE_VAULT_MODE_SERVER = "server_controlled";
 
 	/**
 	* Enable Object Lock capability if the corresponding Days field is greater than zero.
@@ -1458,6 +1473,21 @@ public class Def {
 	* StreamableEventType: Device disconnected from registration lobby
 	*/
 	public final int SEVT_DEVICE_LOBBY_DISCONNECT = 4705;
+
+	/**
+	* StreamableEventType: UserGroup created.
+	*/
+	public final int SEVT_USERGROUP_NEW = 4800;
+
+	/**
+	* StreamableEventType: UserGroup deleted
+	*/
+	public final int SEVT_USERGROUP_REMOVED = 4801;
+
+	/**
+	* StreamableEventType: UserGroup updated.
+	*/
+	public final int SEVT_USERGROUP_UPDATED = 4802;
 
 	/**
 	* StreamableEventType

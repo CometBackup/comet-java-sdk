@@ -52,6 +52,10 @@ public class ServerMetaBrandingProperties {
 	@JsonProperty("ExternalAuthenticationSources")
 	public ArrayList<ExternalAuthenticationSourceDisplay> ExternalAuthenticationSources;
 
+	//If true, this Comet Server currently has no admins or users.
+	@JsonProperty("ServerIsEmpty")
+	public boolean ServerIsEmpty;
+
 
 	public ServerMetaBrandingProperties(){ }
 

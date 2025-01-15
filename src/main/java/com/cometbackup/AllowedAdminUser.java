@@ -49,6 +49,9 @@ public class AllowedAdminUser {
 	@JsonProperty("WebAuthnRegistrations")
 	public ArrayList<AdminWebAuthnRegistration> WebAuthnRegistrations;
 
+	@JsonProperty("RequirePasswordChange")
+	public boolean RequirePasswordChange;
+
 	//One of the ENCRYPTIONMETHOD_ constants
 	@JsonProperty("TOTPKeyEncryptionFormat")
 	public int TOTPKeyEncryptionFormat;
@@ -96,6 +99,7 @@ public class AllowedAdminUser {
 		ret.AllowPasswordAndWebAuthnLogin = this.AllowPasswordAndWebAuthnLogin;
 		ret.U2FRegistrations = this.U2FRegistrations;
 		ret.WebAuthnRegistrations = this.WebAuthnRegistrations;
+		ret.RequirePasswordChange = this.RequirePasswordChange;
 		ret.TOTPKeyEncryptionFormat = this.TOTPKeyEncryptionFormat;
 		ret.TOTPKey = this.TOTPKey;
 		ret.IPWhitelist = this.IPWhitelist;
@@ -110,6 +114,7 @@ public class AllowedAdminUser {
 		this.AllowPasswordAndWebAuthnLogin = other.AllowPasswordAndWebAuthnLogin;
 		this.U2FRegistrations = other.U2FRegistrations;
 		this.WebAuthnRegistrations = other.WebAuthnRegistrations;
+		this.RequirePasswordChange = other.RequirePasswordChange;
 		this.TOTPKeyEncryptionFormat = other.TOTPKeyEncryptionFormat;
 		this.TOTPKey = other.TOTPKey;
 		this.IPWhitelist = other.IPWhitelist;

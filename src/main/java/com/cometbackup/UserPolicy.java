@@ -29,6 +29,9 @@ public class UserPolicy {
 	@JsonProperty("StorageVaultProviders")
 	public StorageVaultProviderPolicy StorageVaultProviders;
 
+	@JsonProperty("DefaultNewStorageVault")
+	public String DefaultNewStorageVault = "";
+
 	@JsonProperty("PreventNewProtectedItem")
 	public boolean PreventNewProtectedItem;
 

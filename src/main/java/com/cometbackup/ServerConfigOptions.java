@@ -44,6 +44,9 @@ public class ServerConfigOptions {
 	@JsonProperty("IPRateLimit")
 	public RatelimitOptions IPRateLimit;
 
+	@JsonProperty("LoginProtection")
+	public LoginProtectionOptions LoginProtection;
+
 	@JsonProperty("License")
 	public LicenseOptions License;
 

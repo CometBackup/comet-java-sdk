@@ -56,9 +56,12 @@ public class ServerMetaVersionInfo {
 	@JsonProperty("ServerLicenseHash")
 	public String ServerLicenseHash = "";
 
+
+	// deprecated since Comet version 24.9.x
 	@JsonProperty("ServerLicenseFeaturesAll")
 	public boolean ServerLicenseFeaturesAll;
 
+	//A bitset of feature flags representing functionality available in this Comet Server's plan
 	@JsonProperty("ServerLicenseFeatureSet")
 	public long ServerLicenseFeatureSet;
 

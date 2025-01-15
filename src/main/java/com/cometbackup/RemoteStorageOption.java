@@ -76,6 +76,12 @@ public class RemoteStorageOption {
 	@JsonProperty("RebrandStorage")
 	public boolean RebrandStorage;
 
+	@JsonProperty("ID")
+	public String ID = "";
+
+	@JsonProperty("Default")
+	public boolean Default;
+
 
 	public RemoteStorageOption(){ }
 

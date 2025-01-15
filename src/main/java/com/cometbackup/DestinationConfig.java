@@ -247,6 +247,9 @@ public class DestinationConfig {
 	@JsonProperty("RetentionError")
 	public String RetentionError = "";
 
+	@JsonProperty("AssociatedDevices")
+	public ArrayList<String> AssociatedDevices;
+
 
 	public DestinationConfig(){ }
 
