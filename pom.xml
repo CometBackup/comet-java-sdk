@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cometbackup</groupId>
   <artifactId>comet-sdk</artifactId>
-  <version>v0.13.0</version>
+  <version>v0.14.0</version>
   <packaging>jar</packaging>
   <name>comet-sdk</name>
   <description>SDK and client to allow access to the Comet API</description>
