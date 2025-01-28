@@ -56,6 +56,19 @@ public class ServerMetaBrandingProperties {
 	@JsonProperty("ServerIsEmpty")
 	public boolean ServerIsEmpty;
 
+	@JsonProperty("CloudStorageName")
+	public String CloudStorageName = "";
+
+	//Will hide the "Pre-built software client" option from the server settings. Only properly enforced when custom
+	//branding is enforced via the license.
+	@JsonProperty("AdminHidePreBuiltClientOption")
+	public boolean AdminHidePreBuiltClientOption;
+
+	//Will hide Comet Storage from everywhere, including the admin view. Only properly enforced when custom branding is
+	//enforced via the license.
+	@JsonProperty("AdminHideBrandedCloudStorage")
+	public boolean AdminHideBrandedCloudStorage;
+
 
 	public ServerMetaBrandingProperties(){ }
 

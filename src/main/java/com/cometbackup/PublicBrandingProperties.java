@@ -35,6 +35,15 @@ public class PublicBrandingProperties {
 	@JsonProperty("HideBackgroundLogo")
 	public boolean HideBackgroundLogo;
 
+	@JsonProperty("CloudStorageName")
+	public String CloudStorageName = "";
+
+	@JsonProperty("AdminHidePreBuiltClientOption")
+	public boolean AdminHidePreBuiltClientOption;
+
+	@JsonProperty("AdminHideBrandedCloudStorage")
+	public boolean AdminHideBrandedCloudStorage;
+
 
 	public PublicBrandingProperties(){ }
 

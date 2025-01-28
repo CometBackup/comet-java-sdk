@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "24.12.2";
+	public final String APPLICATION_VERSION = "24.12.3";
 	public final int APPLICATION_VERSION_MAJOR = 24;
 	public final int APPLICATION_VERSION_MINOR = 12;
-	public final int APPLICATION_VERSION_REVISION = 2;
+	public final int APPLICATION_VERSION_REVISION = 3;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -388,17 +388,18 @@ public class Def {
 	public final int FTPS_MODE_EXPLICIT = 2;
 
 	/**
-	* Back up Hyper-V virtual machines using VSS mode. This includes all previous snapshots.
+	* HypervMethod: Back up Hyper-V virtual machines using VSS mode. This includes all previous snapshots.
 	*/
 	public final String HYPERV_METHOD_VSS = "vss";
 
 	/**
-	* Back up Hyper-V virtual machines using WMI mode. This includes the latest snapshot data only.
+	* HypervMethod: Back up Hyper-V virtual machines using WMI mode. This includes the latest snapshot data only.
 	*/
 	public final String HYPERV_METHOD_WMI_COPY = "copy";
 
 	/**
-	* Back up Hyper-V virtual machines using WMI mode with RCT acceleration. This includes the latest snapshot data only.
+	* HypervMethod: Back up Hyper-V virtual machines using WMI mode with RCT acceleration. This includes the latest
+	* snapshot data only.
 	*/
 	public final String HYPERV_METHOD_WMI_CBT = "wmi";
 
