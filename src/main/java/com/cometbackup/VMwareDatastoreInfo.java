@@ -8,17 +8,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* VMwareMachineInfo VMwareMachineInfo describes a single VMware virtual machine.
+* VMwareDatastoreInfo VMwareDatastoreInfo describes a single VMware datastore within a VMware datacenter.
 */
-public class VMwareMachineInfo {
+public class VMwareDatastoreInfo {
 	@JsonProperty("Name")
 	public String Name = "";
 
 
-	public VMwareMachineInfo(){ }
+	public VMwareDatastoreInfo(){ }
 
 	/**
-	* @return JSON representation of the VMwareMachineInfo
+	* @return JSON representation of the VMwareDatastoreInfo
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
 	public String toJson() throws JsonProcessingException {
@@ -26,12 +26,12 @@ public class VMwareMachineInfo {
 	}
 
 	/**
-	* @param jsStr JSON representation of a VMwareMachineInfo
-	* @return The deserialized VMwareMachineInfo
+	* @param jsStr JSON representation of a VMwareDatastoreInfo
+	* @return The deserialized VMwareDatastoreInfo
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
-	static public VMwareMachineInfo fromJson(String jsStr) throws JsonProcessingException {
-		return CometAPI.getObjectMapper().readValue(jsStr,VMwareMachineInfo.class);
+	static public VMwareDatastoreInfo fromJson(String jsStr) throws JsonProcessingException {
+		return CometAPI.getObjectMapper().readValue(jsStr,VMwareDatastoreInfo.class);
 	}
 
 }

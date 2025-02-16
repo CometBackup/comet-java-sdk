@@ -23,6 +23,9 @@ public class Office365MixedVirtualAccount {
 	@JsonProperty("EnabledServiceOption")
 	public long EnabledServiceOption;
 
+	@JsonProperty("hasLicense")
+	public boolean HasLicense;
+
 	@JsonProperty("id")
 	public String ID = "";
 
@@ -55,9 +58,6 @@ public class Office365MixedVirtualAccount {
 
 	@JsonProperty("MemberServiceOptions")
 	public long MemberServiceOptions;
-
-	@JsonProperty("hasLicense")
-	public boolean HasLicense;
 
 
 	public Office365MixedVirtualAccount(){ }

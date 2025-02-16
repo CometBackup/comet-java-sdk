@@ -8,10 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* BrowseVMwareResponse BrowseVMwareResponse contains a list of Virtual Machines when remotely browsing a VMware vSphere
-* connection.
+* DispatcherListSnapshotVirtualMachinesResponse
+* @since Version : 24.12.x
 */
-public class BrowseVMwareResponse {
+public class DispatcherListSnapshotVirtualMachinesResponse {
 	//If the operation was successful, the status will be in the 200-299 range.
 	@JsonProperty("Status")
 	public int Status;
@@ -19,14 +19,14 @@ public class BrowseVMwareResponse {
 	@JsonProperty("Message")
 	public String Message = "";
 
-	@JsonProperty("VirtualMachines")
-	public ArrayList<VMwareMachineInfo> VirtualMachines;
+	@JsonProperty("VMs")
+	public ArrayList<VMInfo> VMs;
 
 
-	public BrowseVMwareResponse(){ }
+	public DispatcherListSnapshotVirtualMachinesResponse(){ }
 
 	/**
-	* @return JSON representation of the BrowseVMwareResponse
+	* @return JSON representation of the DispatcherListSnapshotVirtualMachinesResponse
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
 	public String toJson() throws JsonProcessingException {
@@ -34,12 +34,12 @@ public class BrowseVMwareResponse {
 	}
 
 	/**
-	* @param jsStr JSON representation of a BrowseVMwareResponse
-	* @return The deserialized BrowseVMwareResponse
+	* @param jsStr JSON representation of a DispatcherListSnapshotVirtualMachinesResponse
+	* @return The deserialized DispatcherListSnapshotVirtualMachinesResponse
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
-	static public BrowseVMwareResponse fromJson(String jsStr) throws JsonProcessingException {
-		return CometAPI.getObjectMapper().readValue(jsStr,BrowseVMwareResponse.class);
+	static public DispatcherListSnapshotVirtualMachinesResponse fromJson(String jsStr) throws JsonProcessingException {
+		return CometAPI.getObjectMapper().readValue(jsStr,DispatcherListSnapshotVirtualMachinesResponse.class);
 	}
 
 	/**
@@ -54,6 +54,18 @@ public class BrowseVMwareResponse {
 	public void SetEmbeddedCometAPIResponseMessage(CometAPIResponseMessage other){
 		this.Status = other.Status;
 		this.Message = other.Message;
+	}
+
+	/**
+	* @return Returns a copy of the embedded VMInfoList
+	*/
+	public VMInfoList GetEmbeddedVMInfoList(){
+		var ret = new VMInfoList();
+		ret.VMs = this.VMs;
+		return ret;
+	}
+	public void SetEmbeddedVMInfoList(VMInfoList other){
+		this.VMs = other.VMs;
 	}
 
 }

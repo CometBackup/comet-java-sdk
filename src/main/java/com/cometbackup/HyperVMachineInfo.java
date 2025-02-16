@@ -17,6 +17,21 @@ public class HyperVMachineInfo {
 	@JsonProperty("Name")
 	public String DisplayName = "";
 
+	@JsonProperty("MemoryLimitMB")
+	public long MemoryLimitMB;
+
+	@JsonProperty("CPUCores")
+	public long CPUCores;
+
+	@JsonProperty("HardDrives")
+	public ArrayList<String> HardDrives;
+
+	@JsonProperty("Generation")
+	public int Generation;
+
+	@JsonProperty("ConfigFilePath")
+	public String ConfigFilePath = "";
+
 
 	public HyperVMachineInfo(){ }
 

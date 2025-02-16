@@ -60,6 +60,10 @@ public class DiskDrive {
 	@JsonProperty("SectorSize")
 	public long SectorSize;
 
+	//Used to indicate the partition conflicts on the disk.
+	@JsonProperty("PartitionConflicts")
+	public ArrayList<PartitionConflict> PartitionConflicts;
+
 
 	public DiskDrive(){ }
 

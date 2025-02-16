@@ -8,10 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* BrowseVMwareResponse BrowseVMwareResponse contains a list of Virtual Machines when remotely browsing a VMware vSphere
-* connection.
+* BrowseVMwareNetworksResponse BrowseVMwareHostsResponse contains a list of VMware Networks for a specific VMware
+* Datacenter, when remotely browsing a VMware vSphere connection.
 */
-public class BrowseVMwareResponse {
+public class BrowseVMwareNetworksResponse {
 	//If the operation was successful, the status will be in the 200-299 range.
 	@JsonProperty("Status")
 	public int Status;
@@ -19,14 +19,14 @@ public class BrowseVMwareResponse {
 	@JsonProperty("Message")
 	public String Message = "";
 
-	@JsonProperty("VirtualMachines")
-	public ArrayList<VMwareMachineInfo> VirtualMachines;
+	@JsonProperty("Networks")
+	public ArrayList<VMwareNetworkInfo> Networks;
 
 
-	public BrowseVMwareResponse(){ }
+	public BrowseVMwareNetworksResponse(){ }
 
 	/**
-	* @return JSON representation of the BrowseVMwareResponse
+	* @return JSON representation of the BrowseVMwareNetworksResponse
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
 	public String toJson() throws JsonProcessingException {
@@ -34,12 +34,12 @@ public class BrowseVMwareResponse {
 	}
 
 	/**
-	* @param jsStr JSON representation of a BrowseVMwareResponse
-	* @return The deserialized BrowseVMwareResponse
+	* @param jsStr JSON representation of a BrowseVMwareNetworksResponse
+	* @return The deserialized BrowseVMwareNetworksResponse
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
-	static public BrowseVMwareResponse fromJson(String jsStr) throws JsonProcessingException {
-		return CometAPI.getObjectMapper().readValue(jsStr,BrowseVMwareResponse.class);
+	static public BrowseVMwareNetworksResponse fromJson(String jsStr) throws JsonProcessingException {
+		return CometAPI.getObjectMapper().readValue(jsStr,BrowseVMwareNetworksResponse.class);
 	}
 
 	/**

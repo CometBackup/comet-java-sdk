@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "24.12.4";
+	public final String APPLICATION_VERSION = "24.12.5";
 	public final int APPLICATION_VERSION_MAJOR = 24;
 	public final int APPLICATION_VERSION_MINOR = 12;
-	public final int APPLICATION_VERSION_REVISION = 4;
+	public final int APPLICATION_VERSION_REVISION = 5;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -942,6 +942,11 @@ public class Def {
 	* RestoreType: Restore disk image backup as Hyper-V-compatible virtual disks (.vhdx format)
 	*/
 	public final int RESTORETYPE_WINDISK_VHDX = 13;
+
+	/**
+	* RestoreType: Restore virtual machines directly to hypervisor
+	*/
+	public final int RESTORETYPE_VMHOST = 14;
 
 	/**
 	* RestoreType: Legacy name alias - Prefer to use RESTORETYPE_PROCESS_ARCHIVE since multiple archive file formats are

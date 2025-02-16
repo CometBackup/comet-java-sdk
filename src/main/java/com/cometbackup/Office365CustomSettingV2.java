@@ -13,20 +13,35 @@ import java.util.*;
 * @since Version : 21.9.xx
 */
 public class Office365CustomSettingV2 {
-	//If true, then backup the entire Office 365 Tenant except the selected members. If false, backup the selected members
-	//only.
+
+	// deprecated since Comet version 24.12.2
+	//If true, then backup everything except the selected users (group members are still included)
 	@JsonProperty("Organization")
 	public boolean Organization;
 
-	//Key can be the ID of user, group or SharePoint
-	//Value is a bitset of the SERVICE_ constants, to select which services to back up for this member.
+	//If true, exclude all filtered IDs and Members. Backup everything else
+	@JsonProperty("FilterMode")
+	public boolean FilterMode;
+
+	//Key is the ID of User, Group, or Site
+	//Value is a bitset of the SERVICE_ constants, to select which services to back up for members
 	@JsonProperty("BackupOptions")
 	public HashMap<String, Long> BackupOptions;
 
-	//Key must be a group ID
-	//Value is a bitset of the SERVICE_ constants, to select which services to back up for this member.
+	//Key is the ID of a Group or Team Site
+	//Value is a bitset of the SERVICE_ constants, to select which services to back up for members
 	@JsonProperty("MemberBackupOptions")
 	public HashMap<String, Long> MemberBackupOptions;
+
+	//Key is the ID of a User, Group, or Site
+	//Value is a bitset of the SERVICE_ constants, to select which services to back up for members
+	@JsonProperty("FilterOptions")
+	public HashMap<String, Long> FilterOptions;
+
+	//Key is the ID of a Group or Team Site
+	//Value is a bitset of the SERVICE_ constants, to select which services to back up for members
+	@JsonProperty("FilterMemberOptions")
+	public HashMap<String, Long> FilterMemberOptions;
 
 
 	public Office365CustomSettingV2(){ }

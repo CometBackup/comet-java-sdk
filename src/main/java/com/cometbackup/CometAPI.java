@@ -2001,6 +2001,51 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminDispatcherBrowseVirtualMachinesAsync: Browse virtual machines in target snapshot
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param DestinationID The Storage Vault GUID
+	* @param SnapshotID Snapshot to search
+	* @return CompletableFuture yielding a DispatcherListSnapshotVirtualMachinesResponse
+	*/
+	public CompletableFuture<DispatcherListSnapshotVirtualMachinesResponse> AdminDispatcherBrowseVirtualMachinesAsync(String TargetID, String DestinationID, String SnapshotID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("DestinationID", DestinationID);
+		data.put("SnapshotID", SnapshotID);
+		var resultFuture = new CompletableFuture<DispatcherListSnapshotVirtualMachinesResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/browse-virtual-machines", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, DispatcherListSnapshotVirtualMachinesResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherBrowseVirtualMachines: Browse virtual machines in target snapshot
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param DestinationID The Storage Vault GUID
+	* @param SnapshotID Snapshot to search
+	* @return a DispatcherListSnapshotVirtualMachinesResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public DispatcherListSnapshotVirtualMachinesResponse AdminDispatcherBrowseVirtualMachines(String TargetID, String DestinationID, String SnapshotID) throws ExecutionException, InterruptedException{
+		return AdminDispatcherBrowseVirtualMachinesAsync(TargetID, DestinationID, SnapshotID).get();
+	}
+
+	/**
 	* AdminDispatcherDeepverifyStorageVaultAsync: Instruct a live connected device to deeply verify Storage Vault content
 	* This command is understood by Comet Backup 18.8.2 and newer.
 	* 
@@ -2971,6 +3016,207 @@ public class CometAPI {
 	*/
 	public BrowseVMwareResponse AdminDispatcherRequestBrowseVmware(String TargetID, VMwareConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRequestBrowseVmwareAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseVmwareDatacentersAsync: Request a list of VMware vSphere Datacenters on a VMware vSphere
+	* connection
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @return CompletableFuture yielding a BrowseVMwareDatacentersResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseVMwareDatacentersResponse> AdminDispatcherRequestBrowseVmwareDatacentersAsync(String TargetID, VMwareConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseVMwareDatacentersResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-vmware/datacenters", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseVMwareDatacentersResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseVmwareDatacenters: Request a list of VMware vSphere Datacenters on a VMware vSphere
+	* connection
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @return a BrowseVMwareDatacentersResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseVMwareDatacentersResponse AdminDispatcherRequestBrowseVmwareDatacenters(String TargetID, VMwareConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowseVmwareDatacentersAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseVmwareDatastoresAsync: Request a list of VMware vSphere Datastores on a VMware vSphere
+	* connection, for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return CompletableFuture yielding a BrowseVMwareDatastoresResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseVMwareDatastoresResponse> AdminDispatcherRequestBrowseVmwareDatastoresAsync(String TargetID, VMwareConnection Credentials, String Filter) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		data.put("Filter", Filter);
+		var resultFuture = new CompletableFuture<BrowseVMwareDatastoresResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-vmware/datastores", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseVMwareDatastoresResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseVmwareDatastores: Request a list of VMware vSphere Datastores on a VMware vSphere
+	* connection, for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return a BrowseVMwareDatastoresResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseVMwareDatastoresResponse AdminDispatcherRequestBrowseVmwareDatastores(String TargetID, VMwareConnection Credentials, String Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowseVmwareDatastoresAsync(TargetID, Credentials, Filter).get();
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseVmwareHostsAsync: Request a list of VMware vSphere Hosts on a VMware vSphere connection,
+	* for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return CompletableFuture yielding a BrowseVMwareHostsResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseVMwareHostsResponse> AdminDispatcherRequestBrowseVmwareHostsAsync(String TargetID, VMwareConnection Credentials, String Filter) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		data.put("Filter", Filter);
+		var resultFuture = new CompletableFuture<BrowseVMwareHostsResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-vmware/hosts", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseVMwareHostsResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseVmwareHosts: Request a list of VMware vSphere Hosts on a VMware vSphere connection, for a
+	* specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return a BrowseVMwareHostsResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseVMwareHostsResponse AdminDispatcherRequestBrowseVmwareHosts(String TargetID, VMwareConnection Credentials, String Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowseVmwareHostsAsync(TargetID, Credentials, Filter).get();
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseVmwareNetworksAsync: Request a list of VMware vSphere Networks on a VMware vSphere
+	* connection, for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return CompletableFuture yielding a BrowseVMwareNetworksResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseVMwareNetworksResponse> AdminDispatcherRequestBrowseVmwareNetworksAsync(String TargetID, VMwareConnection Credentials, String Filter) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		data.put("Filter", Filter);
+		var resultFuture = new CompletableFuture<BrowseVMwareNetworksResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-vmware/networks", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseVMwareNetworksResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseVmwareNetworks: Request a list of VMware vSphere Networks on a VMware vSphere connection,
+	* for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return a BrowseVMwareNetworksResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseVMwareNetworksResponse AdminDispatcherRequestBrowseVmwareNetworks(String TargetID, VMwareConnection Credentials, String Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowseVmwareNetworksAsync(TargetID, Credentials, Filter).get();
 	}
 
 	/**
@@ -6567,15 +6813,17 @@ public class CometAPI {
 	* @param PolicyID The policy ID to update or create
 	* @param Policy The policy data
 	* @param CheckPolicyHash (Optional) An atomic verification hash as supplied by the AdminPoliciesGet API
+	* @param Options (Optional) An array of PolicySourceID that will be explicitly deleted.
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminPoliciesSetAsync(String PolicyID, GroupPolicy Policy, String CheckPolicyHash) throws JsonProcessingException {
+	public CompletableFuture<CometAPIResponseMessage> AdminPoliciesSetAsync(String PolicyID, GroupPolicy Policy, String CheckPolicyHash, PolicyOptions Options) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("PolicyID", PolicyID);
 		data.put("Policy", CometAPI.getObjectMapper().writeValueAsString(Policy));
 		if (CheckPolicyHash != null) data.put("CheckPolicyHash",  CheckPolicyHash);
+		if (Options != null) data.put("Options", CometAPI.getObjectMapper().writeValueAsString(Options));
 		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/policies/set", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -6599,13 +6847,14 @@ public class CometAPI {
 	* @param PolicyID The policy ID to update or create
 	* @param Policy The policy data
 	* @param CheckPolicyHash (Optional) An atomic verification hash as supplied by the AdminPoliciesGet API
+	* @param Options (Optional) An array of PolicySourceID that will be explicitly deleted.
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminPoliciesSet(String PolicyID, GroupPolicy Policy, String CheckPolicyHash) throws ExecutionException, InterruptedException, JsonProcessingException{
-		return AdminPoliciesSetAsync(PolicyID, Policy, CheckPolicyHash).get();
+	public CometAPIResponseMessage AdminPoliciesSet(String PolicyID, GroupPolicy Policy, String CheckPolicyHash, PolicyOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminPoliciesSetAsync(PolicyID, Policy, CheckPolicyHash, Options).get();
 	}
 
 	/**
@@ -6970,15 +7219,17 @@ public class CometAPI {
 	* @param TargetUser Selected account username
 	* @param ProfileData Modified user profile
 	* @param RequireHash Previous hash parameter
+	* @param AdminOptions (Optional) Instructions for modifying user profile
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminSetUserProfileHashAsync(String TargetUser, UserProfileConfig ProfileData, String RequireHash) throws JsonProcessingException {
+	public CompletableFuture<CometAPIResponseMessage> AdminSetUserProfileHashAsync(String TargetUser, UserProfileConfig ProfileData, String RequireHash, AdminOptions AdminOptions) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetUser", TargetUser);
 		data.put("ProfileData", CometAPI.getObjectMapper().writeValueAsString(ProfileData));
 		data.put("RequireHash", RequireHash);
+		if (AdminOptions != null) data.put("AdminOptions", CometAPI.getObjectMapper().writeValueAsString(AdminOptions));
 		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/set-user-profile-hash", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -7004,13 +7255,14 @@ public class CometAPI {
 	* @param TargetUser Selected account username
 	* @param ProfileData Modified user profile
 	* @param RequireHash Previous hash parameter
+	* @param AdminOptions (Optional) Instructions for modifying user profile
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminSetUserProfileHash(String TargetUser, UserProfileConfig ProfileData, String RequireHash) throws ExecutionException, InterruptedException, JsonProcessingException{
-		return AdminSetUserProfileHashAsync(TargetUser, ProfileData, RequireHash).get();
+	public CometAPIResponseMessage AdminSetUserProfileHash(String TargetUser, UserProfileConfig ProfileData, String RequireHash, AdminOptions AdminOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminSetUserProfileHashAsync(TargetUser, ProfileData, RequireHash, AdminOptions).get();
 	}
 
 	/**
@@ -7928,6 +8180,53 @@ public class CometAPI {
 	}
 
 	/**
+	* UserWebDispatcherBrowseVirtualMachinesAsync: Browse virtual machines in target snapshot
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param DestinationID The Storage Vault GUID
+	* @param SnapshotID Snapshot to search
+	* @return CompletableFuture yielding a DispatcherListSnapshotVirtualMachinesResponse
+	*/
+	public CompletableFuture<DispatcherListSnapshotVirtualMachinesResponse> UserWebDispatcherBrowseVirtualMachinesAsync(String TargetID, String DestinationID, String SnapshotID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("DestinationID", DestinationID);
+		data.put("SnapshotID", SnapshotID);
+		var resultFuture = new CompletableFuture<DispatcherListSnapshotVirtualMachinesResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/browse-virtual-machines", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, DispatcherListSnapshotVirtualMachinesResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherBrowseVirtualMachines: Browse virtual machines in target snapshot
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param DestinationID The Storage Vault GUID
+	* @param SnapshotID Snapshot to search
+	* @return a DispatcherListSnapshotVirtualMachinesResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public DispatcherListSnapshotVirtualMachinesResponse UserWebDispatcherBrowseVirtualMachines(String TargetID, String DestinationID, String SnapshotID) throws ExecutionException, InterruptedException{
+		return UserWebDispatcherBrowseVirtualMachinesAsync(TargetID, DestinationID, SnapshotID).get();
+	}
+
+	/**
 	* UserWebDispatcherDeleteSnapshotAsync: Instruct a live connected device to delete a stored snapshot
 	* 
 	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
@@ -8565,6 +8864,215 @@ public class CometAPI {
 	*/
 	public BrowseVMwareResponse UserWebDispatcherRequestBrowseVmware(String TargetID, VMwareConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestBrowseVmwareAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseVmwareDatacentersAsync: Request a list of VMware vSphere Datacenters on a VMware
+	* vSphere connection
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @return CompletableFuture yielding a BrowseVMwareDatacentersResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseVMwareDatacentersResponse> UserWebDispatcherRequestBrowseVmwareDatacentersAsync(String TargetID, VMwareConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseVMwareDatacentersResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-vmware/datacenters", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseVMwareDatacentersResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseVmwareDatacenters: Request a list of VMware vSphere Datacenters on a VMware vSphere
+	* connection
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @return a BrowseVMwareDatacentersResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseVMwareDatacentersResponse UserWebDispatcherRequestBrowseVmwareDatacenters(String TargetID, VMwareConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowseVmwareDatacentersAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseVmwareDatastoresAsync: Request a list of VMware vSphere Datastores on a VMware vSphere
+	* connection, for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return CompletableFuture yielding a BrowseVMwareDatastoresResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseVMwareDatastoresResponse> UserWebDispatcherRequestBrowseVmwareDatastoresAsync(String TargetID, VMwareConnection Credentials, String Filter) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		data.put("Filter", Filter);
+		var resultFuture = new CompletableFuture<BrowseVMwareDatastoresResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-vmware/datastores", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseVMwareDatastoresResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseVmwareDatastores: Request a list of VMware vSphere Datastores on a VMware vSphere
+	* connection, for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return a BrowseVMwareDatastoresResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseVMwareDatastoresResponse UserWebDispatcherRequestBrowseVmwareDatastores(String TargetID, VMwareConnection Credentials, String Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowseVmwareDatastoresAsync(TargetID, Credentials, Filter).get();
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseVmwareHostsAsync: Request a list of VMware vSphere Hosts on a VMware vSphere
+	* connection, for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return CompletableFuture yielding a BrowseVMwareHostsResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseVMwareHostsResponse> UserWebDispatcherRequestBrowseVmwareHostsAsync(String TargetID, VMwareConnection Credentials, String Filter) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		data.put("Filter", Filter);
+		var resultFuture = new CompletableFuture<BrowseVMwareHostsResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-vmware/hosts", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseVMwareHostsResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseVmwareHosts: Request a list of VMware vSphere Hosts on a VMware vSphere connection, for
+	* a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return a BrowseVMwareHostsResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseVMwareHostsResponse UserWebDispatcherRequestBrowseVmwareHosts(String TargetID, VMwareConnection Credentials, String Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowseVmwareHostsAsync(TargetID, Credentials, Filter).get();
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseVmwareNetworksAsync: Request a list of VMware vSphere Networks on a VMware vSphere
+	* connection, for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return CompletableFuture yielding a BrowseVMwareNetworksResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseVMwareNetworksResponse> UserWebDispatcherRequestBrowseVmwareNetworksAsync(String TargetID, VMwareConnection Credentials, String Filter) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		data.put("Filter", Filter);
+		var resultFuture = new CompletableFuture<BrowseVMwareNetworksResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-vmware/networks", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseVMwareNetworksResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseVmwareNetworks: Request a list of VMware vSphere Networks on a VMware vSphere
+	* connection, for a specified VMware Datacenter
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The VMware vSphere connection settings
+	* @param Filter The name of the target VMware Datacenter
+	* @return a BrowseVMwareNetworksResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseVMwareNetworksResponse UserWebDispatcherRequestBrowseVmwareNetworks(String TargetID, VMwareConnection Credentials, String Filter) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowseVmwareNetworksAsync(TargetID, Credentials, Filter).get();
 	}
 
 	/**
