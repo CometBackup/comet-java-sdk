@@ -14,6 +14,14 @@ public class Partition {
 	@JsonProperty("DeviceName")
 	public String DeviceName = "";
 
+	//The partition's MBR or GPT id, if any
+	@JsonProperty("PartitionGuid")
+	public String PartitionGuid = "";
+
+	//The partition's offset within the physical disk
+	@JsonProperty("PartitionOffset")
+	public long PartitionOffset;
+
 	//The name of the filesystem used on this partition (e.g. "NTFS")
 	@JsonProperty("Filesystem")
 	public String Filesystem = "";

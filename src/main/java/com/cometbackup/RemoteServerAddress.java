@@ -17,15 +17,15 @@ public class RemoteServerAddress {
 	@JsonProperty("Description")
 	public String Description = "";
 
-	//For use with Comet Server (Storage Role / Auth Role)
+	//For use with Comet Server (Storage Gateway / Management Console)
 	@JsonProperty("RemoteAddress")
 	public String RemoteAddress = "";
 
-	//For use with Comet Server (Storage Role / Auth Role)
+	//For use with Comet Server (Storage Gateway / Management Console)
 	@JsonProperty("Username")
 	public String Username = "";
 
-	//For use with Comet Server (Storage Role / Auth Role)
+	//For use with Comet Server (Storage Gateway / Management Console)
 	@JsonProperty("Password")
 	public String Password = "";
 

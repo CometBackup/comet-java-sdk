@@ -35,6 +35,9 @@ public class RegistrationLobbyConnection {
 	@JsonProperty("IPAddress")
 	public String IPAddress = "";
 
+	@JsonProperty("Host")
+	public String Host = "";
+
 	@JsonProperty("ConnectionTime")
 	public long ConnectionTime;
 

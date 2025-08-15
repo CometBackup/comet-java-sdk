@@ -97,6 +97,10 @@ public class BackupJobDetail {
 	@JsonProperty("TotalUnlicensedMailsCount")
 	public long TotalUnlicensedMailsCount;
 
+	//The CRC32 of the billing data for this job.
+	@JsonProperty("BillingCrc32")
+	public long BillingCrc32;
+
 	//If this field is present, this job did not perform some work because the Storage Vault is currently busy.
 	@JsonProperty("ConflictingJobID")
 	public String ConflictingJobID = "";

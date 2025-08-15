@@ -8,9 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* RequestStorageVaultResponseMessage
+* BrowseProxmoxResponse
 */
-public class RequestStorageVaultResponseMessage {
+public class BrowseProxmoxResponse {
 	//If the operation was successful, the status will be in the 200-299 range.
 	@JsonProperty("Status")
 	public int Status;
@@ -18,20 +18,14 @@ public class RequestStorageVaultResponseMessage {
 	@JsonProperty("Message")
 	public String Message = "";
 
-	@JsonProperty("DestinationID")
-	public String DestinationID = "";
-
-	@JsonProperty("ProfileHash")
-	public String ProfileHash = "";
-
-	@JsonProperty("Profile")
-	public UserProfileConfig Profile;
+	@JsonProperty("VMs")
+	public ArrayList<PVEVM> VMs;
 
 
-	public RequestStorageVaultResponseMessage(){ }
+	public BrowseProxmoxResponse(){ }
 
 	/**
-	* @return JSON representation of the RequestStorageVaultResponseMessage
+	* @return JSON representation of the BrowseProxmoxResponse
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
 	public String toJson() throws JsonProcessingException {
@@ -39,12 +33,12 @@ public class RequestStorageVaultResponseMessage {
 	}
 
 	/**
-	* @param jsStr JSON representation of a RequestStorageVaultResponseMessage
-	* @return The deserialized RequestStorageVaultResponseMessage
+	* @param jsStr JSON representation of a BrowseProxmoxResponse
+	* @return The deserialized BrowseProxmoxResponse
 	* @throws JsonProcessingException If JSON is malformed (should not happen)
 	*/
-	static public RequestStorageVaultResponseMessage fromJson(String jsStr) throws JsonProcessingException {
-		return CometAPI.getObjectMapper().readValue(jsStr,RequestStorageVaultResponseMessage.class);
+	static public BrowseProxmoxResponse fromJson(String jsStr) throws JsonProcessingException {
+		return CometAPI.getObjectMapper().readValue(jsStr,BrowseProxmoxResponse.class);
 	}
 
 	/**

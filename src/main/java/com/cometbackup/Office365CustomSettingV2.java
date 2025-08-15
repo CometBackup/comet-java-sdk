@@ -23,23 +23,27 @@ public class Office365CustomSettingV2 {
 	@JsonProperty("FilterMode")
 	public boolean FilterMode;
 
+	//If true, backup everything, ignoring selection and filter options
+	@JsonProperty("WholeOrg")
+	public boolean WholeOrg;
+
 	//Key is the ID of User, Group, or Site
-	//Value is a bitset of the SERVICE_ constants, to select which services to back up for members
+	//Value is a bitset of the SERVICE_ constants, to select which services to backup for accounts
 	@JsonProperty("BackupOptions")
 	public HashMap<String, Long> BackupOptions;
 
 	//Key is the ID of a Group or Team Site
-	//Value is a bitset of the SERVICE_ constants, to select which services to back up for members
+	//Value is a bitset of the SERVICE_ constants, to select which services to backup for members
 	@JsonProperty("MemberBackupOptions")
 	public HashMap<String, Long> MemberBackupOptions;
 
 	//Key is the ID of a User, Group, or Site
-	//Value is a bitset of the SERVICE_ constants, to select which services to back up for members
+	//Value is a bitset of the SERVICE_ constants, to select which services to not backup for accounts
 	@JsonProperty("FilterOptions")
 	public HashMap<String, Long> FilterOptions;
 
 	//Key is the ID of a Group or Team Site
-	//Value is a bitset of the SERVICE_ constants, to select which services to back up for members
+	//Value is a bitset of the SERVICE_ constants, to select which services to not backup for members
 	@JsonProperty("FilterMemberOptions")
 	public HashMap<String, Long> FilterMemberOptions;
 

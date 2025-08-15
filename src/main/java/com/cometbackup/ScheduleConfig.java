@@ -38,6 +38,12 @@ public class ScheduleConfig {
 	@JsonProperty("RandomDelaySecs")
 	public long RandomDelaySecs;
 
+	@JsonProperty("SelectedMonth")
+	public long SelectedMonth;
+
+	@JsonProperty("SelectedDay")
+	public long SelectedDay;
+
 
 	public ScheduleConfig(){ }
 

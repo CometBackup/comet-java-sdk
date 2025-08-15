@@ -2973,6 +2973,138 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminDispatcherRequestBrowseProxmoxAsync: Request a list of Proxmox virtual machines and containers
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The Proxmox connection settings
+	* @return CompletableFuture yielding a BrowseProxmoxResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseProxmoxResponse> AdminDispatcherRequestBrowseProxmoxAsync(String TargetID, ProxmoxConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseProxmoxResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-proxmox", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseProxmoxResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseProxmox: Request a list of Proxmox virtual machines and containers
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The Proxmox connection settings
+	* @return a BrowseProxmoxResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseProxmoxResponse AdminDispatcherRequestBrowseProxmox(String TargetID, ProxmoxConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowseProxmoxAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseProxmoxNodesAsync: Request a list of Proxmox nodes
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The SSH connection settings
+	* @return CompletableFuture yielding a BrowseProxmoxNodesResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseProxmoxNodesResponse> AdminDispatcherRequestBrowseProxmoxNodesAsync(String TargetID, SSHConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseProxmoxNodesResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-proxmox/nodes", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseProxmoxNodesResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseProxmoxNodes: Request a list of Proxmox nodes
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The SSH connection settings
+	* @return a BrowseProxmoxNodesResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseProxmoxNodesResponse AdminDispatcherRequestBrowseProxmoxNodes(String TargetID, SSHConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowseProxmoxNodesAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseProxmoxStorageAsync: Request a list of configured Proxmox storage
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The SSH connection settings
+	* @return CompletableFuture yielding a BrowseProxmoxStorageResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseProxmoxStorageResponse> AdminDispatcherRequestBrowseProxmoxStorageAsync(String TargetID, SSHConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseProxmoxStorageResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-proxmox/storage", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseProxmoxStorageResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherRequestBrowseProxmoxStorage: Request a list of configured Proxmox storage
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The SSH connection settings
+	* @return a BrowseProxmoxStorageResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseProxmoxStorageResponse AdminDispatcherRequestBrowseProxmoxStorage(String TargetID, SSHConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowseProxmoxStorageAsync(TargetID, Credentials).get();
+	}
+
+	/**
 	* AdminDispatcherRequestBrowseVmwareAsync: Request a list of VMware vSphere virtual machines
 	* The remote device must have given consent for an MSP to browse their files.
 	* 
@@ -3965,13 +4097,16 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
+	* @param AllowUnsafe (Optional) Allow legacy Storage Vault unlocking, which is unsafe in some cases.
 	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherUnlockAsync(String TargetID, String Destination)  {
+	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherUnlockAsync(String TargetID, String Destination, Boolean AllowUnsafe) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetID", TargetID);
 		data.put("Destination", Destination);
+		if (AllowUnsafe != null) data.put("AllowUnsafe", CometAPI.getObjectMapper().writeValueAsString(AllowUnsafe));
 		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/unlock", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -3994,12 +4129,14 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
+	* @param AllowUnsafe (Optional) Allow legacy Storage Vault unlocking, which is unsafe in some cases.
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherUnlock(String TargetID, String Destination) throws ExecutionException, InterruptedException{
-		return AdminDispatcherUnlockAsync(TargetID, Destination).get();
+	public CometAPIResponseMessage AdminDispatcherUnlock(String TargetID, String Destination, Boolean AllowUnsafe) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherUnlockAsync(TargetID, Destination, AllowUnsafe).get();
 	}
 
 	/**
@@ -6951,15 +7088,17 @@ public class CometAPI {
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
 	* @param DeviceID (Optional) The ID of the device to be added as a associated device of the Storage Vault
+	* @param ProfileHash (Optional) The profile hash of the user profile
 	* @return CompletableFuture yielding a RequestStorageVaultResponseMessage
 	*/
-	public CompletableFuture<RequestStorageVaultResponseMessage> AdminRequestStorageVaultAsync(String TargetUser, String StorageProvider, String SelfAddress, String DeviceID)  {
+	public CompletableFuture<RequestStorageVaultResponseMessage> AdminRequestStorageVaultAsync(String TargetUser, String StorageProvider, String SelfAddress, String DeviceID, String ProfileHash)  {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetUser", TargetUser);
 		data.put("StorageProvider", StorageProvider);
 		data.put("SelfAddress", (SelfAddress == null) ? this.serverURL : SelfAddress);
 		if (DeviceID != null) data.put("DeviceID",  DeviceID);
+		if (ProfileHash != null) data.put("ProfileHash",  ProfileHash);
 		var resultFuture = new CompletableFuture<RequestStorageVaultResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/request-storage-vault", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -6986,12 +7125,13 @@ public class CometAPI {
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
 	* @param DeviceID (Optional) The ID of the device to be added as a associated device of the Storage Vault
+	* @param ProfileHash (Optional) The profile hash of the user profile
 	* @return a RequestStorageVaultResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public RequestStorageVaultResponseMessage AdminRequestStorageVault(String TargetUser, String StorageProvider, String SelfAddress, String DeviceID) throws ExecutionException, InterruptedException{
-		return AdminRequestStorageVaultAsync(TargetUser, StorageProvider, SelfAddress, DeviceID).get();
+	public RequestStorageVaultResponseMessage AdminRequestStorageVault(String TargetUser, String StorageProvider, String SelfAddress, String DeviceID, String ProfileHash) throws ExecutionException, InterruptedException{
+		return AdminRequestStorageVaultAsync(TargetUser, StorageProvider, SelfAddress, DeviceID, ProfileHash).get();
 	}
 
 	/**
@@ -7220,22 +7360,22 @@ public class CometAPI {
 	* @param ProfileData Modified user profile
 	* @param RequireHash Previous hash parameter
 	* @param AdminOptions (Optional) Instructions for modifying user profile
-	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @return CompletableFuture yielding a GetProfileAndHashResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminSetUserProfileHashAsync(String TargetUser, UserProfileConfig ProfileData, String RequireHash, AdminOptions AdminOptions) throws JsonProcessingException {
+	public CompletableFuture<GetProfileAndHashResponseMessage> AdminSetUserProfileHashAsync(String TargetUser, UserProfileConfig ProfileData, String RequireHash, AdminOptions AdminOptions) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetUser", TargetUser);
 		data.put("ProfileData", CometAPI.getObjectMapper().writeValueAsString(ProfileData));
 		data.put("RequireHash", RequireHash);
 		if (AdminOptions != null) data.put("AdminOptions", CometAPI.getObjectMapper().writeValueAsString(AdminOptions));
-		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var resultFuture = new CompletableFuture<GetProfileAndHashResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/set-user-profile-hash", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
 			try {
 				String jsonBody = httpResponse.body();
-				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, GetProfileAndHashResponseMessage.class));
 			} catch (IOException e) {
 				resultFuture.completeExceptionally(e);
 			}
@@ -7256,12 +7396,12 @@ public class CometAPI {
 	* @param ProfileData Modified user profile
 	* @param RequireHash Previous hash parameter
 	* @param AdminOptions (Optional) Instructions for modifying user profile
-	* @return a CometAPIResponseMessage
+	* @return a GetProfileAndHashResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminSetUserProfileHash(String TargetUser, UserProfileConfig ProfileData, String RequireHash, AdminOptions AdminOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
+	public GetProfileAndHashResponseMessage AdminSetUserProfileHash(String TargetUser, UserProfileConfig ProfileData, String RequireHash, AdminOptions AdminOptions) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminSetUserProfileHashAsync(TargetUser, ProfileData, RequireHash, AdminOptions).get();
 	}
 
@@ -8821,6 +8961,145 @@ public class CometAPI {
 	}
 
 	/**
+	* UserWebDispatcherRequestBrowseProxmoxAsync: Request a list of Proxmox virtual machines and containers
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The Proxmox connection settings
+	* @return CompletableFuture yielding a BrowseProxmoxResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseProxmoxResponse> UserWebDispatcherRequestBrowseProxmoxAsync(String TargetID, ProxmoxConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseProxmoxResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-proxmox", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseProxmoxResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseProxmox: Request a list of Proxmox virtual machines and containers
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials The Proxmox connection settings
+	* @return a BrowseProxmoxResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseProxmoxResponse UserWebDispatcherRequestBrowseProxmox(String TargetID, ProxmoxConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowseProxmoxAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseProxmoxNodesAsync: Request a list of Proxmox nodes from a Proxmox cluster
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials SSH connection settings
+	* @return CompletableFuture yielding a BrowseProxmoxNodesResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseProxmoxNodesResponse> UserWebDispatcherRequestBrowseProxmoxNodesAsync(String TargetID, SSHConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseProxmoxNodesResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-proxmox/nodes", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseProxmoxNodesResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseProxmoxNodes: Request a list of Proxmox nodes from a Proxmox cluster
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials SSH connection settings
+	* @return a BrowseProxmoxNodesResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseProxmoxNodesResponse UserWebDispatcherRequestBrowseProxmoxNodes(String TargetID, SSHConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowseProxmoxNodesAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseProxmoxStorageAsync: Request a list of configured Proxmox storage from a Proxmox
+	* cluster
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials SSH connection settings
+	* @return CompletableFuture yielding a BrowseProxmoxStorageResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseProxmoxStorageResponse> UserWebDispatcherRequestBrowseProxmoxStorageAsync(String TargetID, SSHConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseProxmoxStorageResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-proxmox/storage", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseProxmoxStorageResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowseProxmoxStorage: Request a list of configured Proxmox storage from a Proxmox cluster
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param Credentials SSH connection settings
+	* @return a BrowseProxmoxStorageResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseProxmoxStorageResponse UserWebDispatcherRequestBrowseProxmoxStorage(String TargetID, SSHConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowseProxmoxStorageAsync(TargetID, Credentials).get();
+	}
+
+	/**
 	* UserWebDispatcherRequestBrowseVmwareAsync: Request a list of VMware vSphere virtual machines
 	* 
 	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
@@ -9859,16 +10138,22 @@ public class CometAPI {
 	}
 
 	/**
-	* UserWebGetJobsForCustomSearchAsync: List all backup jobs (Web)
+	* UserWebGetJobsForCustomSearchAsync: Get jobs (for custom search)
+	* The jobs are returned in an unspecified order.
 	* 
 	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
 	* access.
 	* This API requires the Auth Role to be enabled.
+	* @param Query (No description available)
 	* @return CompletableFuture yielding a BackupJobDetail[]
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<BackupJobDetail[]> UserWebGetJobsForCustomSearchAsync()  {
+	public CompletableFuture<BackupJobDetail[]> UserWebGetJobsForCustomSearchAsync(SearchClause Query) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("Query", CometAPI.getObjectMapper().writeValueAsString(Query));
 		var resultFuture = new CompletableFuture<BackupJobDetail[]>(); 
-		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/get-jobs-for-custom-search", null);
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/get-jobs-for-custom-search", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
 			try {
 				String jsonBody = httpResponse.body();
@@ -9881,17 +10166,20 @@ public class CometAPI {
 	}
 
 	/**
-	* UserWebGetJobsForCustomSearch: List all backup jobs (Web)
+	* UserWebGetJobsForCustomSearch: Get jobs (for custom search)
+	* The jobs are returned in an unspecified order.
 	* 
 	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
 	* access.
 	* This API requires the Auth Role to be enabled.
+	* @param Query (No description available)
 	* @return a BackupJobDetail[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BackupJobDetail[] UserWebGetJobsForCustomSearch() throws ExecutionException, InterruptedException{
-		return UserWebGetJobsForCustomSearchAsync().get();
+	public BackupJobDetail[] UserWebGetJobsForCustomSearch(SearchClause Query) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebGetJobsForCustomSearchAsync(Query).get();
 	}
 
 	/**
@@ -10080,14 +10368,16 @@ public class CometAPI {
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
 	* @param DeviceID (Optional) The ID of the device to be added as a associated device of the Storage Vault
+	* @param ProfileHash (Optional) The profile hash of the user profile
 	* @return CompletableFuture yielding a RequestStorageVaultResponseMessage
 	*/
-	public CompletableFuture<RequestStorageVaultResponseMessage> UserWebRequestStorageVaultAsync(String StorageProvider, String SelfAddress, String DeviceID)  {
+	public CompletableFuture<RequestStorageVaultResponseMessage> UserWebRequestStorageVaultAsync(String StorageProvider, String SelfAddress, String DeviceID, String ProfileHash)  {
 		var data = new HashMap<String,String>();
 
 		data.put("StorageProvider", StorageProvider);
 		data.put("SelfAddress", (SelfAddress == null) ? this.serverURL : SelfAddress);
 		if (DeviceID != null) data.put("DeviceID",  DeviceID);
+		if (ProfileHash != null) data.put("ProfileHash",  ProfileHash);
 		var resultFuture = new CompletableFuture<RequestStorageVaultResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/request-storage-vault", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -10113,12 +10403,13 @@ public class CometAPI {
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
 	* @param DeviceID (Optional) The ID of the device to be added as a associated device of the Storage Vault
+	* @param ProfileHash (Optional) The profile hash of the user profile
 	* @return a RequestStorageVaultResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public RequestStorageVaultResponseMessage UserWebRequestStorageVault(String StorageProvider, String SelfAddress, String DeviceID) throws ExecutionException, InterruptedException{
-		return UserWebRequestStorageVaultAsync(StorageProvider, SelfAddress, DeviceID).get();
+	public RequestStorageVaultResponseMessage UserWebRequestStorageVault(String StorageProvider, String SelfAddress, String DeviceID, String ProfileHash) throws ExecutionException, InterruptedException{
+		return UserWebRequestStorageVaultAsync(StorageProvider, SelfAddress, DeviceID, ProfileHash).get();
 	}
 
 	/**
@@ -10238,20 +10529,20 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param ProfileData Updated account profile
 	* @param ProfileHash Previous account profile hash
-	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @return CompletableFuture yielding a GetProfileAndHashResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> UserWebSetProfileHashAsync(UserProfileConfig ProfileData, String ProfileHash) throws JsonProcessingException {
+	public CompletableFuture<GetProfileAndHashResponseMessage> UserWebSetProfileHashAsync(UserProfileConfig ProfileData, String ProfileHash) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("ProfileData", CometAPI.getObjectMapper().writeValueAsString(ProfileData));
 		data.put("ProfileHash", ProfileHash);
-		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var resultFuture = new CompletableFuture<GetProfileAndHashResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/set-profile-hash", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
 			try {
 				String jsonBody = httpResponse.body();
-				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, GetProfileAndHashResponseMessage.class));
 			} catch (IOException e) {
 				resultFuture.completeExceptionally(e);
 			}
@@ -10267,12 +10558,12 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param ProfileData Updated account profile
 	* @param ProfileHash Previous account profile hash
-	* @return a CometAPIResponseMessage
+	* @return a GetProfileAndHashResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage UserWebSetProfileHash(UserProfileConfig ProfileData, String ProfileHash) throws ExecutionException, InterruptedException, JsonProcessingException{
+	public GetProfileAndHashResponseMessage UserWebSetProfileHash(UserProfileConfig ProfileData, String ProfileHash) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebSetProfileHashAsync(ProfileData, ProfileHash).get();
 	}
 

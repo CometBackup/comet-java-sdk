@@ -32,6 +32,9 @@ public class RetentionRange {
 	@JsonProperty("Months")
 	public long Months;
 
+	@JsonProperty("Years")
+	public long Years;
+
 	//0: Sunday, 6: Saturday
 	@JsonProperty("WeekOffset")
 	public long WeekOffset;
@@ -42,6 +45,9 @@ public class RetentionRange {
 	//For example, if the offset is set to 30, no backup will be kept for February.
 	@JsonProperty("MonthOffset")
 	public long MonthOffset;
+
+	@JsonProperty("YearOffset")
+	public long YearOffset;
 
 
 	public RetentionRange(){ }

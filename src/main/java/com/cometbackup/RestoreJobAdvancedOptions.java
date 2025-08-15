@@ -111,6 +111,10 @@ public class RestoreJobAdvancedOptions {
 	@JsonProperty("HyperVConnection")
 	public HyperVRestoreTargetOptions HyperVConnection;
 
+	//For RESTORETYPE_VMHOST
+	@JsonProperty("ProxmoxConnection")
+	public ProxmoxRestoreTargetOptions ProxmoxConnection;
+
 
 	public RestoreJobAdvancedOptions(){ }
 
