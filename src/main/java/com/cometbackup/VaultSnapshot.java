@@ -26,6 +26,9 @@ public class VaultSnapshot {
 	@JsonProperty("HasOriginalPathInfo")
 	public boolean HasOriginalPathInfo;
 
+	@JsonProperty("Tags")
+	public ArrayList<String> Tags;
+
 
 	public VaultSnapshot(){ }
 

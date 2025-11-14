@@ -1866,6 +1866,48 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminDeleteProtectedItemAsync: Delete a Protected Item
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetUser Selected account username
+	* @param SourceID Selected Protected Item GUID
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminDeleteProtectedItemAsync(String TargetUser, String SourceID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetUser", TargetUser);
+		data.put("SourceID", SourceID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/delete-protected-item", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDeleteProtectedItem: Delete a Protected Item
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetUser Selected account username
+	* @param SourceID Selected Protected Item GUID
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage AdminDeleteProtectedItem(String TargetUser, String SourceID) throws ExecutionException, InterruptedException{
+		return AdminDeleteProtectedItemAsync(TargetUser, SourceID).get();
+	}
+
+	/**
 	* AdminDeleteUserAsync: Delete user account
 	* This does not remove any storage buckets. Unused storage buckets will be cleaned up by the Constellation Role.
 	* Any stored data can not be decrypted without the user profile. Misuse can cause data loss!
@@ -2272,6 +2314,47 @@ public class CometAPI {
 	*/
 	public EmailReportGeneratedPreview AdminDispatcherEmailPreview(String TargetID, String Snapshot, String Destination, String Path) throws ExecutionException, InterruptedException{
 		return AdminDispatcherEmailPreviewAsync(TargetID, Snapshot, Destination, Path).get();
+	}
+
+	/**
+	* AdminDispatcherForceLoginAsync: Instruct a live connected device to re-enter login credentials
+	* The device will terminate its live-connection process and will not reconnect.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherForceLoginAsync(String TargetID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/force-login", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherForceLogin: Instruct a live connected device to re-enter login credentials
+	* The device will terminate its live-connection process and will not reconnect.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage AdminDispatcherForceLogin(String TargetID) throws ExecutionException, InterruptedException{
+		return AdminDispatcherForceLoginAsync(TargetID).get();
 	}
 
 	/**
@@ -3730,19 +3813,19 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @param BackupRule The schedule GUID
-	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @return CompletableFuture yielding a DispatchWithJobIDResponse
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherRunBackupAsync(String TargetID, String BackupRule)  {
+	public CompletableFuture<DispatchWithJobIDResponse> AdminDispatcherRunBackupAsync(String TargetID, String BackupRule)  {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetID", TargetID);
 		data.put("BackupRule", BackupRule);
-		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var resultFuture = new CompletableFuture<DispatchWithJobIDResponse>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/run-backup", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
 			try {
 				String jsonBody = httpResponse.body();
-				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, DispatchWithJobIDResponse.class));
 			} catch (IOException e) {
 				resultFuture.completeExceptionally(e);
 			}
@@ -3757,11 +3840,11 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @param BackupRule The schedule GUID
-	* @return a CometAPIResponseMessage
+	* @return a DispatchWithJobIDResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminDispatcherRunBackup(String TargetID, String BackupRule) throws ExecutionException, InterruptedException{
+	public DispatchWithJobIDResponse AdminDispatcherRunBackup(String TargetID, String BackupRule) throws ExecutionException, InterruptedException{
 		return AdminDispatcherRunBackupAsync(TargetID, BackupRule).get();
 	}
 
@@ -3774,22 +3857,22 @@ public class CometAPI {
 	* @param Source The Protected Item GUID
 	* @param Destination The Storage Vault GUID
 	* @param Options (Optional) Extra job parameters (&gt;= 19.3.6)
-	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @return CompletableFuture yielding a DispatchWithJobIDResponse
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherRunBackupCustomAsync(String TargetID, String Source, String Destination, BackupJobAdvancedOptions Options) throws JsonProcessingException {
+	public CompletableFuture<DispatchWithJobIDResponse> AdminDispatcherRunBackupCustomAsync(String TargetID, String Source, String Destination, BackupJobAdvancedOptions Options) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetID", TargetID);
 		data.put("Source", Source);
 		data.put("Destination", Destination);
 		if (Options != null) data.put("Options", CometAPI.getObjectMapper().writeValueAsString(Options));
-		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var resultFuture = new CompletableFuture<DispatchWithJobIDResponse>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/run-backup-custom", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
 			try {
 				String jsonBody = httpResponse.body();
-				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, DispatchWithJobIDResponse.class));
 			} catch (IOException e) {
 				resultFuture.completeExceptionally(e);
 			}
@@ -3806,12 +3889,12 @@ public class CometAPI {
 	* @param Source The Protected Item GUID
 	* @param Destination The Storage Vault GUID
 	* @param Options (Optional) Extra job parameters (&gt;= 19.3.6)
-	* @return a CometAPIResponseMessage
+	* @return a DispatchWithJobIDResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherRunBackupCustom(String TargetID, String Source, String Destination, BackupJobAdvancedOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
+	public DispatchWithJobIDResponse AdminDispatcherRunBackupCustom(String TargetID, String Source, String Destination, BackupJobAdvancedOptions Options) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRunBackupCustomAsync(TargetID, Source, Destination, Options).get();
 	}
 
@@ -3828,10 +3911,10 @@ public class CometAPI {
 	* @param Snapshot (Optional) If present, restore a specific snapshot. Otherwise, restore the latest snapshot for the
 	* selected Protected Item + Storage Vault pair
 	* @param Paths (Optional) If present, restore these paths only. Otherwise, restore all data (&gt;= 19.3.0)
-	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @return CompletableFuture yielding a DispatchWithJobIDResponse
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherRunRestoreAsync(String TargetID, String Path, String Source, String Destination, String Snapshot, String[] Paths) throws JsonProcessingException {
+	public CompletableFuture<DispatchWithJobIDResponse> AdminDispatcherRunRestoreAsync(String TargetID, String Path, String Source, String Destination, String Snapshot, String[] Paths) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetID", TargetID);
@@ -3840,12 +3923,12 @@ public class CometAPI {
 		data.put("Destination", Destination);
 		if (Snapshot != null) data.put("Snapshot",  Snapshot);
 		if (Paths != null) data.put("Paths", CometAPI.getObjectMapper().writeValueAsString(Paths));
-		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var resultFuture = new CompletableFuture<DispatchWithJobIDResponse>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/run-restore", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
 			try {
 				String jsonBody = httpResponse.body();
-				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, DispatchWithJobIDResponse.class));
 			} catch (IOException e) {
 				resultFuture.completeExceptionally(e);
 			}
@@ -3866,12 +3949,12 @@ public class CometAPI {
 	* @param Snapshot (Optional) If present, restore a specific snapshot. Otherwise, restore the latest snapshot for the
 	* selected Protected Item + Storage Vault pair
 	* @param Paths (Optional) If present, restore these paths only. Otherwise, restore all data (&gt;= 19.3.0)
-	* @return a CometAPIResponseMessage
+	* @return a DispatchWithJobIDResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherRunRestore(String TargetID, String Path, String Source, String Destination, String Snapshot, String[] Paths) throws ExecutionException, InterruptedException, JsonProcessingException{
+	public DispatchWithJobIDResponse AdminDispatcherRunRestore(String TargetID, String Path, String Source, String Destination, String Snapshot, String[] Paths) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRunRestoreAsync(TargetID, Path, Source, Destination, Snapshot, Paths).get();
 	}
 
@@ -3894,10 +3977,10 @@ public class CometAPI {
 	* don&#39;t need to walk the entire tree just to find the total file size and will speed up the restoration process.
 	* @param KnownDirCount (Optional) The number of directories to restore, if known. Supplying this means we don&#39;t
 	* need to walk the entire tree just to find the number of directories and will speed up the restoration process.
-	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @return CompletableFuture yielding a DispatchWithJobIDResponse
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherRunRestoreCustomAsync(String TargetID, String Source, String Destination, RestoreJobAdvancedOptions Options, String Snapshot, String[] Paths, Integer KnownFileCount, Integer KnownByteCount, Integer KnownDirCount) throws JsonProcessingException {
+	public CompletableFuture<DispatchWithJobIDResponse> AdminDispatcherRunRestoreCustomAsync(String TargetID, String Source, String Destination, RestoreJobAdvancedOptions Options, String Snapshot, String[] Paths, Integer KnownFileCount, Integer KnownByteCount, Integer KnownDirCount) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetID", TargetID);
@@ -3909,12 +3992,12 @@ public class CometAPI {
 		if (KnownFileCount != null) data.put("KnownFileCount", CometAPI.getObjectMapper().writeValueAsString(KnownFileCount));
 		if (KnownByteCount != null) data.put("KnownByteCount", CometAPI.getObjectMapper().writeValueAsString(KnownByteCount));
 		if (KnownDirCount != null) data.put("KnownDirCount", CometAPI.getObjectMapper().writeValueAsString(KnownDirCount));
-		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var resultFuture = new CompletableFuture<DispatchWithJobIDResponse>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/run-restore-custom", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
 			try {
 				String jsonBody = httpResponse.body();
-				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, DispatchWithJobIDResponse.class));
 			} catch (IOException e) {
 				resultFuture.completeExceptionally(e);
 			}
@@ -3941,12 +4024,12 @@ public class CometAPI {
 	* don&#39;t need to walk the entire tree just to find the total file size and will speed up the restoration process.
 	* @param KnownDirCount (Optional) The number of directories to restore, if known. Supplying this means we don&#39;t
 	* need to walk the entire tree just to find the number of directories and will speed up the restoration process.
-	* @return a CometAPIResponseMessage
+	* @return a DispatchWithJobIDResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherRunRestoreCustom(String TargetID, String Source, String Destination, RestoreJobAdvancedOptions Options, String Snapshot, String[] Paths, Integer KnownFileCount, Integer KnownByteCount, Integer KnownDirCount) throws ExecutionException, InterruptedException, JsonProcessingException{
+	public DispatchWithJobIDResponse AdminDispatcherRunRestoreCustom(String TargetID, String Source, String Destination, RestoreJobAdvancedOptions Options, String Snapshot, String[] Paths, Integer KnownFileCount, Integer KnownByteCount, Integer KnownDirCount) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherRunRestoreCustomAsync(TargetID, Source, Destination, Options, Snapshot, Paths, KnownFileCount, KnownByteCount, KnownDirCount).get();
 	}
 
@@ -4137,6 +4220,48 @@ public class CometAPI {
 	*/
 	public CometAPIResponseMessage AdminDispatcherUnlock(String TargetID, String Destination, Boolean AllowUnsafe) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return AdminDispatcherUnlockAsync(TargetID, Destination, AllowUnsafe).get();
+	}
+
+	/**
+	* AdminDispatcherUpdateLoginPasswordAsync: Instruct a live connected device to update its login password
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param NewPassword The new password of this user
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherUpdateLoginPasswordAsync(String TargetID, String NewPassword)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("NewPassword", NewPassword);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/update-login-password", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherUpdateLoginPassword: Instruct a live connected device to update its login password
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param NewPassword The new password of this user
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage AdminDispatcherUpdateLoginPassword(String TargetID, String NewPassword) throws ExecutionException, InterruptedException{
+		return AdminDispatcherUpdateLoginPasswordAsync(TargetID, NewPassword).get();
 	}
 
 	/**
@@ -4736,6 +4861,48 @@ public class CometAPI {
 	*/
 	public BackupJobDetail[] AdminGetJobsRecent() throws ExecutionException, InterruptedException{
 		return AdminGetJobsRecentAsync().get();
+	}
+
+	/**
+	* AdminGetProtectedItemWithBackupRulesAsync: Get a Protected Item with its backup rules
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetUser Selected account username
+	* @param SourceID Selected Protected Item GUID
+	* @return CompletableFuture yielding a ProtectedItemWithBackupRulesResponse
+	*/
+	public CompletableFuture<ProtectedItemWithBackupRulesResponse> AdminGetProtectedItemWithBackupRulesAsync(String TargetUser, String SourceID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetUser", TargetUser);
+		data.put("SourceID", SourceID);
+		var resultFuture = new CompletableFuture<ProtectedItemWithBackupRulesResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/get-protected-item-with-backup-rules", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, ProtectedItemWithBackupRulesResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminGetProtectedItemWithBackupRules: Get a Protected Item with its backup rules
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetUser Selected account username
+	* @param SourceID Selected Protected Item GUID
+	* @return a ProtectedItemWithBackupRulesResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public ProtectedItemWithBackupRulesResponse AdminGetProtectedItemWithBackupRules(String TargetUser, String SourceID) throws ExecutionException, InterruptedException{
+		return AdminGetProtectedItemWithBackupRulesAsync(TargetUser, SourceID).get();
 	}
 
 	/**
@@ -7304,6 +7471,59 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminSetProtectedItemWithBackupRulesAsync: Add or update a Protected Item with its backup rules
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetUser Selected account username
+	* @param SourceID Selected Protected Item GUID
+	* @param RequireHash (Optional) Previous account profile hash
+	* @param Source (Optional) Optional Protected Item to create or update
+	* @param BackupRules (Optional) Optional backup rules for the Protected Item
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminSetProtectedItemWithBackupRulesAsync(String TargetUser, String SourceID, String RequireHash, SourceConfig Source, HashMap<String,BackupRuleConfig> BackupRules) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetUser", TargetUser);
+		data.put("SourceID", SourceID);
+		if (RequireHash != null) data.put("RequireHash",  RequireHash);
+		if (Source != null) data.put("Source", CometAPI.getObjectMapper().writeValueAsString(Source));
+		if (BackupRules != null) data.put("BackupRules", CometAPI.getObjectMapper().writeValueAsString(BackupRules));
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/set-protected-item-with-backup-rules", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminSetProtectedItemWithBackupRules: Add or update a Protected Item with its backup rules
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetUser Selected account username
+	* @param SourceID Selected Protected Item GUID
+	* @param RequireHash (Optional) Previous account profile hash
+	* @param Source (Optional) Optional Protected Item to create or update
+	* @param BackupRules (Optional) Optional backup rules for the Protected Item
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CometAPIResponseMessage AdminSetProtectedItemWithBackupRules(String TargetUser, String SourceID, String RequireHash, SourceConfig Source, HashMap<String,BackupRuleConfig> BackupRules) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminSetProtectedItemWithBackupRulesAsync(TargetUser, SourceID, RequireHash, Source, BackupRules).get();
+	}
+
+	/**
 	* AdminSetUserProfileAsync: Modify user account profile
 	* 
 	* You must supply administrator authentication credentials to use this API.
@@ -8320,6 +8540,47 @@ public class CometAPI {
 	}
 
 	/**
+	* UserWebDeleteProtectedItemAsync: Delete a Protected Item
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param SourceID Selected Protected Item GUID
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> UserWebDeleteProtectedItemAsync(String SourceID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("SourceID", SourceID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/delete-protected-item", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDeleteProtectedItem: Delete a Protected Item
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param SourceID Selected Protected Item GUID
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage UserWebDeleteProtectedItem(String SourceID) throws ExecutionException, InterruptedException{
+		return UserWebDeleteProtectedItemAsync(SourceID).get();
+	}
+
+	/**
 	* UserWebDispatcherBrowseVirtualMachinesAsync: Browse virtual machines in target snapshot
 	* 
 	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
@@ -8462,6 +8723,49 @@ public class CometAPI {
 	*/
 	public CometAPIResponseMessage UserWebDispatcherDeleteSnapshots(String TargetID, String DestinationID, String[] SnapshotIDs) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherDeleteSnapshotsAsync(TargetID, DestinationID, SnapshotIDs).get();
+	}
+
+	/**
+	* UserWebDispatcherDropConnectionAsync: Disconnect a live connected device
+	* The device will almost certainly attempt to reconnect.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> UserWebDispatcherDropConnectionAsync(String TargetID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/drop-connection", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherDropConnection: Disconnect a live connected device
+	* The device will almost certainly attempt to reconnect.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage UserWebDispatcherDropConnection(String TargetID) throws ExecutionException, InterruptedException{
+		return UserWebDispatcherDropConnectionAsync(TargetID).get();
 	}
 
 	/**
@@ -9973,6 +10277,50 @@ public class CometAPI {
 	}
 
 	/**
+	* UserWebDispatcherUpdateLoginPasswordAsync: Instruct a live connected device to update its login password
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param NewPassword The new password of this user
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> UserWebDispatcherUpdateLoginPasswordAsync(String TargetID, String NewPassword)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("NewPassword", NewPassword);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/update-login-password", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherUpdateLoginPassword: Instruct a live connected device to update its login password
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @param NewPassword The new password of this user
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage UserWebDispatcherUpdateLoginPassword(String TargetID, String NewPassword) throws ExecutionException, InterruptedException{
+		return UserWebDispatcherUpdateLoginPasswordAsync(TargetID, NewPassword).get();
+	}
+
+	/**
 	* UserWebGetJobLogAsync: Get backup job report log, in plaintext format (Web)
 	* 
 	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
@@ -10180,6 +10528,47 @@ public class CometAPI {
 	*/
 	public BackupJobDetail[] UserWebGetJobsForCustomSearch(SearchClause Query) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebGetJobsForCustomSearchAsync(Query).get();
+	}
+
+	/**
+	* UserWebGetProtectedItemWithBackupRulesAsync: Get a Protected Item with its backup rules
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param SourceID Selected Protected Item GUID
+	* @return CompletableFuture yielding a ProtectedItemWithBackupRulesResponse
+	*/
+	public CompletableFuture<ProtectedItemWithBackupRulesResponse> UserWebGetProtectedItemWithBackupRulesAsync(String SourceID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("SourceID", SourceID);
+		var resultFuture = new CompletableFuture<ProtectedItemWithBackupRulesResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/get-protected-item-with-backup-rules", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, ProtectedItemWithBackupRulesResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebGetProtectedItemWithBackupRules: Get a Protected Item with its backup rules
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param SourceID Selected Protected Item GUID
+	* @return a ProtectedItemWithBackupRulesResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public ProtectedItemWithBackupRulesResponse UserWebGetProtectedItemWithBackupRules(String SourceID) throws ExecutionException, InterruptedException{
+		return UserWebGetProtectedItemWithBackupRulesAsync(SourceID).get();
 	}
 
 	/**
@@ -10565,6 +10954,58 @@ public class CometAPI {
 	*/
 	public GetProfileAndHashResponseMessage UserWebSetProfileHash(UserProfileConfig ProfileData, String ProfileHash) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebSetProfileHashAsync(ProfileData, ProfileHash).get();
+	}
+
+	/**
+	* UserWebSetProtectedItemWithBackupRulesAsync: Add or update a Protected Item with its backup rules
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param SourceID Selected Protected Item GUID
+	* @param RequireHash (Optional) Previous account profile hash
+	* @param Source (Optional) Optional Protected Item to update or create
+	* @param BackupRules (Optional) Optional backup rules for the Protected Item
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<CometAPIResponseMessage> UserWebSetProtectedItemWithBackupRulesAsync(String SourceID, String RequireHash, SourceConfig Source, HashMap<String,BackupRuleConfig> BackupRules) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("SourceID", SourceID);
+		if (RequireHash != null) data.put("RequireHash",  RequireHash);
+		if (Source != null) data.put("Source", CometAPI.getObjectMapper().writeValueAsString(Source));
+		if (BackupRules != null) data.put("BackupRules", CometAPI.getObjectMapper().writeValueAsString(BackupRules));
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/set-protected-item-with-backup-rules", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebSetProtectedItemWithBackupRules: Add or update a Protected Item with its backup rules
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param SourceID Selected Protected Item GUID
+	* @param RequireHash (Optional) Previous account profile hash
+	* @param Source (Optional) Optional Protected Item to update or create
+	* @param BackupRules (Optional) Optional backup rules for the Protected Item
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CometAPIResponseMessage UserWebSetProtectedItemWithBackupRules(String SourceID, String RequireHash, SourceConfig Source, HashMap<String,BackupRuleConfig> BackupRules) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebSetProtectedItemWithBackupRulesAsync(SourceID, RequireHash, Source, BackupRules).get();
 	}
 
 }

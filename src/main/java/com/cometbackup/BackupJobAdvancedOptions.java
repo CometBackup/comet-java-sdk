@@ -47,6 +47,10 @@ public class BackupJobAdvancedOptions {
 	@JsonProperty("LogLevel")
 	public String LogLevel = "";
 
+	//Default disabled
+	@JsonProperty("Tags")
+	public String Tags = "";
+
 
 	public BackupJobAdvancedOptions(){ }
 

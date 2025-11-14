@@ -23,8 +23,9 @@ public class PVEDisk {
 	@JsonProperty("Volume")
 	public String Volume = "";
 
+	//Bytes
 	@JsonProperty("Size")
-	public String Size = "";
+	public long Size;
 
 	@JsonProperty("Format")
 	public String Format = "";

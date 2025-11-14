@@ -8,7 +8,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* PVEParams
+* PVEParams This type is used in the EngineProps for an &#34;engine1/proxmox&#34; Protected Item. It represents the
+* entire Protected Item configuration. It is expected to be user-configurable.
+* @since Version : 25.8.0
 */
 public class PVEParams {
 	@JsonProperty("Everything")
@@ -17,17 +19,19 @@ public class PVEParams {
 	@JsonProperty("Exclusions")
 	public ArrayList<PVEBackupNode> Exclusions;
 
+	//One of the PVE_BACKUP_METHOD constants
 	@JsonProperty("Method")
 	public String Method = "";
 
-	@JsonProperty("Quota")
-	public long Quota;
-
+	//Primary node URL + SSH credentials
 	@JsonProperty("SSHConnection")
 	public SSHConnection SSHConnection;
 
 	@JsonProperty("Selections")
 	public ArrayList<PVEBackupNode> Selections;
+
+	@JsonProperty("UseCBT")
+	public boolean UseCBT;
 
 
 	public PVEParams(){ }

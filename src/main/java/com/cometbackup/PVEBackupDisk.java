@@ -8,12 +8,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* PVEBackupDisk
+* PVEBackupDisk This type is used in the EngineProps for an &#34;engine1/proxmox&#34; Protected Item. It represents the
+* selection state for a single disk attached to a single Proxmox VM or LXC Container. It is expected to be
+* user-configurable.
+* @since Version : 25.8.0
 */
 public class PVEBackupDisk {
+	//For a disk "scsi0", this field should contain: "scsi"
 	@JsonProperty("Device")
 	public String Device = "";
 
+	//For a disk "scsi0", this field should contain: 0
 	@JsonProperty("DeviceNum")
 	public int DeviceNum;
 

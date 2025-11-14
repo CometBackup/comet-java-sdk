@@ -8,18 +8,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* PVEBackupVM
+* PVEBackupVM This type is used in the EngineProps for an &#34;engine1/proxmox&#34; Protected Item. It represents the
+* selection state for a single Proxmox VM or LXC Container. It is expected to be user-configurable.
+* @since Version : 25.8.0
 */
 public class PVEBackupVM {
 	@JsonProperty("IncludedDisks")
 	public ArrayList<PVEBackupDisk> IncludedDisks;
 
+	//Used as a cache if the device is offline when editing the Protected Item; not considered as part of the selection
 	@JsonProperty("Name")
 	public String Name = "";
 
 	@JsonProperty("Selected")
 	public boolean Selected;
 
+	//One of the PROXMOX_TYPE_ constants
 	@JsonProperty("Type")
 	public String Type = "";
 

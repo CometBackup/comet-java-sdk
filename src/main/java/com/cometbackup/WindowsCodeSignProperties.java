@@ -64,6 +64,18 @@ public class WindowsCodeSignProperties {
 	@JsonProperty("WindowsCodeSignAzureTenantID")
 	public String WindowsCodeSignAzureTenantID = "";
 
+	//URL of the SAS Relic server, with protocol (https://) and trailing slash
+	@JsonProperty("WindowsCodeSignRelicServerURL")
+	public String WindowsCodeSignRelicServerURL = "";
+
+	//The SAS Relic client keypair in PEM format
+	@JsonProperty("WindowsCodeSignRelicKeypairFile")
+	public String WindowsCodeSignRelicKeypairFile = "";
+
+	//The name of the key to select on the remote SAS Relic server
+	@JsonProperty("WindowsCodeSignRelicKeyName")
+	public String WindowsCodeSignRelicKeyName = "";
+
 
 	public WindowsCodeSignProperties(){ }
 

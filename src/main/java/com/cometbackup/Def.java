@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "25.6.8";
+	public final String APPLICATION_VERSION = "25.9.6";
 	public final int APPLICATION_VERSION_MAJOR = 25;
-	public final int APPLICATION_VERSION_MINOR = 6;
-	public final int APPLICATION_VERSION_REVISION = 8;
+	public final int APPLICATION_VERSION_MINOR = 9;
+	public final int APPLICATION_VERSION_REVISION = 6;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -525,6 +525,11 @@ public class Def {
 	public final long JOB_STATUS_RUNNING_TRYAGAIN = 6003;
 
 	/**
+	* JobStatus: The job has been created by the server but has not yet been initialized by the client.
+	*/
+	public final long JOB_STATUS_NOT_YET_STARTED = 6004;
+
+	/**
 	* JobStatus
 	*/
 	public final long JOB_STATUS_RUNNING__MAX = 6999;
@@ -749,9 +754,25 @@ public class Def {
 	* PSAType
 	*/
 	public final int PSA_TYPE_SYNCRO = 2;
+
+	/**
+	* PveBackupMethod
+	*/
 	public final String PVE_BACKUP_METHOD_STOP = "stop";
+
+	/**
+	* PveBackupMethod
+	*/
 	public final String PVE_BACKUP_METHOD_SUSPEND = "suspend";
+
+	/**
+	* PveBackupMethod
+	*/
 	public final String PVE_BACKUP_METHOD_SNAPSHOT = "snapshot";
+
+	/**
+	* PveBackupMethod
+	*/
 	public final String PVE_BACKUP_METHOD_DEFAULT = "snapshot";
 	public final String RELEASE_CODENAME = "Voyager";
 
@@ -1874,4 +1895,9 @@ public class Def {
 	* WindowsCodesignMethod: Use a configured Azure Key Vault for Authenticode codesigning
 	*/
 	public final int WINDOWSCODESIGN_METHOD_AZUREKEYVAULT = 4;
+
+	/**
+	* WindowsCodesignMethod: Use a configured SAS Relic server for Authenticode codesigning
+	*/
+	public final int WINDOWSCODESIGN_METHOD_RELICSERVER = 5;
 }

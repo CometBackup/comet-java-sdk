@@ -8,12 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* PVEBackupNode
+* PVEBackupNode This type is used in the EngineProps for an &#34;engine1/proxmox&#34; Protected Item. It represents the
+* selection state for a single Proxmox VE node. It is expected to be user-configurable.
+* @since Version : 25.8.0
 */
 public class PVEBackupNode {
 	@JsonProperty("IncludedVMs")
 	public ArrayList<PVEBackupVM> IncludedVMs;
 
+	//Used as a cache if the device is offline when editing the Protected Item; not considered as part of the selection
 	@JsonProperty("Name")
 	public String Name = "";
 

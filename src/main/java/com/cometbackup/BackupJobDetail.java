@@ -97,10 +97,6 @@ public class BackupJobDetail {
 	@JsonProperty("TotalUnlicensedMailsCount")
 	public long TotalUnlicensedMailsCount;
 
-	//The CRC32 of the billing data for this job.
-	@JsonProperty("BillingCrc32")
-	public long BillingCrc32;
-
 	//If this field is present, this job did not perform some work because the Storage Vault is currently busy.
 	@JsonProperty("ConflictingJobID")
 	public String ConflictingJobID = "";
@@ -120,6 +116,10 @@ public class BackupJobDetail {
 	//The size of the Storage Vault, as measured at the end of the job.
 	@JsonProperty("DestinationSizeEnd")
 	public SizeMeasurement DestinationSizeEnd;
+
+	//The tags sent as BackupJobOptions, Useful for Groupings
+	@JsonProperty("Tags")
+	public String Tags = "";
 
 
 	public BackupJobDetail(){ }

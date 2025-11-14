@@ -78,6 +78,10 @@ public class BackupRuleConfig {
 	@JsonProperty("LogLevel")
 	public String LogLevel = "";
 
+	//Default disabled
+	@JsonProperty("Tags")
+	public String Tags = "";
+
 	//Scheduled start times
 	@JsonProperty("Schedules")
 	public ArrayList<ScheduleConfig> Schedules;
@@ -120,6 +124,7 @@ public class BackupRuleConfig {
 		ret.AutoRetentionLevel = this.AutoRetentionLevel;
 		ret.ConcurrencyCount = this.ConcurrencyCount;
 		ret.LogLevel = this.LogLevel;
+		ret.Tags = this.Tags;
 		return ret;
 	}
 	public void SetEmbeddedBackupJobAdvancedOptions(BackupJobAdvancedOptions other){
@@ -132,6 +137,7 @@ public class BackupRuleConfig {
 		this.AutoRetentionLevel = other.AutoRetentionLevel;
 		this.ConcurrencyCount = other.ConcurrencyCount;
 		this.LogLevel = other.LogLevel;
+		this.Tags = other.Tags;
 	}
 
 }

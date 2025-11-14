@@ -172,6 +172,11 @@ public class UserProfileConfig {
 	@JsonProperty("AutoStorageTemplateGUID")
 	public String AutoStorageTemplateGUID = "";
 
+	//If enabled, Linux devices in this user account will sandbox all read/write operations to paths inside user home
+	//directories
+	@JsonProperty("LinuxHomedirSandbox")
+	public boolean LinuxHomedirSandbox;
+
 
 	public UserProfileConfig(){ }
 

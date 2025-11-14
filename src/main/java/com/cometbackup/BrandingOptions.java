@@ -147,6 +147,18 @@ public class BrandingOptions {
 	@JsonProperty("WindowsCodeSignAzureTenantID")
 	public String WindowsCodeSignAzureTenantID = "";
 
+	//URL of the SAS Relic server, with protocol (https://) and trailing slash
+	@JsonProperty("WindowsCodeSignRelicServerURL")
+	public String WindowsCodeSignRelicServerURL = "";
+
+	//The SAS Relic client keypair in PEM format
+	@JsonProperty("WindowsCodeSignRelicKeypairFile")
+	public String WindowsCodeSignRelicKeypairFile = "";
+
+	//The name of the key to select on the remote SAS Relic server
+	@JsonProperty("WindowsCodeSignRelicKeyName")
+	public String WindowsCodeSignRelicKeyName = "";
+
 	@JsonProperty("MacOSCodeSign")
 	public MacOSCodeSignProperties MacOSCodeSign;
 
@@ -235,6 +247,9 @@ public class BrandingOptions {
 		ret.WindowsCodeSignAzureAppSecretFormat = this.WindowsCodeSignAzureAppSecretFormat;
 		ret.WindowsCodeSignAzureAppSecret = this.WindowsCodeSignAzureAppSecret;
 		ret.WindowsCodeSignAzureTenantID = this.WindowsCodeSignAzureTenantID;
+		ret.WindowsCodeSignRelicServerURL = this.WindowsCodeSignRelicServerURL;
+		ret.WindowsCodeSignRelicKeypairFile = this.WindowsCodeSignRelicKeypairFile;
+		ret.WindowsCodeSignRelicKeyName = this.WindowsCodeSignRelicKeyName;
 		ret.MacOSCodeSign = this.MacOSCodeSign;
 		return ret;
 	}
@@ -275,6 +290,9 @@ public class BrandingOptions {
 		this.WindowsCodeSignAzureAppSecretFormat = other.WindowsCodeSignAzureAppSecretFormat;
 		this.WindowsCodeSignAzureAppSecret = other.WindowsCodeSignAzureAppSecret;
 		this.WindowsCodeSignAzureTenantID = other.WindowsCodeSignAzureTenantID;
+		this.WindowsCodeSignRelicServerURL = other.WindowsCodeSignRelicServerURL;
+		this.WindowsCodeSignRelicKeypairFile = other.WindowsCodeSignRelicKeypairFile;
+		this.WindowsCodeSignRelicKeyName = other.WindowsCodeSignRelicKeyName;
 		this.MacOSCodeSign = other.MacOSCodeSign;
 	}
 

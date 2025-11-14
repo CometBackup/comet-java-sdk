@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 
 /**
-* PVEVM
+* PVEVM PVEVM describes a single Proxmox virtual machine or container.
 */
 public class PVEVM {
 	@JsonProperty("CPU")
@@ -35,6 +35,7 @@ public class PVEVM {
 	@JsonProperty("Type")
 	public String Type = "";
 
+	//String type, but always contains an integer value
 	@JsonProperty("VMID")
 	public String VMID = "";
 
