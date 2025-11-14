@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cometbackup</groupId>
   <artifactId>comet-sdk</artifactId>
-  <version>v0.18.0</version>
+  <version>v0.19.0</version>
   <packaging>jar</packaging>
   <name>comet-sdk</name>
   <description>SDK and client to allow access to the Comet API</description>
@@ -121,8 +121,8 @@
         <version>0.8.0</version>
         <extensions>true</extensions>
         <configuration>
-            <publishingServerId>central</publishingServerId>
-            <autoPublish>true</autoPublish>
+          <publishingServerId>central</publishingServerId>
+          <autoPublish>true</autoPublish>
         </configuration>
       </plugin>
     </plugins>
