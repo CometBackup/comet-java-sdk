@@ -17,6 +17,9 @@ public class PVEStorageName {
 	@JsonProperty("Type")
 	public String Type = "";
 
+	@JsonProperty("Content")
+	public ArrayList<String> Content;
+
 
 	public PVEStorageName(){ }
 

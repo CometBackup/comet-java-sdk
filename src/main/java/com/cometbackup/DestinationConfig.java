@@ -231,6 +231,11 @@ public class DestinationConfig {
 	@JsonProperty("StorageLimitBytes")
 	public long StorageLimitBytes;
 
+	//If set, use a shared Storage Vault quota from the Comet Management Console. The direct value of StorageLimitBytes is
+	//ignored.
+	@JsonProperty("StorageLimitID")
+	public String StorageLimitID = "";
+
 	@JsonProperty("Statistics")
 	public DestinationStatistics Statistics;
 

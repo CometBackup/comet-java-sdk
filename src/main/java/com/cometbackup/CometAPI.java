@@ -3150,14 +3150,16 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @param Credentials The SSH connection settings
+	* @param Node The target node
 	* @return CompletableFuture yielding a BrowseProxmoxStorageResponse
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<BrowseProxmoxStorageResponse> AdminDispatcherRequestBrowseProxmoxStorageAsync(String TargetID, SSHConnection Credentials) throws JsonProcessingException {
+	public CompletableFuture<BrowseProxmoxStorageResponse> AdminDispatcherRequestBrowseProxmoxStorageAsync(String TargetID, SSHConnection Credentials, String Node) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetID", TargetID);
 		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		data.put("Node", Node);
 		var resultFuture = new CompletableFuture<BrowseProxmoxStorageResponse>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-proxmox/storage", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -3178,13 +3180,14 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @param Credentials The SSH connection settings
+	* @param Node The target node
 	* @return a BrowseProxmoxStorageResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseProxmoxStorageResponse AdminDispatcherRequestBrowseProxmoxStorage(String TargetID, SSHConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
-		return AdminDispatcherRequestBrowseProxmoxStorageAsync(TargetID, Credentials).get();
+	public BrowseProxmoxStorageResponse AdminDispatcherRequestBrowseProxmoxStorage(String TargetID, SSHConnection Credentials, String Node) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowseProxmoxStorageAsync(TargetID, Credentials, Node).get();
 	}
 
 	/**
@@ -7626,6 +7629,165 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminSquotaDeleteAsync: Delete a shared storage quota and detach all users
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param SharedStorageQuotaID (No description available)
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminSquotaDeleteAsync(String SharedStorageQuotaID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("SharedStorageQuotaID", SharedStorageQuotaID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/squota/delete", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminSquotaDelete: Delete a shared storage quota and detach all users
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param SharedStorageQuotaID (No description available)
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage AdminSquotaDelete(String SharedStorageQuotaID) throws ExecutionException, InterruptedException{
+		return AdminSquotaDeleteAsync(SharedStorageQuotaID).get();
+	}
+
+	/**
+	* AdminSquotaGetWithHashAsync: Get properties for a shared storage quota
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param SharedStorageQuotaID (No description available)
+	* @return CompletableFuture yielding a GetSharedStorageQuotaResponse
+	*/
+	public CompletableFuture<GetSharedStorageQuotaResponse> AdminSquotaGetWithHashAsync(String SharedStorageQuotaID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("SharedStorageQuotaID", SharedStorageQuotaID);
+		var resultFuture = new CompletableFuture<GetSharedStorageQuotaResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/squota/get-with-hash", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, GetSharedStorageQuotaResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminSquotaGetWithHash: Get properties for a shared storage quota
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param SharedStorageQuotaID (No description available)
+	* @return a GetSharedStorageQuotaResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public GetSharedStorageQuotaResponse AdminSquotaGetWithHash(String SharedStorageQuotaID) throws ExecutionException, InterruptedException{
+		return AdminSquotaGetWithHashAsync(SharedStorageQuotaID).get();
+	}
+
+	/**
+	* AdminSquotaListAllAsync: List available shared storage quota objects
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @return CompletableFuture yielding a ListSharedStorageQuotaResponse
+	*/
+	public CompletableFuture<ListSharedStorageQuotaResponse> AdminSquotaListAllAsync()  {
+		var resultFuture = new CompletableFuture<ListSharedStorageQuotaResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/squota/list-all", null);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, ListSharedStorageQuotaResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminSquotaListAll: List available shared storage quota objects
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @return a ListSharedStorageQuotaResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public ListSharedStorageQuotaResponse AdminSquotaListAll() throws ExecutionException, InterruptedException{
+		return AdminSquotaListAllAsync().get();
+	}
+
+	/**
+	* AdminSquotaSetWithHashAsync: Create or update a shared storage quota
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param SharedStorageQuotaID (No description available)
+	* @param SharedStorageQuota (No description available)
+	* @param CheckHash (Optional) If supplied, validate the change against this hash. Omit to forcibly apply changes.
+	* @return CompletableFuture yielding a SetSharedStorageQuotaResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<SetSharedStorageQuotaResponse> AdminSquotaSetWithHashAsync(String SharedStorageQuotaID, SharedStorageQuota SharedStorageQuota, String CheckHash) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("SharedStorageQuotaID", SharedStorageQuotaID);
+		data.put("SharedStorageQuota", CometAPI.getObjectMapper().writeValueAsString(SharedStorageQuota));
+		if (CheckHash != null) data.put("CheckHash",  CheckHash);
+		var resultFuture = new CompletableFuture<SetSharedStorageQuotaResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/squota/set-with-hash", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, SetSharedStorageQuotaResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminSquotaSetWithHash: Create or update a shared storage quota
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* @param SharedStorageQuotaID (No description available)
+	* @param SharedStorageQuota (No description available)
+	* @param CheckHash (Optional) If supplied, validate the change against this hash. Omit to forcibly apply changes.
+	* @return a SetSharedStorageQuotaResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public SetSharedStorageQuotaResponse AdminSquotaSetWithHash(String SharedStorageQuotaID, SharedStorageQuota SharedStorageQuota, String CheckHash) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminSquotaSetWithHashAsync(SharedStorageQuotaID, SharedStorageQuota, CheckHash).get();
+	}
+
+	/**
 	* AdminStorageBucketPropertiesAsync: Retrieve properties for a single bucket
 	* This API can also be used to refresh the size measurement for a single bucket by passing a valid AfterTimestamp
 	* parameter.
@@ -9365,14 +9527,16 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @param Credentials SSH connection settings
+	* @param Node The target node
 	* @return CompletableFuture yielding a BrowseProxmoxStorageResponse
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<BrowseProxmoxStorageResponse> UserWebDispatcherRequestBrowseProxmoxStorageAsync(String TargetID, SSHConnection Credentials) throws JsonProcessingException {
+	public CompletableFuture<BrowseProxmoxStorageResponse> UserWebDispatcherRequestBrowseProxmoxStorageAsync(String TargetID, SSHConnection Credentials, String Node) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetID", TargetID);
 		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		data.put("Node", Node);
 		var resultFuture = new CompletableFuture<BrowseProxmoxStorageResponse>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-proxmox/storage", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -9394,13 +9558,14 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* @param TargetID The live connection GUID
 	* @param Credentials SSH connection settings
+	* @param Node The target node
 	* @return a BrowseProxmoxStorageResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public BrowseProxmoxStorageResponse UserWebDispatcherRequestBrowseProxmoxStorage(String TargetID, SSHConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
-		return UserWebDispatcherRequestBrowseProxmoxStorageAsync(TargetID, Credentials).get();
+	public BrowseProxmoxStorageResponse UserWebDispatcherRequestBrowseProxmoxStorage(String TargetID, SSHConnection Credentials, String Node) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowseProxmoxStorageAsync(TargetID, Credentials, Node).get();
 	}
 
 	/**
