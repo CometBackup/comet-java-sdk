@@ -76,6 +76,11 @@ public class RemoteStorageOption {
 	@JsonProperty("RebrandStorage")
 	public boolean RebrandStorage;
 
+	//If true, Storage Vaults provisioned from this Storage Template are marked so that the end-user account cannot modify
+	//them. This takes priority over the account policy's PreventEditStorageVault setting.
+	@JsonProperty("PreventUserEdit")
+	public boolean PreventUserEdit;
+
 	@JsonProperty("ID")
 	public String ID = "";
 

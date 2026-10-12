@@ -26,6 +26,11 @@ public class EmailReportConfig {
 	@JsonProperty("Filter")
 	public SearchClause Filter;
 
+	//A custom name for this email report, used to distinguish it from other reports of the same type. If blank, the report
+	//is labelled by its type.
+	@JsonProperty("Title")
+	public String Title = "";
+
 
 	public EmailReportConfig(){ }
 

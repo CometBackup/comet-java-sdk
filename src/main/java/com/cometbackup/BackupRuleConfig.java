@@ -82,6 +82,21 @@ public class BackupRuleConfig {
 	@JsonProperty("Tags")
 	public String Tags = "";
 
+	//Optionally restricts LimitVaultSpeedBps to a specific time of day and days of the week. When absent, or when its
+	//RestrictTimes is false, LimitVaultSpeedBps applies at all times. Has no effect unless LimitVaultSpeedBps is set.
+	@JsonProperty("LimitVaultSpeedTimeWindow")
+	public SpeedLimitTimeWindow LimitVaultSpeedTimeWindow;
+
+	//If set, the ID of the Policy default backup rule this rule was generated from.
+	//Used to keep a "latest vault" schedule on its assigned Storage Vault across policy re-enforcement.
+	@JsonProperty("PolicyBackupRuleID")
+	public String PolicyBackupRuleID = "";
+
+	//If set, the originating Policy default backup rule's destination selector, snapshotted
+	//before it was resolved to a concrete Storage Vault. Identifies "latest vault" schedules.
+	@JsonProperty("PolicyBackupRuleSelector")
+	public String PolicyBackupRuleSelector = "";
+
 	//Scheduled start times
 	@JsonProperty("Schedules")
 	public ArrayList<ScheduleConfig> Schedules;
@@ -125,6 +140,7 @@ public class BackupRuleConfig {
 		ret.ConcurrencyCount = this.ConcurrencyCount;
 		ret.LogLevel = this.LogLevel;
 		ret.Tags = this.Tags;
+		ret.LimitVaultSpeedTimeWindow = this.LimitVaultSpeedTimeWindow;
 		return ret;
 	}
 	public void SetEmbeddedBackupJobAdvancedOptions(BackupJobAdvancedOptions other){
@@ -138,6 +154,7 @@ public class BackupRuleConfig {
 		this.ConcurrencyCount = other.ConcurrencyCount;
 		this.LogLevel = other.LogLevel;
 		this.Tags = other.Tags;
+		this.LimitVaultSpeedTimeWindow = other.LimitVaultSpeedTimeWindow;
 	}
 
 }

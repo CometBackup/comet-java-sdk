@@ -26,13 +26,13 @@ public class InstallToken {
 	@JsonProperty("CreateTime")
 	public long CreateTime;
 
-	//If the token has been used, it cannot be used again.
-	@JsonProperty("Used")
-	public boolean Used;
-
 	//Unix timestamp, in seconds.
 	@JsonProperty("ExpireTime")
 	public long ExpireTime;
+
+	//If the token has been used, it cannot be used again.
+	@JsonProperty("Used")
+	public boolean Used;
 
 
 	public InstallToken(){ }

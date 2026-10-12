@@ -91,7 +91,7 @@ public class ServerMetaVersionInfo {
 	public long EmailsWaitingInQueue;
 
 	@JsonProperty("ScheduledEmailThreadCurrentState")
-	public long ScheduledEmailThreadCurrentState;
+	public int ScheduledEmailThreadCurrentState;
 
 	@JsonProperty("ScheduledEmailThreadLastCalculateDurationNanos")
 	public long ScheduledEmailThreadLastCalculateDurationNanos;

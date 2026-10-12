@@ -15,6 +15,9 @@ public class UpdateCampaignDeviceStatus {
 	@JsonProperty("Status")
 	public int Status;
 
+	@JsonProperty("SkipDetail")
+	public UpdateCampaignSkipDetail SkipDetail;
+
 
 	public UpdateCampaignDeviceStatus(){ }
 

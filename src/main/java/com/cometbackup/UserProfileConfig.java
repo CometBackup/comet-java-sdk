@@ -104,14 +104,24 @@ public class UserProfileConfig {
 	public long QuotaOffice365ProtectedAccounts;
 
 	//A limit on the total number of Hyper-V guests across all Hyper-V Protected Items in this account. Set to zero to
-	//allow unlimited Office 365 Protected Accounts.
+	//allow unlimited Hyper-V guests.
 	@JsonProperty("QuotaHyperVGuests")
 	public long QuotaHyperVGuests;
 
 	//A limit on the total number of VMware guests across all VMware Protected Items in this account. Set to zero to allow
-	//unlimited Office 365 Protected Accounts.
+	//unlimited VMware guests.
 	@JsonProperty("QuotaVMwareGuests")
 	public long QuotaVMwareGuests;
+
+	//A limit on the total number of Proxmox guest VMs across all Proxmox Protected Items in this account. Set to zero to
+	//allow unlimited Proxmox guest VMs.
+	@JsonProperty("QuotaProxmoxGuestVMs")
+	public long QuotaProxmoxGuestVMs;
+
+	//A limit on the total number of Proxmox guest LXCs across all Proxmox Protected Items in this account. Set to zero to
+	//allow unlimited Proxmox guest LXCs.
+	@JsonProperty("QuotaProxmoxGuestLXCs")
+	public long QuotaProxmoxGuestLXCs;
 
 	//If the PolicyID field is set to a non-empty string, the Comet Server will enforce the contents of the Policy field
 	//based on the matching server's policy. Otherwise if the PolicyID field is set to an empty string, the administrator
@@ -148,7 +158,7 @@ public class UserProfileConfig {
 
 	//One of the ENCRYPTIONMETHOD_ constants
 	@JsonProperty("TOTPKeyEncryptionFormat")
-	public int TOTPKeyEncryptionFormat;
+	public long TOTPKeyEncryptionFormat;
 
 	@JsonProperty("TOTPKey")
 	public String TOTPKey = "";
@@ -172,10 +182,21 @@ public class UserProfileConfig {
 	@JsonProperty("AutoStorageTemplateGUID")
 	public String AutoStorageTemplateGUID = "";
 
-	//If enabled, Linux devices in this user account will sandbox all read/write operations to paths inside user home
-	//directories
+
+	// deprecated since Comet version 26.2.4 Linux home-directory sandboxing is always enabled; this field is ignored.
 	@JsonProperty("LinuxHomedirSandbox")
 	public boolean LinuxHomedirSandbox;
+
+	//A freeform key-value map that can be used for any custom metadata. The Comet Server does not use this field for any
+	//purpose, but it is stored and replicated along with the rest of the user profile.
+	@JsonProperty("UserExtra")
+	public HashMap<String, String> UserExtra;
+
+	//A freeform key-value map that can be used for any custom metadata that should only be visible to administrators. The
+	//Comet Server does not use this field for any purpose, but it is stored and replicated along with the rest of the user
+	//profile.
+	@JsonProperty("AdminExtra")
+	public HashMap<String, String> AdminExtra;
 
 
 	public UserProfileConfig(){ }

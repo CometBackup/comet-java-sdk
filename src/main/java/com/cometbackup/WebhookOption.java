@@ -31,6 +31,13 @@ public class WebhookOption {
 	@JsonProperty("WhiteListedEventTypes")
 	public ArrayList<Integer> WhiteListedEventTypes;
 
+	//One of the WEBHOOK_FORMAT_ constants. This controls how the event payload is encoded in the
+	//outgoing POST request. If empty (WEBHOOK_FORMAT_RAW), the raw StreamableEvent JSON object is
+	//sent. When set to WEBHOOK_FORMAT_SLACK ("slack"), the event is reformatted as a Slack
+	//Incoming Webhook message so it renders natively in a Slack channel.
+	@JsonProperty("PayloadFormat")
+	public String PayloadFormat = "";
+
 
 	public WebhookOption(){ }
 

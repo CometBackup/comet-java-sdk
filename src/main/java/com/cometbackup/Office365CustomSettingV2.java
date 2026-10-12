@@ -47,6 +47,13 @@ public class Office365CustomSettingV2 {
 	@JsonProperty("FilterMemberOptions")
 	public HashMap<String, Long> FilterMemberOptions;
 
+	//An ordered list of include/exclude rules. If this field is non-empty, it is the
+	//sole source of truth for account and service selection, and the Organization, FilterMode,
+	//WholeOrg, BackupOptions, MemberBackupOptions, FilterOptions and FilterMemberOptions fields are
+	//all ignored. If empty or omitted, behavior is identical to prior Comet versions.
+	@JsonProperty("Rules")
+	public ArrayList<Office365SelectionRule> Rules;
+
 
 	public Office365CustomSettingV2(){ }
 

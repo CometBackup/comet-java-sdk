@@ -21,6 +21,9 @@ public class BrowseProxmoxResponse {
 	@JsonProperty("VMs")
 	public ArrayList<PVEVM> VMs;
 
+	@JsonProperty("Nodes")
+	public ArrayList<Node> Nodes;
+
 
 	public BrowseProxmoxResponse(){ }
 

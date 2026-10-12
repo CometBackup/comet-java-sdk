@@ -54,7 +54,7 @@ public class AllowedAdminUser {
 
 	//One of the ENCRYPTIONMETHOD_ constants
 	@JsonProperty("TOTPKeyEncryptionFormat")
-	public int TOTPKeyEncryptionFormat;
+	public long TOTPKeyEncryptionFormat;
 
 	@JsonProperty("TOTPKey")
 	public String TOTPKey = "";
@@ -65,6 +65,9 @@ public class AllowedAdminUser {
 
 	@JsonProperty("Permissions")
 	public AdminUserPermissions Permissions;
+
+	@JsonProperty("APITokens")
+	public ArrayList<AdminAPIToken> APITokens;
 
 
 	public AllowedAdminUser(){ }

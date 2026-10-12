@@ -115,6 +115,12 @@ public class RestoreJobAdvancedOptions {
 	@JsonProperty("ProxmoxConnection")
 	public ProxmoxRestoreTargetOptions ProxmoxConnection;
 
+	//For RESTORETYPE_CLOUD_STORAGE. Describes the target cloud/remote storage
+	//location. The destination path (subdir/prefix) is taken from the fields
+	//inside this DestinationLocation - no separate DestPath is used.
+	@JsonProperty("DestinationLocation")
+	public DestinationLocation DestinationLocation;
+
 
 	public RestoreJobAdvancedOptions(){ }
 

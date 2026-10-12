@@ -3,9 +3,9 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "25.9.8";
-	public final int APPLICATION_VERSION_MAJOR = 25;
-	public final int APPLICATION_VERSION_MINOR = 9;
+	public final String APPLICATION_VERSION = "26.8.8";
+	public final int APPLICATION_VERSION_MAJOR = 26;
+	public final int APPLICATION_VERSION_MINOR = 8;
 	public final int APPLICATION_VERSION_REVISION = 8;
 
 	/**
@@ -31,22 +31,23 @@ public class Def {
 	public final long BACKUPJOBAUTORETENTION_LESS_OFTEN = 3;
 
 	/**
-	* If set, will be automatically replaced with one of the other BRANDINGSTYLETYPE_ constants after next server upgrade.
+	* BrandingStyleType: If set, will be automatically replaced with one of the other BRANDINGSTYLETYPE_ constants after
+	* next server upgrade.
 	*/
 	public final int BRANDINGSTYLETYPE_AUTO_LEGACY = 0;
 
 	/**
-	* Use Comet company branding and colours for all web interface branding
+	* BrandingStyleType: Use Comet company branding and colours for all web interface branding
 	*/
 	public final int BRANDINGSTYLETYPE_DEFAULT = 1;
 
 	/**
-	* Use custom branding and colours, with text in the main logo area.
+	* BrandingStyleType: Use custom branding and colours, with text in the main logo area.
 	*/
 	public final int BRANDINGSTYLETYPE_CUSTOM_TEXT = 2;
 
 	/**
-	* Use custom branding and colours, with a supplied image in the main logo area.
+	* BrandingStyleType: Use custom branding and colours, with a supplied image in the main logo area.
 	*/
 	public final int BRANDINGSTYLETYPE_CUSTOM_LOGO = 3;
 
@@ -103,6 +104,37 @@ public class Def {
 	public final int COMPRESS_DEFAULT = 4;
 
 	/**
+	* CustomBrandingContentType: The item is JavaScript code
+	*/
+	public final String CUSTOMBRANDING_CONTENT_JAVASCRIPT = "javascript";
+
+	/**
+	* CustomBrandingContentType: The item is CSS stylesheet code
+	*/
+	public final String CUSTOMBRANDING_CONTENT_CSS = "css";
+
+	/**
+	* CustomBrandingSourceType: The item content is supplied inline in the Content field
+	*/
+	public final String CUSTOMBRANDING_SOURCE_INLINE = "inline";
+
+	/**
+	* CustomBrandingSourceType: The item is loaded from the external URL in the URL field
+	*/
+	public final String CUSTOMBRANDING_SOURCE_URL = "url";
+
+	/**
+	* CustomBrandingPlacementType: Insert the item at the end of the document head. This is the default, and matches the
+	* installation instructions of most analytics vendors
+	*/
+	public final String CUSTOMBRANDING_PLACEMENT_HEAD = "head";
+
+	/**
+	* CustomBrandingPlacementType: Insert the item at the end of the document body, after the web application markup
+	*/
+	public final String CUSTOMBRANDING_PLACEMENT_BODY_END = "body-end";
+
+	/**
 	* CustomRemoteBucketCustomBodyType
 	*/
 	public final String CUSTOMREMOTEBUCKET_CUSTOMBODY_NONE = "none";
@@ -152,104 +184,120 @@ public class Def {
 	* SftpAuthMode
 	*/
 	public final long DESTINATION_SFTP_AUTHMODE_PRIVATEKEY = 2;
+
+	/**
+	* DestinationType
+	*/
 	public final long DESTINATIONTYPE___INVALID = 0;
 
 	/**
-	* Storage type that is applied when Storage Gateway fails to launch correctly
+	* DestinationType: Storage type that is applied when Storage Gateway fails to launch correctly
 	*/
 	public final long DESTINATIONTYPE_ERROR = 1;
 
 	/**
-	* S3-compatible, or a specific S3 service such as AWS S3, Wasabi, or iDrive e2
+	* DestinationType: S3-compatible, or a specific S3 service such as AWS S3, Wasabi, or iDrive e2
 	*/
 	public final long DESTINATIONTYPE_S3 = 1000;
 
 	/**
-	* SFTP protocol
+	* DestinationType: SFTP protocol
 	*/
 	public final long DESTINATIONTYPE_SFTP = 1001;
 
 	/**
-	* Local Path
+	* DestinationType: Local Path
 	*/
 	public final long DESTINATIONTYPE_LOCALCOPY = 1002;
 
 	/**
-	* The Comet Server Storage Role protocol
+	* DestinationType: The Comet Server Storage Role protocol
 	*/
 	public final long DESTINATIONTYPE_COMET = 1003;
 
 	/**
-	* FTP protocol
+	* DestinationType: FTP protocol
 	*/
 	public final long DESTINATIONTYPE_FTP = 1004;
 
 	/**
-	* Azure Blob Storage
+	* DestinationType: Azure Blob Storage
 	*/
 	public final long DESTINATIONTYPE_AZUREBLOB = 1005;
 
 	/**
-	* Spanned
+	* DestinationType: Spanned
 	*/
 	public final long DESTINATIONTYPE_SPANNED = 1006;
 
 	/**
-	* Openstack Swift
+	* DestinationType: Openstack Swift
 	*/
 	public final long DESTINATIONTYPE_SWIFT = 1007;
 
 	/**
-	* Backblaze B2 (Native API)
+	* DestinationType: Backblaze B2 (Native API)
 	*/
 	public final long DESTINATIONTYPE_B2 = 1008;
 
 	/**
-	* Storj
+	* DestinationType: Storj
 	*/
 	public final long DESTINATIONTYPE_STORJ = 1009;
+
+	/**
+	* DestinationType
+	*/
 	public final long DESTINATIONTYPE_WEBDAV = 1010;
 
 	/**
-	* SMB Path
+	* DestinationType: SMB Path
 	*/
 	public final long DESTINATIONTYPE_SMB = 1011;
 
 	/**
-	* When defining a schedule via policy, use this option to dynamically select the Storage Vault that was created most
-	* recently.
+	* DestinationType
+	*/
+	public final long DESTINATIONTYPE_NFS = 1012;
+
+	/**
+	* DestinationType: When defining a schedule via policy, use this option to dynamically select the Storage Vault that
+	* was created most recently.
 	*/
 	public final long DESTINATIONTYPE_LATEST = 1100;
 
 	/**
-	* When defining a schedule via policy, use this option to create a schedule for each Storage Vault in the user&#39;s
-	* profile.
+	* DestinationType: When defining a schedule via policy, use this option to create a schedule for each Storage Vault in
+	* the user&#39;s profile.
 	*/
 	public final long DESTINATIONTYPE_ALL = 1101;
 
 	/**
-	* The Comet Server is still starting up and has not yet checked whether any email reports are due to be sent.
+	* EmailWorkerState: The Comet Server is still starting up and has not yet checked whether any email reports are due to
+	* be sent.
 	*/
 	public final int EMAIL_WORKER_STATE_NOT_STARTED = 0;
 
 	/**
-	* The Comet Server is still starting up and has not yet checked whether any email reports are due to be sent.
+	* EmailWorkerState: The Comet Server is still starting up and has not yet checked whether any email reports are due to
+	* be sent.
 	*/
 	public final int EMAIL_WORKER_STATE_STARTED = 1;
 
 	/**
-	* The Comet Server is currently searching through email report configuration, to determine when the next email report
-	* is due to be sent.
+	* EmailWorkerState: The Comet Server is currently searching through email report configuration, to determine when the
+	* next email report is due to be sent.
 	*/
 	public final int EMAIL_WORKER_STATE_CALCULATING = 2;
 
 	/**
-	* The Comet Server knows when the next scheduled email report is due to be sent, and is waiting until that time.
+	* EmailWorkerState: The Comet Server knows when the next scheduled email report is due to be sent, and is waiting until
+	* that time.
 	*/
 	public final int EMAIL_WORKER_STATE_WAITING = 3;
 
 	/**
-	* The Comet Server is currently sending a scheduled email report.
+	* EmailWorkerState: The Comet Server is currently sending a scheduled email report.
 	*/
 	public final int EMAIL_WORKER_STATE_SENDING = 4;
 
@@ -308,75 +356,79 @@ public class Def {
 	* EmailReportType
 	*/
 	public final int EMAILREPORTTYPE_RECENT_ACTIVITY = 3;
+
+	/**
+	* EncryptionMethodType
+	*/
 	public final long ENCRYPTIONMETHOD_UNCONFIGURED = 0;
 
 	/**
-	* Files and Folders
+	* EngineType: Files and Folders
 	*/
 	public final String ENGINE_BUILTIN_FILE = "engine1/file";
 
 	/**
-	* Program Output
+	* EngineType: Program Output
 	*/
 	public final String ENGINE_BUILTIN_STDOUT = "engine1/stdout";
 
 	/**
-	* MySQL
+	* EngineType: MySQL
 	*/
 	public final String ENGINE_BUILTIN_MYSQL = "engine1/mysql";
 
 	/**
-	* Windows Server System State
+	* EngineType: Windows Server System State
 	*/
 	public final String ENGINE_BUILTIN_SYSTEMSTATE = "engine1/systemstate";
 
 	/**
-	* Microsoft SQL Server
+	* EngineType: Microsoft SQL Server
 	*/
 	public final String ENGINE_BUILTIN_MSSQL = "engine1/mssql";
 
 	/**
-	* Windows System Backup, deprecated from version 24.12.2
+	* EngineType: Windows System Backup, deprecated from version 24.12.2
 	*/
 	public final String ENGINE_BUILTIN_WINDOWSSYSTEM = "engine1/windowssystem";
 
 	/**
-	* Microsoft Exchange Server
+	* EngineType: Microsoft Exchange Server
 	*/
 	public final String ENGINE_BUILTIN_EXCHANGEEDB = "engine1/exchangeedb";
 
 	/**
-	* Application-Aware Writer
+	* EngineType: Application-Aware Writer
 	*/
 	public final String ENGINE_BUILTIN_VSSWRITER = "engine1/vsswriter";
 
 	/**
-	* Microsoft Hyper-V
+	* EngineType: Microsoft Hyper-V
 	*/
 	public final String ENGINE_BUILTIN_HYPERV = "engine1/hyperv";
 
 	/**
-	* Disk Image
+	* EngineType: Disk Image
 	*/
 	public final String ENGINE_BUILTIN_WINDISK = "engine1/windisk";
 
 	/**
-	* MongoDB
+	* EngineType: MongoDB
 	*/
 	public final String ENGINE_BUILTIN_MONGODB = "engine1/mongodb";
 
 	/**
-	* Office 365
+	* EngineType: Office 365
 	*/
 	public final String ENGINE_BUILTIN_MSOFFICE = "engine1/winmsofficemail";
 
 	/**
-	* VMware
+	* EngineType: VMware
 	*/
 	public final String ENGINE_BUILTIN_VMWARE = "engine1/vmware";
 
 	/**
-	* Proxmox (PVE)
+	* EngineType: Proxmox (PVE)
 	*/
 	public final String ENGINE_BUILTIN_PROXMOX = "engine1/proxmox";
 
@@ -602,6 +654,16 @@ public class Def {
 	public final String LDAPSECURITYMETHOD_STARTTLS = "starttls";
 
 	/**
+	* LinuxRpmCodesignMethod: Do not sign the client backup-tool RPM
+	*/
+	public final int LINUXRPMCODESIGN_METHOD_DISABLED = 0;
+
+	/**
+	* LinuxRpmCodesignMethod: Sign the RPM with a GPG private key stored locally on the Comet Server host
+	*/
+	public final int LINUXRPMCODESIGN_METHOD_LOCALGPG = 1;
+
+	/**
 	* MacOSCodesignLevel: Sign only
 	*/
 	public final int MACOSCODESIGN_LEVEL_SIGN = 0;
@@ -652,34 +714,65 @@ public class Def {
 	* MSSQLRestoreOpt
 	*/
 	public final String MSSQL_RESTORE_NORECOVERY = "NO_RECOVERY";
+	public final String MYSQL_METADATA_STREAM_NAME = ".metadata";
+	public final String MYSQL_USERS_GRANTS_STREAM_NAME = ".users-grants.sql";
 
 	/**
-	* Used in policy to define that the automatic Storage Vaults for new devices is not enforced by the policy
+	* NewStorageVaultMode: Used in policy to define that the automatic Storage Vaults for new devices is not enforced by
+	* the policy
 	*/
 	public final String NEW_STORAGE_VAULT_MODE_USER = "user_controlled";
 
 	/**
-	* No Storage Vault will be created when a new device is added
+	* NewStorageVaultMode: No Storage Vault will be created when a new device is added
 	*/
 	public final String NEW_STORAGE_VAULT_MODE_NONE = "none";
 
 	/**
-	* When a new device is added, a Storage Vault will be created using the servers default Storage Template
+	* NewStorageVaultMode: When a new device is added, a Storage Vault will be created using the servers default Storage
+	* Template
 	*/
 	public final String NEW_STORAGE_VAULT_MODE_SERVER = "server_controlled";
 
 	/**
-	* Enable Object Lock capability if the corresponding Days field is greater than zero.
+	* ObjectLockMode: Enable Object Lock capability if the corresponding Days field is greater than zero.
 	* New code should explicitly use OBJECT_LOCK_ON / OBJECT_LOCK_OFF instead.
 	*/
 	public final short OBJECT_LOCK_LEGACY = 0;
+
+	/**
+	* ObjectLockMode
+	*/
 	public final short OBJECT_LOCK_ON = 1;
+
+	/**
+	* ObjectLockMode
+	*/
 	public final short OBJECT_LOCK_OFF = 2;
+
+	/**
+	* Office365RegionType
+	*/
 	public final String OFFICE365_REGION_PUBLIC = "GlobalPublicCloud";
+
+	/**
+	* Office365RegionType
+	*/
 	public final String OFFICE365_REGION_CHINA = "ChinaCloud";
-	public final String OFFICE365_REGION_GERMANY = "GermanCloud";
+
+	/**
+	* Office365RegionType
+	*/
 	public final String OFFICE365_REGION_US_GOVT = "USGovtGccCloud";
+
+	/**
+	* Office365RegionType
+	*/
 	public final String OFFICE365_REGION_US_DOD = "USGovtGccDoDCloud";
+
+	/**
+	* Office365RegionType
+	*/
 	public final String OFFICE365_REGION_PUBLIC_TEST = "GlobalPublicCloudTest";
 
 	/**
@@ -713,8 +806,8 @@ public class Def {
 	public final int OS_ONLY_LINUX = 5;
 
 	/**
-	* When resetting a password with the API, set the PasswordFormat to this value. The Comet Server will re-hash the
-	* credential automatically.
+	* PasswordFormatType: When resetting a password with the API, set the PasswordFormat to this value. The Comet Server
+	* will re-hash the credential automatically.
 	*/
 	public final int PASSWORD_FORMAT_PLAINTEXT = 0;
 
@@ -737,7 +830,15 @@ public class Def {
 	* OidcProvider
 	*/
 	public final String PROVIDER_DASHBOARD = "dashboard";
+
+	/**
+	* ProxmoxVMType
+	*/
 	public final String PROXMOX_TYPE_VM = "qemu";
+
+	/**
+	* ProxmoxVMType
+	*/
 	public final String PROXMOX_TYPE_CONTAINER = "lxc";
 
 	/**
@@ -754,6 +855,16 @@ public class Def {
 	* PSAType
 	*/
 	public final int PSA_TYPE_SYNCRO = 2;
+
+	/**
+	* PSAType
+	*/
+	public final int PSA_TYPE_NINJAONE = 3;
+
+	/**
+	* PSAType
+	*/
+	public final int PSA_TYPE_CONNECTWISE = 4;
 
 	/**
 	* PveBackupMethod
@@ -987,6 +1098,17 @@ public class Def {
 	public final int RESTORETYPE_VMHOST = 14;
 
 	/**
+	* RestoreType: Restore selected files and folders to a cloud storage location described by a DestinationLocation
+	*/
+	public final int RESTORETYPE_CLOUD_STORAGE = 15;
+
+	/**
+	* RestoreType: Granular restore of single files from within a Disk Image or Hyper-V backup, into a cloud storage
+	* location described by a DestinationLocation
+	*/
+	public final int RESTORETYPE_VMDK_FILE_CLOUD_STORAGE = 16;
+
+	/**
 	* RestoreType: Legacy name alias - Prefer to use RESTORETYPE_PROCESS_ARCHIVE since multiple archive file formats are
 	* supported within this single RESTORETYPE_
 	*/
@@ -1073,42 +1195,50 @@ public class Def {
 	public final long RETENTIONRANGE__HIGHEST = 911;
 	public final long RETENTIONRANGE_MAXINT = 1125899906842624L;
 	public final int ROTATE_STORAGE_VAULT_KEYS_DEFAULT = 48;
+
+	/**
+	* ScheduleFrequencyType
+	*/
 	public final long SCHEDULE_FREQUENCY_LOWEST = 8010;
 
 	/**
-	* SecondsPast should be a Unix timestamp, in seconds
+	* ScheduleFrequencyType: SecondsPast should be a Unix timestamp, in seconds
 	*/
 	public final long SCHEDULE_FREQUENCY_ONCEONLY = 8010;
 
 	/**
-	* SecondsPast is the number of seconds past 00:00, in the device&#39;s local timezone.
+	* ScheduleFrequencyType: SecondsPast is the number of seconds past 00:00, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_DAILY = 8011;
 
 	/**
-	* SecondsPast is the number of seconds past *:00, in the device&#39;s local timezone.
+	* ScheduleFrequencyType: SecondsPast is the number of seconds past *:00, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_HOURLY = 8012;
 
 	/**
-	* SecondsPast is the number of seconds past 00:00 Sunday, in the device&#39;s local timezone.
+	* ScheduleFrequencyType: SecondsPast is the number of seconds past 00:00 Sunday, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_WEEKLY = 8013;
 
 	/**
-	* SecondsPast is the number of seconds past 00:00 1st, in the device&#39;s local timezone.
+	* ScheduleFrequencyType: SecondsPast is the number of seconds past 00:00 1st, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_MONTHLY = 8014;
 
 	/**
-	* SecondsPast is the number of seconds per period. Offset: Shunt seconds after unix epoch
+	* ScheduleFrequencyType: SecondsPast is the number of seconds per period. Offset: Shunt seconds after unix epoch
 	*/
 	public final long SCHEDULE_FREQUENCY_PERIODIC = 8015;
 
 	/**
-	* SecondsPast is the number of seconds past 00:00 1st, in the device&#39;s local timezone.
+	* ScheduleFrequencyType: SecondsPast is the number of seconds past 00:00 1st, in the device&#39;s local timezone.
 	*/
 	public final long SCHEDULE_FREQUENCY_YEARLY = 8016;
+
+	/**
+	* ScheduleFrequencyType
+	*/
 	public final long SCHEDULE_FREQUENCY_HIGHEST = 8016;
 
 	/**
@@ -1143,132 +1273,132 @@ public class Def {
 	public final String SEARCHCLAUSE_NOT_OR = "not_or";
 
 	/**
-	* String equals (case sensitive)
+	* SearchOperatorType: String equals (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_EQ = "str_eq";
 
 	/**
-	* String does not equal (case sensitive)
+	* SearchOperatorType: String does not equal (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_NEQ = "str_neq";
 
 	/**
-	* String contains anywhere (case sensitive)
+	* SearchOperatorType: String contains anywhere (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_CONTAINS = "str_contains";
 
 	/**
-	* String does not contain anywhere (case sensitive)
+	* SearchOperatorType: String does not contain anywhere (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_NCONTAINS = "str_ncontains";
 
 	/**
-	* String starts with prefix (case sensitive)
+	* SearchOperatorType: String starts with prefix (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_STARTSWITH = "str_startswith";
 
 	/**
-	* String does not start with prefix (case sensitive)
+	* SearchOperatorType: String does not start with prefix (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_NSTARTSWITH = "str_nstartswith";
 
 	/**
-	* String ends with suffix (case sensitive)
+	* SearchOperatorType: String ends with suffix (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_ENDSWITH = "str_endswith";
 
 	/**
-	* String does not end with suffix (case sensitive)
+	* SearchOperatorType: String does not end with suffix (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_NENDSWITH = "str_nendswith";
 
 	/**
-	* String equals (case insensitive)
+	* SearchOperatorType: String equals (case insensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_EQ_CI = "str_eq_ci";
 
 	/**
-	* String does not equal (case insensitive)
+	* SearchOperatorType: String does not equal (case insensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_NEQ_CI = "str_neq_ci";
 
 	/**
-	* String contains anywhere (case sensitive)
+	* SearchOperatorType: String contains anywhere (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_CONTAINS_CI = "str_contains_ci";
 
 	/**
-	* String does not contain anywhere (case sensitive)
+	* SearchOperatorType: String does not contain anywhere (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_NCONTAINS_CI = "str_ncontains_ci";
 
 	/**
-	* String starts with prefix (case sensitive)
+	* SearchOperatorType: String starts with prefix (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_STARTSWITH_CI = "str_startswith_ci";
 
 	/**
-	* String does not start with (case sensitive)
+	* SearchOperatorType: String does not start with (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_NSTARTSWITH_CI = "str_nstartswith_ci";
 
 	/**
-	* String ends with suffix (case sensitive)
+	* SearchOperatorType: String ends with suffix (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_ENDSWITH_CI = "str_endswith_ci";
 
 	/**
-	* String does not end with suffix (case sensitive)
+	* SearchOperatorType: String does not end with suffix (case sensitive)
 	*/
 	public final String SEARCHOPERATOR_STRING_NENDSWITH_CI = "str_nendswith_ci";
 
 	/**
-	* String matches provided regular expression (using Go regex syntax)
+	* SearchOperatorType: String matches provided regular expression (using Go regex syntax)
 	*/
 	public final String SEARCHOPERATOR_STRING_REGEXMATCH = "str_regexmatch";
 
 	/**
-	* String does not match provided regular expression (using Go regex syntax)
+	* SearchOperatorType: String does not match provided regular expression (using Go regex syntax)
 	*/
 	public final String SEARCHOPERATOR_STRING_NREGEXMATCH = "str_nregexmatch";
 
 	/**
-	* Integer field is equal to value
+	* SearchOperatorType: Integer field is equal to value
 	*/
 	public final String SEARCHOPERATOR_INT_EQ = "int_eq";
 
 	/**
-	* Integer field is not equal to value
+	* SearchOperatorType: Integer field is not equal to value
 	*/
 	public final String SEARCHOPERATOR_INT_NEQ = "int_neq";
 
 	/**
-	* Integer field is greater than value
+	* SearchOperatorType: Integer field is greater than value
 	*/
 	public final String SEARCHOPERATOR_INT_GT = "int_gt";
 
 	/**
-	* Integer field is greater than or equal to value
+	* SearchOperatorType: Integer field is greater than or equal to value
 	*/
 	public final String SEARCHOPERATOR_INT_GTE = "int_gte";
 
 	/**
-	* Integer field is less than value
+	* SearchOperatorType: Integer field is less than value
 	*/
 	public final String SEARCHOPERATOR_INT_LT = "int_lt";
 
 	/**
-	* Integer field is less than or equal to value
+	* SearchOperatorType: Integer field is less than or equal to value
 	*/
 	public final String SEARCHOPERATOR_INT_LTE = "int_lte";
 
 	/**
-	* Boolean field matches value
+	* SearchOperatorType: Boolean field matches value
 	*/
 	public final String SEARCHOPERATOR_BOOL_IS = "bool_is";
 
 	/**
-	* Boolean field does not match value
+	* SearchOperatorType: Boolean field does not match value
 	*/
 	public final String SEARCHOPERATOR_BOOL_NIS = "bool_nis";
 
@@ -1435,6 +1565,22 @@ public class Def {
 	public final int SEVT_ACCOUNT_ADMIN_SESSION_EXPIRE = 4157;
 
 	/**
+	* StreamableEventType: Admin personal API token created. Data is the redacted token metadata
+	*/
+	public final int SEVT_ACCOUNT_ADMIN_TOKEN_NEW = 4158;
+
+	/**
+	* StreamableEventType: Admin personal API token revoked. Data is the redacted token metadata
+	*/
+	public final int SEVT_ACCOUNT_ADMIN_TOKEN_REMOVED = 4159;
+
+	/**
+	* StreamableEventType: Admin personal API token authentication succeeded. Emitted for every authenticated request, in
+	* place of SEVT_ACCOUNT_ADMIN_LOGIN. Resource is the token ID
+	*/
+	public final int SEVT_ACCOUNT_ADMIN_TOKEN_USED = 4160;
+
+	/**
 	* StreamableEventType: New backup job started. Data is the job object
 	*/
 	public final int SEVT_JOB_NEW = 4200;
@@ -1568,6 +1714,21 @@ public class Def {
 	* StreamableEventType
 	*/
 	public final int SEVT__MAX = 4999;
+
+	/**
+	* SourceFieldType
+	*/
+	public final String SOURCEFIELD_BOOL = "bool";
+
+	/**
+	* SourceFieldType
+	*/
+	public final String SOURCEFIELD_INT = "int";
+
+	/**
+	* SourceFieldType
+	*/
+	public final String SOURCEFIELD_STRING = "string";
 
 	/**
 	* SSHAuthMode
@@ -1799,6 +1960,12 @@ public class Def {
 	* UpdateStatus: The device has successfully updated to the target version.
 	*/
 	public final int UPDATESTATUS_UPDATE_CONFIRMED = 5;
+
+	/**
+	* UpdateStatus: The device&#39;s reported operating system version is below the minimum supported version for the
+	* target build
+	*/
+	public final int UPDATESTATUS_INCOMPATIBLE_OS = 6;
 	public final int USERNAME_MAX_LENGTH = 255;
 
 	/**
@@ -1886,6 +2053,17 @@ public class Def {
 	public final int WEBAUTHN_DEVICE_TYPE__TPM_LINUX = 6;
 
 	/**
+	* WebhookFormat: The default. The event is delivered as the raw StreamableEvent JSON object.
+	*/
+	public final String WEBHOOK_FORMAT_RAW = "";
+
+	/**
+	* WebhookFormat: The event is reformatted as a Slack-compatible message, suitable for posting
+	* directly to a Slack Incoming Webhook URL.
+	*/
+	public final String WEBHOOK_FORMAT_SLACK = "slack";
+
+	/**
 	* WindowsCodesignMethod: When upgrading from a version of Comet Server prior to 23.3.0, this option will be
 	* automatically converted to a more specific type.
 	*/
@@ -1915,4 +2093,6 @@ public class Def {
 	* WindowsCodesignMethod: Use a configured SAS Relic server for Authenticode codesigning
 	*/
 	public final int WINDOWSCODESIGN_METHOD_RELICSERVER = 5;
+	public final long customBrandingMaxInlineItemSize = 262144L;
+	public final long customBrandingMaxTotalSize = 1048576L;
 }

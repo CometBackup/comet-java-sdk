@@ -37,6 +37,9 @@ public class DeviceConfig {
 	@JsonProperty("SyncroUUID")
 	public String SyncroUUID = "";
 
+	@JsonProperty("NinjaOneNodeId")
+	public long NinjaOneNodeId;
+
 
 	public DeviceConfig(){ }
 

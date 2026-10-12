@@ -32,6 +32,9 @@ public class MongoDBConnection {
 	@JsonProperty("MongoShellPath")
 	public String MongoShellPath = "";
 
+
+	// deprecated since Comet version 25.9.11
+	//External mongodump path. This is deprecated in Comet 25.9.11, Comet now includes MongoDB dump functionality.
 	@JsonProperty("MongodumpPath")
 	public String MongodumpPath = "";
 

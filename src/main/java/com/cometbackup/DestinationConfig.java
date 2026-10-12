@@ -22,6 +22,10 @@ public class DestinationConfig {
 	@JsonProperty("ModifyTime")
 	public long ModifyTime;
 
+	//Unix timestamp in seconds. A 0 value indicates unsuspended
+	@JsonProperty("SuspendedTime")
+	public long SuspendedTime;
+
 	//Custom commands to run before the job
 	@JsonProperty("PreExec")
 	public ArrayList<String> PreExec;
@@ -173,7 +177,7 @@ public class DestinationConfig {
 	@JsonProperty("LocalcopyWinSMBPassword")
 	public String LocalcopyWinSMBPassword = "";
 
-	//One of the PASSWORD_FORMAT_ constants. It controls the hash format of the LocalcopyWinSMBPassword field.
+	//One of the ENCRYPTIONMETHOD_ constants. It controls the hash format of the LocalcopyWinSMBPassword field.
 	@JsonProperty("LocalcopyWinSMBPasswordFormat")
 	public long LocalcopyWinSMBPasswordFormat;
 
@@ -191,6 +195,9 @@ public class DestinationConfig {
 
 	@JsonProperty("SMB")
 	public SMBDestinationLocation SMB;
+
+	@JsonProperty("NFS")
+	public NFSDestinationLocation NFS;
 
 	//A list of underlying destinations, that will be combined and presented as one.
 	@JsonProperty("SpanTargets")
@@ -247,6 +254,12 @@ public class DestinationConfig {
 	//The "Prevent users from viewing the actual storage type" option
 	@JsonProperty("RebrandStorage")
 	public boolean RebrandStorage;
+
+	//If true, the end-user account is prevented from modifying this Storage Vault (e.g. its quota, retention rules, or
+	//storage location), regardless of the account policy's PreventEditStorageVault setting - it takes priority over that
+	//policy. Typically set by the Storage Template that provisioned this Storage Vault.
+	@JsonProperty("PreventUserEdit")
+	public boolean PreventUserEdit;
 
 	//If not empty, an error occured during a retention pass. Describes the error.
 	@JsonProperty("RetentionError")
@@ -326,6 +339,7 @@ public class DestinationConfig {
 		ret.WebDav = this.WebDav;
 		ret.Storj = this.Storj;
 		ret.SMB = this.SMB;
+		ret.NFS = this.NFS;
 		ret.SpanTargets = this.SpanTargets;
 		ret.SpanUseStaticSlots = this.SpanUseStaticSlots;
 		ret.Tag = this.Tag;
@@ -378,6 +392,7 @@ public class DestinationConfig {
 		this.WebDav = other.WebDav;
 		this.Storj = other.Storj;
 		this.SMB = other.SMB;
+		this.NFS = other.NFS;
 		this.SpanTargets = other.SpanTargets;
 		this.SpanUseStaticSlots = other.SpanUseStaticSlots;
 		this.Tag = other.Tag;

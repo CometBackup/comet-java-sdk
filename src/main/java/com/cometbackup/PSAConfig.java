@@ -11,6 +11,8 @@ import java.util.*;
 * PSAConfig
 */
 public class PSAConfig {
+
+	// deprecated since Comet version 26.5.2
 	//For PSA_TYPE_GRADIENT. Defaults to enabled
 	@JsonProperty("AlertsDisabled")
 	public boolean AlertsDisabled;
@@ -18,6 +20,10 @@ public class PSAConfig {
 	//Custom headers to send with each PSA request
 	@JsonProperty("CustomHeaders")
 	public HashMap<String, String> CustomHeaders;
+
+	//NinjaOne-specific PSA configuration
+	@JsonProperty("NinjaOne")
+	public NinjaOneConfig NinjaOne;
 
 	//Specified API key for the target PSA
 	@JsonProperty("PartnerKey")
@@ -31,8 +37,14 @@ public class PSAConfig {
 	@JsonProperty("URL")
 	public String URL = "";
 
+
+	// deprecated since Comet version 26.5.2
 	@JsonProperty("GroupedBy")
 	public PSAGroupedBy GroupedBy;
+
+	//For PSA_TYPE_CONNECTWISE. The additional connection parameters for ConnectWise Manage
+	@JsonProperty("ConnectWise")
+	public PSAConfigConnectWise ConnectWise;
 
 
 	public PSAConfig(){ }

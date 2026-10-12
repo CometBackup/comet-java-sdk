@@ -14,7 +14,7 @@ public class SingleFieldSource {
 	@JsonProperty("FieldName")
 	public String FieldName = "";
 
-	//One of "bool" / "int" / "string"
+	//One of the SOURCEFIELD_ constants
 	@JsonProperty("FieldType")
 	public String FieldType = "";
 

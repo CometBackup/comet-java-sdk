@@ -17,6 +17,7 @@ public class PVEVM {
 	@JsonProperty("Disks")
 	public ArrayList<PVEDisk> Disks;
 
+	//Memory is a human-formatted string of the VM's memory. It might be rounded.
 	@JsonProperty("Memory")
 	public String Memory = "";
 
@@ -34,6 +35,9 @@ public class PVEVM {
 
 	@JsonProperty("Type")
 	public String Type = "";
+
+	@JsonProperty("Template")
+	public boolean Template;
 
 	//String type, but always contains an integer value
 	@JsonProperty("VMID")

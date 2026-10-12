@@ -23,7 +23,7 @@ public class LocalDestinationLocation {
 	@JsonProperty("LocalcopyWinSMBPassword")
 	public String LocalcopyWinSMBPassword = "";
 
-	//One of the PASSWORD_FORMAT_ constants. It controls the hash format of the LocalcopyWinSMBPassword field.
+	//One of the ENCRYPTIONMETHOD_ constants. It controls the hash format of the LocalcopyWinSMBPassword field.
 	@JsonProperty("LocalcopyWinSMBPasswordFormat")
 	public long LocalcopyWinSMBPasswordFormat;
 

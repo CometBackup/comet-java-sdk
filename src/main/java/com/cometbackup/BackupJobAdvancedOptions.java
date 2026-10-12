@@ -51,6 +51,11 @@ public class BackupJobAdvancedOptions {
 	@JsonProperty("Tags")
 	public String Tags = "";
 
+	//Optionally restricts LimitVaultSpeedBps to a specific time of day and days of the week. When absent, or when its
+	//RestrictTimes is false, LimitVaultSpeedBps applies at all times. Has no effect unless LimitVaultSpeedBps is set.
+	@JsonProperty("LimitVaultSpeedTimeWindow")
+	public SpeedLimitTimeWindow LimitVaultSpeedTimeWindow;
+
 
 	public BackupJobAdvancedOptions(){ }
 

@@ -32,6 +32,9 @@ public class UserPolicy {
 	@JsonProperty("DefaultNewStorageVault")
 	public String DefaultNewStorageVault = "";
 
+	@JsonProperty("SVSelectionRuleIncludeUnassociated")
+	public boolean SVSelectionRuleIncludeUnassociated;
+
 	@JsonProperty("PreventNewProtectedItem")
 	public boolean PreventNewProtectedItem;
 

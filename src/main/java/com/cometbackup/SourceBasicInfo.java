@@ -24,6 +24,9 @@ public class SourceBasicInfo {
 	@JsonProperty("TotalVmCount")
 	public long TotalVmCount;
 
+	@JsonProperty("TotalLxcCount")
+	public long TotalLxcCount;
+
 	//Bytes
 	@JsonProperty("Size")
 	public long Size;

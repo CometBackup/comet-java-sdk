@@ -45,7 +45,7 @@ public class AdminSecurityOptions {
 
 	//One of the ENCRYPTIONMETHOD_ constants
 	@JsonProperty("TOTPKeyEncryptionFormat")
-	public int TOTPKeyEncryptionFormat;
+	public long TOTPKeyEncryptionFormat;
 
 	@JsonProperty("TOTPKey")
 	public String TOTPKey = "";

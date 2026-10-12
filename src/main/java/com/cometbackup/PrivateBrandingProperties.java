@@ -107,6 +107,9 @@ public class PrivateBrandingProperties {
 	@JsonProperty("MacOSCodeSign")
 	public MacOSCodeSignProperties MacOSCodeSign;
 
+	@JsonProperty("LinuxRpmCodeSign")
+	public LinuxRpmCodeSignProperties LinuxRpmCodeSign;
+
 
 	public PrivateBrandingProperties(){ }
 

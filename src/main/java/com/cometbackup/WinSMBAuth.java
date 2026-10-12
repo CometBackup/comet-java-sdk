@@ -19,11 +19,11 @@ public class WinSMBAuth {
 	@JsonProperty("Username")
 	public String Username = "";
 
-	//The password might be hashed. To set this in cleartext, set PasswordFormat to 0 (PASSWORD_FORMAT_PLAINTEXT).
+	//The password might be hashed. To set this in cleartext, set PasswordFormat to 0 (ENCRYPTIONMETHOD_PLAINTEXT).
 	@JsonProperty("Password")
 	public String Password = "";
 
-	//The hash algorithm that is used for the Password field. It is one of the PASSWORD_FORMAT_ constants.
+	//The encryption method that is used for the Password field. It is one of the ENCRYPTIONMETHOD_ constants.
 	@JsonProperty("PasswordFormat")
 	public long PasswordFormat;
 
