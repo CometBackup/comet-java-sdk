@@ -46,6 +46,10 @@ public class EmailOptions {
 	@JsonProperty("SMTPCustomEhlo")
 	public String SMTPCustomEhlo = "";
 
+	//If set, authenticate to the SMTP server with OAuth 2.0 (SASL XOAUTH2) as SMTPUsername instead of using SMTPPassword.
+	@JsonProperty("SMTPOAuth")
+	public SMTPOAuthOptions SMTPOAuth;
+
 
 	public EmailOptions(){ }
 

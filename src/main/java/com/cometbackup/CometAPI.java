@@ -6,6 +6,7 @@ package com.cometbackup;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -60,7 +61,7 @@ public class CometAPI {
 				data.put("Password", password);
 
 				String formData = data.entrySet().stream()
-						.map(entry -> entry.getKey() + "=" + entry.getValue())
+						.map(entry -> URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
 						.reduce((param1, param2) -> param1 + "&" + param2)
 						.orElse("");
 				requestBuilder.header("Content-Type", contentType)
@@ -68,11 +69,12 @@ public class CometAPI {
 				break;
 
 			case "multipart/form-data":
-				byte[] multipartBytes = createMultipartFormData(data);
+				String boundary = "Boundary-" + System.currentTimeMillis();
+				byte[] multipartBytes = createMultipartFormData(data, boundary);
 				requestBuilder.header("X-Comet-Admin-AuthType", "Password")
 						.header("X-Comet-Admin-Username", username)
 						.header("X-Comet-Admin-Password", password)
-						.header("Content-Type", contentType)
+						.header("Content-Type", contentType + "; boundary=" + boundary)
 						.POST(HttpRequest.BodyPublishers.ofByteArray(multipartBytes));
 				break;
 
@@ -84,17 +86,17 @@ public class CometAPI {
 		return HttpClient.newHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString());
 	}
 
-	private byte[] createMultipartFormData(Map<String, String> data) {
+	private byte[] createMultipartFormData(Map<String, String> data, String boundary) {
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-			String boundary = "Boundary-" + System.currentTimeMillis();
 			String charset = StandardCharsets.UTF_8.name();
 
 			for (Map.Entry<String, String> entry : data.entrySet()) {
 				String field = entry.getKey();
 				String value = entry.getValue();
 
+				// The filename makes the server see a file part, which is how multipart APIs read uploads
 				outputStream.write(("--" + boundary + "\r\n").getBytes(charset));
-				outputStream.write(("Content-Disposition: form-data; name=\"" + field + "\"\r\n").getBytes(charset));
+				outputStream.write(("Content-Disposition: form-data; name=\"" + field + "\"; filename=\"" + field + "\"\r\n").getBytes(charset));
 				outputStream.write(("Content-Type: text/plain; charset=" + charset + "\r\n").getBytes(charset));
 				outputStream.write(("\r\n" + value + "\r\n").getBytes(charset));
 			}
@@ -127,12 +129,16 @@ public class CometAPI {
 	* securely.
 	* The token inherits the current permissions of the admin account that created it, evaluated live on each request; it
 	* does not capture a fixed snapshot of permissions.
+	* To authenticate with the token, send it in the Token field with AuthType=Token, or in the Password field with
+	* AuthType=Password. The latter lets SDKs and integrations that only support password authentication use a token
+	* without needing to handle 2FA.
 	* Creating a token requires you to supply your current password, unless the request is already authenticated with a
 	* password, or the account is managed by an external authentication source. Check
 	* AdminAccountProperties.APITokenCreateRequiresPassword to know whether it is needed.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Description Human-readable label for this token
 	* @param ExpireTime (Optional) Unix timestamp, in seconds, when the token stops working. Must be in the future. If this
 	* parameter is omitted entirely, the token expires after 90 days. Pass zero explicitly for a token that never expires
@@ -163,12 +169,16 @@ public class CometAPI {
 	* securely.
 	* The token inherits the current permissions of the admin account that created it, evaluated live on each request; it
 	* does not capture a fixed snapshot of permissions.
+	* To authenticate with the token, send it in the Token field with AuthType=Token, or in the Password field with
+	* AuthType=Password. The latter lets SDKs and integrations that only support password authentication use a token
+	* without needing to handle 2FA.
 	* Creating a token requires you to supply your current password, unless the request is already authenticated with a
 	* password, or the account is managed by an external authentication source. Check
 	* AdminAccountProperties.APITokenCreateRequiresPassword to know whether it is needed.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Description Human-readable label for this token
 	* @param ExpireTime (Optional) Unix timestamp, in seconds, when the token stops working. Must be in the future. If this
 	* parameter is omitted entirely, the token expires after 90 days. Pass zero explicitly for a token that never expires
@@ -186,7 +196,8 @@ public class CometAPI {
 	* This does not include the token itself, which is only returned once when the token is created.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return CompletableFuture yielding an AdminAccountAPITokenListResponse
 	*/
 	public CompletableFuture<AdminAccountAPITokenListResponse> AdminAccountApiTokenListAsync()  {
@@ -208,7 +219,8 @@ public class CometAPI {
 	* This does not include the token itself, which is only returned once when the token is created.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return an AdminAccountAPITokenListResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -223,7 +235,8 @@ public class CometAPI {
 	* server.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TokenID The token identifier, as shown in the token list
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -250,7 +263,8 @@ public class CometAPI {
 	* server.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TokenID The token identifier, as shown in the token list
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -268,7 +282,8 @@ public class CometAPI {
 	* additionally obscured.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding an AdminAccountPropertiesResponse
 	*/
 	public CompletableFuture<AdminAccountPropertiesResponse> AdminAccountPropertiesAsync()  {
@@ -293,7 +308,8 @@ public class CometAPI {
 	* additionally obscured.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return an AdminAccountPropertiesResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -308,7 +324,8 @@ public class CometAPI {
 	* account.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return CompletableFuture yielding a TotpRegeneratedResponse
 	*/
 	public CompletableFuture<TotpRegeneratedResponse> AdminAccountRegenerateTotpAsync()  {
@@ -331,7 +348,8 @@ public class CometAPI {
 	* account.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return a TotpRegeneratedResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -344,7 +362,8 @@ public class CometAPI {
 	* AdminAccountSessionRevokeAsync: Revoke a session key (log out)
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminAccountSessionRevokeAsync()  {
@@ -365,7 +384,8 @@ public class CometAPI {
 	* AdminAccountSessionRevoke: Revoke a session key (log out)
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -378,7 +398,8 @@ public class CometAPI {
 	* AdminAccountSessionStartAsync: Generate a session key (log in)
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SelfAddress (Optional) External URL of this server (&gt;= 18.9.9)
 	* @return CompletableFuture yielding a SessionKeyRegeneratedResponse
 	*/
@@ -403,7 +424,8 @@ public class CometAPI {
 	* AdminAccountSessionStart: Generate a session key (log in)
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SelfAddress (Optional) External URL of this server (&gt;= 18.9.9)
 	* @return a SessionKeyRegeneratedResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -417,7 +439,8 @@ public class CometAPI {
 	* AdminAccountSessionStartAsUserAsync: Generate a session key for an end-user (log in as end-user)
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TargetUser Target account username
 	* @return CompletableFuture yielding a SessionKeyRegeneratedResponse
 	*/
@@ -442,7 +465,8 @@ public class CometAPI {
 	* AdminAccountSessionStartAsUser: Generate a session key for an end-user (log in as end-user)
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TargetUser Target account username
 	* @return a SessionKeyRegeneratedResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -456,7 +480,8 @@ public class CometAPI {
 	* AdminAccountSessionUpgradeAsync: Exchange an SSO one-time token for a session key
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return CompletableFuture yielding a SessionKeyRegeneratedResponse
 	*/
 	public CompletableFuture<SessionKeyRegeneratedResponse> AdminAccountSessionUpgradeAsync()  {
@@ -477,7 +502,8 @@ public class CometAPI {
 	* AdminAccountSessionUpgrade: Exchange an SSO one-time token for a session key
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return a SessionKeyRegeneratedResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -495,7 +521,8 @@ public class CometAPI {
 	* field were ignored.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Security Updated account properties
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -526,7 +553,8 @@ public class CometAPI {
 	* field were ignored.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Security Updated account properties
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -544,7 +572,8 @@ public class CometAPI {
 	* to allow their use with the WebAuthn endpoints.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SelfAddress External URL of this server, used as U2F AppID and Facet
 	* @return CompletableFuture yielding an U2FRegistrationChallengeResponse
 	*/
@@ -572,7 +601,8 @@ public class CometAPI {
 	* to allow their use with the WebAuthn endpoints.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SelfAddress External URL of this server, used as U2F AppID and Facet
 	* @return an U2FRegistrationChallengeResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -589,7 +619,8 @@ public class CometAPI {
 	* to allow their use with the WebAuthn endpoints.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param U2FChallengeID Associated value from AdminAccountU2fRequestRegistrationChallenge API
 	* @param U2FClientData U2F response data supplied by hardware token
 	* @param U2FRegistrationData U2F response data supplied by hardware token
@@ -625,7 +656,8 @@ public class CometAPI {
 	* to allow their use with the WebAuthn endpoints.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param U2FChallengeID Associated value from AdminAccountU2fRequestRegistrationChallenge API
 	* @param U2FClientData U2F response data supplied by hardware token
 	* @param U2FRegistrationData U2F response data supplied by hardware token
@@ -643,7 +675,8 @@ public class CometAPI {
 	* AdminAccountValidateTotpAsync: Validate the TOTP code before turning 2fa(TOTP) on
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TOTPCode Six-digit code after scanning barcode image
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -668,7 +701,8 @@ public class CometAPI {
 	* AdminAccountValidateTotp: Validate the TOTP code before turning 2fa(TOTP) on
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TOTPCode Six-digit code after scanning barcode image
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -682,7 +716,8 @@ public class CometAPI {
 	* AdminAccountWebauthnRequestRegistrationChallengeAsync: Register a new FIDO2 WebAuthn token
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SelfAddress External URL of this server, used as WebAuthn ID
 	* @return CompletableFuture yielding a WebAuthnRegistrationChallengeResponse
 	*/
@@ -707,7 +742,8 @@ public class CometAPI {
 	* AdminAccountWebauthnRequestRegistrationChallenge: Register a new FIDO2 WebAuthn token
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SelfAddress External URL of this server, used as WebAuthn ID
 	* @return a WebAuthnRegistrationChallengeResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -721,7 +757,8 @@ public class CometAPI {
 	* AdminAccountWebauthnSubmitChallengeResponseAsync: Register a new FIDO2 WebAuthn token
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SelfAddress External URL of this server, used as WebAuthn ID
 	* @param ChallengeID Associated value from AdminAccountWebAuthnRequestRegistrationChallenge API
 	* @param Credential JSON-encoded credential
@@ -750,7 +787,8 @@ public class CometAPI {
 	* AdminAccountWebauthnSubmitChallengeResponse: Register a new FIDO2 WebAuthn token
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SelfAddress External URL of this server, used as WebAuthn ID
 	* @param ChallengeID Associated value from AdminAccountWebAuthnRequestRegistrationChallenge API
 	* @param Credential JSON-encoded credential
@@ -803,7 +841,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser New account username (&gt;= 17.2.0)
 	* @param TargetPassword New account password (&gt;= 17.2.0)
 	* @param StoreRecoveryCode (Optional) If set to 1, store and keep a password recovery code for the generated user
@@ -812,10 +851,12 @@ public class CometAPI {
 	* user (&gt;= 20.3.4)
 	* @param TargetOrganization (Optional) If present, create the user account on behalf of another organization. Only
 	* allowed for administrator accounts in the top-level organization. (&gt;= 22.5.0)
+	* @param StoreDataRecoveryCode (Optional) If set to 1, store and keep a data recovery code for the generated user
+	* (&gt;= 26.8.10)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminAddUserAsync(String TargetUser, String TargetPassword, Integer StoreRecoveryCode, Integer RequirePasswordChange, String TargetOrganization) throws JsonProcessingException {
+	public CompletableFuture<CometAPIResponseMessage> AdminAddUserAsync(String TargetUser, String TargetPassword, Integer StoreRecoveryCode, Integer RequirePasswordChange, String TargetOrganization, Integer StoreDataRecoveryCode) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetUser", TargetUser);
@@ -823,6 +864,7 @@ public class CometAPI {
 		if (StoreRecoveryCode != null) data.put("StoreRecoveryCode", CometAPI.getObjectMapper().writeValueAsString(StoreRecoveryCode));
 		if (RequirePasswordChange != null) data.put("RequirePasswordChange", CometAPI.getObjectMapper().writeValueAsString(RequirePasswordChange));
 		if (TargetOrganization != null) data.put("TargetOrganization",  TargetOrganization);
+		if (StoreDataRecoveryCode != null) data.put("StoreDataRecoveryCode", CometAPI.getObjectMapper().writeValueAsString(StoreDataRecoveryCode));
 		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/add-user", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -841,7 +883,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser New account username (&gt;= 17.2.0)
 	* @param TargetPassword New account password (&gt;= 17.2.0)
 	* @param StoreRecoveryCode (Optional) If set to 1, store and keep a password recovery code for the generated user
@@ -850,13 +893,15 @@ public class CometAPI {
 	* user (&gt;= 20.3.4)
 	* @param TargetOrganization (Optional) If present, create the user account on behalf of another organization. Only
 	* allowed for administrator accounts in the top-level organization. (&gt;= 22.5.0)
+	* @param StoreDataRecoveryCode (Optional) If set to 1, store and keep a data recovery code for the generated user
+	* (&gt;= 26.8.10)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminAddUser(String TargetUser, String TargetPassword, Integer StoreRecoveryCode, Integer RequirePasswordChange, String TargetOrganization) throws ExecutionException, InterruptedException, JsonProcessingException{
-		return AdminAddUserAsync(TargetUser, TargetPassword, StoreRecoveryCode, RequirePasswordChange, TargetOrganization).get();
+	public CometAPIResponseMessage AdminAddUser(String TargetUser, String TargetPassword, Integer StoreRecoveryCode, Integer RequirePasswordChange, String TargetOrganization, Integer StoreDataRecoveryCode) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminAddUserAsync(TargetUser, TargetPassword, StoreRecoveryCode, RequirePasswordChange, TargetOrganization, StoreDataRecoveryCode).get();
 	}
 
 	/**
@@ -867,7 +912,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser New account username (&gt;= 17.2.0)
 	* @param ProfileData New account profile (&gt;= 17.2.0)
 	* @param TargetOrganization (Optional) If present, create the user account on behalf of another organization. Only
@@ -902,7 +948,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser New account username (&gt;= 17.2.0)
 	* @param ProfileData New account profile (&gt;= 17.2.0)
 	* @param TargetOrganization (Optional) If present, create the user account on behalf of another organization. Only
@@ -922,14 +969,18 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TargetUser the username of the admin to be deleted
+	* @param TargetOrgID (Optional) the organization ID of the admin to be deleted. If omitted, defaults to the top-level
+	* organization. (&gt;= 26.11.0)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminAdminUserDeleteAsync(String TargetUser)  {
+	public CompletableFuture<CometAPIResponseMessage> AdminAdminUserDeleteAsync(String TargetUser, String TargetOrgID)  {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetUser", TargetUser);
+		if (TargetOrgID != null) data.put("TargetOrgID",  TargetOrgID);
 		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/admin-user/delete", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -949,14 +1000,17 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TargetUser the username of the admin to be deleted
+	* @param TargetOrgID (Optional) the organization ID of the admin to be deleted. If omitted, defaults to the top-level
+	* organization. (&gt;= 26.11.0)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public CometAPIResponseMessage AdminAdminUserDelete(String TargetUser) throws ExecutionException, InterruptedException{
-		return AdminAdminUserDeleteAsync(TargetUser).get();
+	public CometAPIResponseMessage AdminAdminUserDelete(String TargetUser, String TargetOrgID) throws ExecutionException, InterruptedException{
+		return AdminAdminUserDeleteAsync(TargetUser, TargetOrgID).get();
 	}
 
 	/**
@@ -965,12 +1019,18 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* @param TargetOrgID (Optional) If present, only list the administrators belonging to this organization. Otherwise,
+	* administrators from all organizations are listed. (&gt;= 26.11.0)
 	* @return CompletableFuture yielding an AllowedAdminUser[]
 	*/
-	public CompletableFuture<AllowedAdminUser[]> AdminAdminUserListAsync()  {
+	public CompletableFuture<AllowedAdminUser[]> AdminAdminUserListAsync(String TargetOrgID)  {
+		var data = new HashMap<String,String>();
+
+		if (TargetOrgID != null) data.put("TargetOrgID",  TargetOrgID);
 		var resultFuture = new CompletableFuture<AllowedAdminUser[]>(); 
-		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/admin-user/list", null);
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/admin-user/list", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
 			try {
 				String jsonBody = httpResponse.body();
@@ -988,13 +1048,16 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* @param TargetOrgID (Optional) If present, only list the administrators belonging to this organization. Otherwise,
+	* administrators from all organizations are listed. (&gt;= 26.11.0)
 	* @return an AllowedAdminUser[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
-	public AllowedAdminUser[] AdminAdminUserList() throws ExecutionException, InterruptedException{
-		return AdminAdminUserListAsync().get();
+	public AllowedAdminUser[] AdminAdminUserList(String TargetOrgID) throws ExecutionException, InterruptedException{
+		return AdminAdminUserListAsync(TargetOrgID).get();
 	}
 
 	/**
@@ -1003,11 +1066,12 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TargetUser the username for this new admin
 	* @param TargetPassword the password for this new admin user
-	* @param TargetOrgID (Optional) provide the organization ID for this user, it will default to the org of the
-	* authenticating user otherwise
+	* @param TargetOrgID (Optional) provide the organization ID for this user, it will default to the top-level
+	* organization otherwise.
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminAdminUserNewAsync(String TargetUser, String TargetPassword, String TargetOrgID)  {
@@ -1035,17 +1099,91 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param TargetUser the username for this new admin
 	* @param TargetPassword the password for this new admin user
-	* @param TargetOrgID (Optional) provide the organization ID for this user, it will default to the org of the
-	* authenticating user otherwise
+	* @param TargetOrgID (Optional) provide the organization ID for this user, it will default to the top-level
+	* organization otherwise.
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	*/
 	public CometAPIResponseMessage AdminAdminUserNew(String TargetUser, String TargetPassword, String TargetOrgID) throws ExecutionException, InterruptedException{
 		return AdminAdminUserNewAsync(TargetUser, TargetPassword, TargetOrgID).get();
+	}
+
+	/**
+	* AdminAdminUserSetAsync: Update another administrator
+	* This API cannot update your own administrator account. Use the AdminAccountSetProperties API instead.
+	* The supplied Profile replaces the stored administrator account as-is, with the following exceptions:
+	* - The Username and OrganizationID fields must either be empty or match the target administrator. This API cannot
+	* rename an administrator or move it to another organization.
+	* - To set a new plaintext password, use a password format of 0 (PASSWORD_FORMAT_PLAINTEXT); it must be at least 8
+	* characters. A password format of 4 (PASSWORD_FORMAT_UNVERIFIABLE) leaves the password unchanged.
+	* - APITokens may only be removed, or have their Description changed. New tokens must be created by the administrator
+	* themselves. Other fields of retained tokens are ignored.
+	* - IPWhitelist is cleared if the server license does not permit it.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* Access to this API may be prevented on a per-administrator basis.
+	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* @param TargetUser the username of the admin to be updated (&gt;= 26.11.0)
+	* @param Profile the updated administrator account (&gt;= 26.11.0)
+	* @param TargetOrgID (Optional) the organization ID of the admin to be updated. If omitted, defaults to the top-level
+	* organization. (&gt;= 26.11.0)
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminAdminUserSetAsync(String TargetUser, AllowedAdminUser Profile, String TargetOrgID) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetUser", TargetUser);
+		data.put("Profile", CometAPI.getObjectMapper().writeValueAsString(Profile));
+		if (TargetOrgID != null) data.put("TargetOrgID",  TargetOrgID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/admin-user/set", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminAdminUserSet: Update another administrator
+	* This API cannot update your own administrator account. Use the AdminAccountSetProperties API instead.
+	* The supplied Profile replaces the stored administrator account as-is, with the following exceptions:
+	* - The Username and OrganizationID fields must either be empty or match the target administrator. This API cannot
+	* rename an administrator or move it to another organization.
+	* - To set a new plaintext password, use a password format of 0 (PASSWORD_FORMAT_PLAINTEXT); it must be at least 8
+	* characters. A password format of 4 (PASSWORD_FORMAT_UNVERIFIABLE) leaves the password unchanged.
+	* - APITokens may only be removed, or have their Description changed. New tokens must be created by the administrator
+	* themselves. Other fields of retained tokens are ignored.
+	* - IPWhitelist is cleared if the server license does not permit it.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* Access to this API may be prevented on a per-administrator basis.
+	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* @param TargetUser the username of the admin to be updated (&gt;= 26.11.0)
+	* @param Profile the updated administrator account (&gt;= 26.11.0)
+	* @param TargetOrgID (Optional) the organization ID of the admin to be updated. If omitted, defaults to the top-level
+	* organization. (&gt;= 26.11.0)
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CometAPIResponseMessage AdminAdminUserSet(String TargetUser, AllowedAdminUser Profile, String TargetOrgID) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminAdminUserSetAsync(TargetUser, Profile, TargetOrgID).get();
 	}
 
 	/**
@@ -1728,7 +1866,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Subject Bulletin subject line (&gt;= 17.3.5)
 	* @param Content Bulletin message content (&gt;= 17.3.5)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -1756,7 +1895,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Subject Bulletin subject line (&gt;= 17.3.5)
 	* @param Content Bulletin message content (&gt;= 17.3.5)
 	* @return a CometAPIResponseMessage
@@ -1772,7 +1912,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ConstellationCheckReport
 	*/
 	public CompletableFuture<ConstellationCheckReport> AdminConstellationLastReportAsync()  {
@@ -1794,7 +1935,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ConstellationCheckReport
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -1808,7 +1950,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ConstellationCheckReport
 	*/
 	public CompletableFuture<ConstellationCheckReport> AdminConstellationNewReportAsync()  {
@@ -1830,7 +1973,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ConstellationCheckReport
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -1845,7 +1989,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminConstellationPruneNowAsync()  {
@@ -1868,7 +2013,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -1882,7 +2028,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ConstellationStatusAPIResponse
 	*/
 	public CompletableFuture<ConstellationStatusAPIResponse> AdminConstellationStatusAsync()  {
@@ -1904,7 +2051,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ConstellationStatusAPIResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -1917,7 +2065,8 @@ public class CometAPI {
 	* AdminConvertStorageRoleAsync: Convert IAM Storage Role vault to its underlying S3 type
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser The user to receive the new Storage Vault
 	* @param DestinationId The id of the old storage role destination to convert
 	* @return CompletableFuture yielding a RequestStorageVaultResponseMessage
@@ -1944,7 +2093,8 @@ public class CometAPI {
 	* AdminConvertStorageRole: Convert IAM Storage Role vault to its underlying S3 type
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser The user to receive the new Storage Vault
 	* @param DestinationId The id of the old storage role destination to convert
 	* @return a RequestStorageVaultResponseMessage
@@ -1960,7 +2110,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Query (No description available)
 	* @return CompletableFuture yielding a CountJobsResponse
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -1987,7 +2138,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Query (No description available)
 	* @return a CountJobsResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -2007,7 +2159,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param TargetPassword Selected account password (&gt;= 20.9.1)
 	* @param Server (Optional) External URL of the authentication server that is different from the current server
@@ -2041,7 +2194,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param TargetPassword Selected account password (&gt;= 20.9.1)
 	* @param Server (Optional) External URL of the authentication server that is different from the current server
@@ -2058,7 +2212,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param SourceID Selected Protected Item GUID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -2086,7 +2241,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param SourceID Selected Protected Item GUID
 	* @return a CometAPIResponseMessage
@@ -2106,7 +2262,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @param UninstallConfig (Optional) Uninstall software configuration (&gt;= 20.3.5)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -2139,7 +2296,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @param UninstallConfig (Optional) Uninstall software configuration (&gt;= 20.3.5)
 	* @return a CometAPIResponseMessage
@@ -2156,7 +2314,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -2182,7 +2341,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -2198,7 +2358,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -2227,7 +2388,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @return a CometAPIResponseMessage
@@ -2243,7 +2405,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotID Snapshot to search
@@ -2273,7 +2436,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotID Snapshot to search
@@ -2286,12 +2450,66 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminDispatcherClearLoginPasswordAsync: Instruct a live connected device to discard its stored login password and
+	* return to the login screen
+	* The device keeps its username and server URL, so only the new password needs to be re-entered. Use this after a
+	* server-side password change when the device should not be given the new password automatically. Devices older than
+	* 26.11.3 cannot retain the login details and receive the force-login behavior instead, discarding all stored
+	* credentials.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
+	* @param TargetID The live connection GUID
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherClearLoginPasswordAsync(String TargetID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/clear-login-password", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherClearLoginPassword: Instruct a live connected device to discard its stored login password and return
+	* to the login screen
+	* The device keeps its username and server URL, so only the new password needs to be re-entered. Use this after a
+	* server-side password change when the device should not be given the new password automatically. Devices older than
+	* 26.11.3 cannot retain the login details and receive the force-login behavior instead, discarding all stored
+	* credentials.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
+	* @param TargetID The live connection GUID
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage AdminDispatcherClearLoginPassword(String TargetID) throws ExecutionException, InterruptedException{
+		return AdminDispatcherClearLoginPasswordAsync(TargetID).get();
+	}
+
+	/**
 	* AdminDispatcherDeepverifyStorageVaultAsync: Instruct a live connected device to deeply verify Storage Vault content
 	* This command is understood by Comet Backup 18.8.2 and newer.
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -2320,7 +2538,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @return a CometAPIResponseMessage
@@ -2336,7 +2555,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotID The backup job snapshot ID to delete
@@ -2366,7 +2586,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotID The backup job snapshot ID to delete
@@ -2384,7 +2605,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotIDs The backup job snapshot IDs to delete
@@ -2416,7 +2638,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotIDs The backup job snapshot IDs to delete
@@ -2435,7 +2658,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -2462,7 +2686,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -2478,7 +2703,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Snapshot where the email belongs to
 	* @param Destination The Storage Vault ID
@@ -2511,7 +2737,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Snapshot where the email belongs to
 	* @param Destination The Storage Vault ID
@@ -2530,7 +2757,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -2557,7 +2785,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -2573,7 +2802,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param OrganizationID Target organization
 	* @return CompletableFuture yielding an OrganizationLoginURLResponse
 	*/
@@ -2600,7 +2830,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param OrganizationID Target organization
 	* @return an OrganizationLoginURLResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -2616,7 +2847,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param ImportSourceID The selected import source, as found by the AdminDispatcherRequestImportSources API
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -2645,7 +2877,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param ImportSourceID The selected import source, as found by the AdminDispatcherRequestImportSources API
 	* @return a CometAPIResponseMessage
@@ -2662,7 +2895,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -2689,7 +2923,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -2704,7 +2939,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param UserNameFilter (Optional) User name filter string (&gt;= 22.6.5)
 	* @return CompletableFuture yielding a HashMap&lt;String,LiveUserConnection&gt;
 	*/
@@ -2731,7 +2967,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param UserNameFilter (Optional) User name filter string (&gt;= 22.6.5)
 	* @return a HashMap&lt;String,LiveUserConnection&gt;
 	* @throws ExecutionException if the future completed exceptionally
@@ -2748,7 +2985,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return CompletableFuture yielding a BrowseOffice365ListVirtualAccountsResponse
@@ -2779,7 +3017,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ListVirtualAccountsResponse
@@ -2796,7 +3035,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param ExtraData The destination location settings
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -2825,7 +3065,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param ExtraData The destination location settings
 	* @return a CometAPIResponseMessage
@@ -2843,7 +3084,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -2870,7 +3112,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -2889,7 +3132,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param EmailAddress The email address of the Azure AD administrator
 	* @return CompletableFuture yielding a RegisterOfficeApplicationBeginResponse
@@ -2921,7 +3165,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param EmailAddress The email address of the Azure AD administrator
 	* @return a RegisterOfficeApplicationBeginResponse
@@ -2940,7 +3185,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Continuation The ID returned from the AdminDispatcherRegisterOfficeApplicationBegin endpoint
 	* @return CompletableFuture yielding a RegisterOfficeApplicationCheckResponse
@@ -2971,7 +3217,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Continuation The ID returned from the AdminDispatcherRegisterOfficeApplicationBegin endpoint
 	* @return a RegisterOfficeApplicationCheckResponse
@@ -2988,7 +3235,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -3017,7 +3265,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @return a CometAPIResponseMessage
@@ -3034,7 +3283,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return CompletableFuture yielding a BrowseDiskDrivesResponse
 	*/
@@ -3061,7 +3311,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return a BrowseDiskDrivesResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -3076,7 +3327,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return CompletableFuture yielding a BrowseEDBResponse
 	*/
@@ -3102,7 +3354,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return a BrowseEDBResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -3117,7 +3370,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return CompletableFuture yielding a BrowseHVResponse
 	*/
@@ -3143,7 +3397,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return a BrowseHVResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -3159,7 +3414,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Mongo database authentication settings
 	* @return CompletableFuture yielding a BrowseSQLServerResponse
@@ -3189,7 +3445,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Mongo database authentication settings
 	* @return a BrowseSQLServerResponse
@@ -3207,7 +3464,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The MSSQL database authentication settings
 	* @return CompletableFuture yielding a BrowseSQLServerResponse
@@ -3237,7 +3495,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The MSSQL database authentication settings
 	* @return a BrowseSQLServerResponse
@@ -3255,7 +3514,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The MySQL database authentication settings
 	* @return CompletableFuture yielding a BrowseSQLServerResponse
@@ -3285,7 +3545,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The MySQL database authentication settings
 	* @return a BrowseSQLServerResponse
@@ -3298,11 +3559,62 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminDispatcherRequestBrowsePostgresqlAsync: Request a list of databases in a PostgreSQL server
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
+	* @param TargetID The live connection GUID (&gt;= 26.11.0)
+	* @param Credentials The PostgreSQL database authentication settings (&gt;= 26.11.0)
+	* @return CompletableFuture yielding a BrowseSQLServerResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseSQLServerResponse> AdminDispatcherRequestBrowsePostgresqlAsync(String TargetID, PostgreSQLConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseSQLServerResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/request-browse-postgresql", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseSQLServerResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminDispatcherRequestBrowsePostgresql: Request a list of databases in a PostgreSQL server
+	* The remote device must have given consent for an MSP to browse their files.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Auth Role to be enabled.
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
+	* @param TargetID The live connection GUID (&gt;= 26.11.0)
+	* @param Credentials The PostgreSQL database authentication settings (&gt;= 26.11.0)
+	* @return a BrowseSQLServerResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseSQLServerResponse AdminDispatcherRequestBrowsePostgresql(String TargetID, PostgreSQLConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherRequestBrowsePostgresqlAsync(TargetID, Credentials).get();
+	}
+
+	/**
 	* AdminDispatcherRequestBrowseProxmoxAsync: Request a list of Proxmox virtual machines and containers
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Proxmox connection settings
 	* @return CompletableFuture yielding a BrowseProxmoxResponse
@@ -3331,7 +3643,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Proxmox connection settings
 	* @return a BrowseProxmoxResponse
@@ -3348,7 +3661,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The SSH connection settings
 	* @return CompletableFuture yielding a BrowseProxmoxNodesResponse
@@ -3377,7 +3691,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The SSH connection settings
 	* @return a BrowseProxmoxNodesResponse
@@ -3394,7 +3709,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The SSH connection settings
 	* @param Node The target node (&gt;= 25.9.7)
@@ -3425,7 +3741,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The SSH connection settings
 	* @param Node The target node (&gt;= 25.9.7)
@@ -3444,7 +3761,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @return CompletableFuture yielding a BrowseVMwareResponse
@@ -3474,7 +3792,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @return a BrowseVMwareResponse
@@ -3493,7 +3812,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @return CompletableFuture yielding a BrowseVMwareDatacentersResponse
@@ -3524,7 +3844,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @return a BrowseVMwareDatacentersResponse
@@ -3543,7 +3864,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @param Filter The name of the target VMware Datacenter
@@ -3576,7 +3898,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @param Filter The name of the target VMware Datacenter
@@ -3596,7 +3919,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @param Filter The name of the target VMware Datacenter
@@ -3629,7 +3953,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @param Filter The name of the target VMware Datacenter
@@ -3649,7 +3974,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @param Filter The name of the target VMware Datacenter
@@ -3682,7 +4008,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The VMware vSphere connection settings
 	* @param Filter The name of the target VMware Datacenter
@@ -3701,7 +4028,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return CompletableFuture yielding a BrowseVSSResponse
 	*/
@@ -3728,7 +4056,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return a BrowseVSSResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -3744,7 +4073,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Path (Optional) Browse objects inside this path. If empty or not present, returns the top-level device paths
 	* @return CompletableFuture yielding a DispatcherStoredObjectsResponse
@@ -3773,7 +4103,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Path (Optional) Browse objects inside this path. If empty or not present, returns the top-level device paths
 	* @return a DispatcherStoredObjectsResponse
@@ -3789,7 +4120,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return CompletableFuture yielding a DispatcherAdminSourcesResponse
 	*/
@@ -3815,7 +4147,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @return a DispatcherAdminSourcesResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -3832,7 +4165,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return CompletableFuture yielding a BrowseOffice365ObjectsResponse
@@ -3863,7 +4197,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ObjectsResponse
@@ -3881,7 +4216,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return CompletableFuture yielding a BrowseOffice365ObjectsResponse
@@ -3911,7 +4247,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The Office365 account credential
 	* @return a BrowseOffice365ObjectsResponse
@@ -3933,7 +4270,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault ID
 	* @param SnapshotID The selected backup job snapshot
@@ -3974,7 +4312,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault ID
 	* @param SnapshotID The selected backup job snapshot
@@ -3995,7 +4334,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault ID
 	* @return CompletableFuture yielding a DispatcherVaultSnapshotsResponse
@@ -4023,7 +4363,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault ID
 	* @return a DispatcherVaultSnapshotsResponse
@@ -4040,7 +4381,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault ID
 	* @param SnapshotID The Snapshot ID
@@ -4071,7 +4413,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault ID
 	* @param SnapshotID The Snapshot ID
@@ -4088,7 +4431,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @param BackupRule The schedule GUID
 	* @return CompletableFuture yielding a DispatchWithJobIDResponse
@@ -4116,7 +4460,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @param BackupRule The schedule GUID
 	* @return a DispatchWithJobIDResponse
@@ -4132,7 +4477,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @param Source The Protected Item GUID (&gt;= 17.2.0)
 	* @param Destination The Storage Vault GUID (&gt;= 17.2.0)
@@ -4165,7 +4511,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @param Source The Protected Item GUID (&gt;= 17.2.0)
 	* @param Destination The Storage Vault GUID (&gt;= 17.2.0)
@@ -4185,7 +4532,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Path The local path to restore to
 	* @param Source The Protected Item ID
@@ -4224,7 +4572,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Path The local path to restore to
 	* @param Source The Protected Item ID
@@ -4247,7 +4596,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Source The Protected Item ID
 	* @param Destination The Storage Vault ID
@@ -4297,7 +4647,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Source The Protected Item ID
 	* @param Destination The Storage Vault ID
@@ -4327,7 +4678,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotIDs Snapshots to search
@@ -4360,7 +4712,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param DestinationID The Storage Vault GUID
 	* @param SnapshotIDs Snapshots to search
@@ -4379,7 +4732,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The SSH connection settings
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -4408,7 +4762,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Credentials The SSH connection settings
 	* @return a CometAPIResponseMessage
@@ -4425,7 +4780,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Wsa The target credentials to test
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -4454,7 +4810,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Wsa The target credentials to test
 	* @return a CometAPIResponseMessage
@@ -4471,7 +4828,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param RemoveConfigFile Determine if the config.dat file will be deleted at the same time
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -4500,7 +4858,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param RemoveConfigFile Determine if the config.dat file will be deleted at the same time
 	* @return a CometAPIResponseMessage
@@ -4519,7 +4878,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @param AllowUnsafe (Optional) Allow legacy Storage Vault unlocking, which is unsafe in some cases. (&gt;= 25.3.0)
@@ -4552,7 +4912,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param Destination The Storage Vault GUID
 	* @param AllowUnsafe (Optional) Allow legacy Storage Vault unlocking, which is unsafe in some cases. (&gt;= 25.3.0)
@@ -4571,7 +4932,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param NewPassword The new password of this user
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -4600,7 +4962,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param NewPassword The new password of this user
 	* @return a CometAPIResponseMessage
@@ -4620,7 +4983,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param NewURL The new external URL of this server
 	* @param Force (Optional) No checks will be done using previous URL (&gt;= 22.9.3)
@@ -4655,7 +5019,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID
 	* @param NewURL The new external URL of this server
 	* @param Force (Optional) No checks will be done using previous URL (&gt;= 22.9.3)
@@ -4670,20 +5035,29 @@ public class CometAPI {
 
 	/**
 	* AdminDispatcherUpdateSoftwareAsync: Instruct a live connected device to download a software update
+	* By default the request is queued for delivery and this API returns immediately, without waiting for the device. If
+	* WaitForConfirmation is true and the device supports confirming update requests, this API instead waits up to ten
+	* seconds for the device to confirm that it has accepted the request, and reports the device&#39;s response. A device
+	* that does not support it is sent the request without waiting, as if WaitForConfirmation were false.
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
 	* This API requires the Software Build Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts (&gt;= 19.3.11)
+	* @param WaitForConfirmation (Optional) If true, wait for the device to confirm that it accepted the request (&gt;=
+	* 26.11.2)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherUpdateSoftwareAsync(String TargetID, String SelfAddress)  {
+	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherUpdateSoftwareAsync(String TargetID, String SelfAddress, Boolean WaitForConfirmation) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("TargetID", TargetID);
 		data.put("SelfAddress", (SelfAddress == null) ? this.serverURL : SelfAddress);
+		if (WaitForConfirmation != null) data.put("WaitForConfirmation", CometAPI.getObjectMapper().writeValueAsString(WaitForConfirmation));
 		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/dispatcher/update-software", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -4699,26 +5073,35 @@ public class CometAPI {
 
 	/**
 	* AdminDispatcherUpdateSoftware: Instruct a live connected device to download a software update
+	* By default the request is queued for delivery and this API returns immediately, without waiting for the device. If
+	* WaitForConfirmation is true and the device supports confirming update requests, this API instead waits up to ten
+	* seconds for the device to confirm that it has accepted the request, and reports the device&#39;s response. A device
+	* that does not support it is sent the request without waiting, as if WaitForConfirmation were false.
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
 	* This API requires the Software Build Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetID The live connection GUID (&gt;= 17.2.0)
 	* @param SelfAddress (Optional) The external URL of this server, used to resolve conflicts (&gt;= 19.3.11)
+	* @param WaitForConfirmation (Optional) If true, wait for the device to confirm that it accepted the request (&gt;=
+	* 26.11.2)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminDispatcherUpdateSoftware(String TargetID, String SelfAddress) throws ExecutionException, InterruptedException{
-		return AdminDispatcherUpdateSoftwareAsync(TargetID, SelfAddress).get();
+	public CometAPIResponseMessage AdminDispatcherUpdateSoftware(String TargetID, String SelfAddress, Boolean WaitForConfirmation) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminDispatcherUpdateSoftwareAsync(TargetID, SelfAddress, WaitForConfirmation).get();
 	}
 
 	/**
 	* AdminExternalAuthSourcesDeleteAsync: Delete an external admin authentication source
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SourceID (No description available)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -4743,7 +5126,8 @@ public class CometAPI {
 	* AdminExternalAuthSourcesDelete: Delete an external admin authentication source
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param SourceID (No description available)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -4757,7 +5141,8 @@ public class CometAPI {
 	* AdminExternalAuthSourcesGetAsync: Get a map of all external admin authentication sources
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return CompletableFuture yielding a HashMap&lt;String,ExternalAuthenticationSource&gt;
 	*/
 	public CompletableFuture<HashMap<String,ExternalAuthenticationSource>> AdminExternalAuthSourcesGetAsync()  {
@@ -4779,7 +5164,8 @@ public class CometAPI {
 	* AdminExternalAuthSourcesGet: Get a map of all external admin authentication sources
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return a HashMap&lt;String,ExternalAuthenticationSource&gt;
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -4792,7 +5178,8 @@ public class CometAPI {
 	* AdminExternalAuthSourcesNewAsync: Create an external admin authentication source
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Source (No description available)
 	* @param SourceID (Optional) (No description available)
 	* @return CompletableFuture yielding an ExternalAuthenticationSourceResponse
@@ -4820,7 +5207,8 @@ public class CometAPI {
 	* AdminExternalAuthSourcesNew: Create an external admin authentication source
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Source (No description available)
 	* @param SourceID (Optional) (No description available)
 	* @return an ExternalAuthenticationSourceResponse
@@ -4838,7 +5226,8 @@ public class CometAPI {
 	* sources for the tenant; none will be preserved.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Sources (No description available)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -4866,7 +5255,8 @@ public class CometAPI {
 	* sources for the tenant; none will be preserved.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Sources (No description available)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -4882,7 +5272,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param JobID Selected job ID (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a byte[]
 	*/
@@ -4908,7 +5299,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param JobID Selected job ID (&gt;= 17.2.0)
 	* @return a byte[]
 	* @throws ExecutionException if the future completed exceptionally
@@ -4923,7 +5315,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param JobID Selected job ID
 	* @param MinSeverity (Optional) Return only job log entries with equal or higher severity (&gt;= 23.3.1)
 	* @param MessageContains (Optional) Return only job log entries that contain exact string (&gt;= 23.3.1)
@@ -4953,7 +5346,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param JobID Selected job ID
 	* @param MinSeverity (Optional) Return only job log entries with equal or higher severity (&gt;= 23.3.1)
 	* @param MessageContains (Optional) Return only job log entries that contain exact string (&gt;= 23.3.1)
@@ -4970,7 +5364,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param JobID Selected job ID (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a BackupJobDetail
 	*/
@@ -4996,7 +5391,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param JobID Selected job ID (&gt;= 17.2.0)
 	* @return a BackupJobDetail
 	* @throws ExecutionException if the future completed exceptionally
@@ -5012,7 +5408,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a BackupJobDetail[]
 	*/
 	public CompletableFuture<BackupJobDetail[]> AdminGetJobsAllAsync()  {
@@ -5035,7 +5432,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a BackupJobDetail[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -5050,7 +5448,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Query (No description available)
 	* @return CompletableFuture yielding a BackupJobDetail[]
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -5078,7 +5477,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Query (No description available)
 	* @return a BackupJobDetail[]
 	* @throws ExecutionException if the future completed exceptionally
@@ -5105,7 +5505,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Start Timestamp (Unix)
 	* @param End Timestamp (Unix)
 	* @return CompletableFuture yielding a BackupJobDetail[]
@@ -5145,7 +5546,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Start Timestamp (Unix)
 	* @param End Timestamp (Unix)
 	* @return a BackupJobDetail[]
@@ -5163,7 +5565,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected username (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a BackupJobDetail[]
 	*/
@@ -5190,7 +5593,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected username (&gt;= 17.2.0)
 	* @return a BackupJobDetail[]
 	* @throws ExecutionException if the future completed exceptionally
@@ -5206,7 +5610,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a BackupJobDetail[]
 	*/
 	public CompletableFuture<BackupJobDetail[]> AdminGetJobsRecentAsync()  {
@@ -5229,7 +5634,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a BackupJobDetail[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -5243,7 +5649,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param SourceID Selected Protected Item GUID
 	* @return CompletableFuture yielding a ProtectedItemWithBackupRulesResponse
@@ -5271,7 +5678,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param SourceID Selected Protected Item GUID
 	* @return a ProtectedItemWithBackupRulesResponse
@@ -5287,7 +5695,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @return CompletableFuture yielding an UserProfileConfig
 	*/
@@ -5313,7 +5722,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @return an UserProfileConfig
 	* @throws ExecutionException if the future completed exceptionally
@@ -5332,7 +5742,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a GetProfileAndHashResponseMessage
 	*/
@@ -5362,7 +5773,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @return a GetProfileAndHashResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -5380,7 +5792,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a GetProfileHashResponseMessage
 	*/
@@ -5409,7 +5822,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @return a GetProfileHashResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -5425,7 +5839,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param DeviceID The live connection Device GUID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -5452,7 +5867,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param DeviceID The live connection Device GUID
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -5467,7 +5883,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param DeviceID The live connection Device GUID
 	* @param TargetUser Selected account username
 	* @param TargetPassword Selected account password
@@ -5497,7 +5914,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param DeviceID The live connection Device GUID
 	* @param TargetUser Selected account username
 	* @param TargetPassword Selected account password
@@ -5514,7 +5932,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a HashMap&lt;String,RegistrationLobbyConnection&gt;
 	*/
 	public CompletableFuture<HashMap<String,RegistrationLobbyConnection>> AdminInstallationListActiveAsync()  {
@@ -5537,7 +5956,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a HashMap&lt;String,RegistrationLobbyConnection&gt;
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -5555,7 +5975,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Username
 	* @param JobID Job ID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -5587,7 +6008,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Username
 	* @param JobID Job ID
 	* @return a CometAPIResponseMessage
@@ -5609,7 +6031,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Username
 	* @param JobID Job ID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -5643,7 +6066,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Username
 	* @param JobID Job ID
 	* @return a CometAPIResponseMessage
@@ -5659,7 +6083,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a String[]
 	*/
 	public CompletableFuture<String[]> AdminListUsersAsync()  {
@@ -5681,7 +6106,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a String[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -5695,7 +6121,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a HashMap&lt;String,UserProfileConfig&gt;
 	*/
 	public CompletableFuture<HashMap<String,UserProfileConfig>> AdminListUsersFullAsync()  {
@@ -5718,7 +6145,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a HashMap&lt;String,UserProfileConfig&gt;
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -5732,7 +6160,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ServerConfigOptionsBrandingFragment
 	*/
 	public CompletableFuture<ServerConfigOptionsBrandingFragment> AdminMetaBrandingConfigGetAsync()  {
@@ -5754,7 +6183,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ServerConfigOptionsBrandingFragment
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -5771,7 +6201,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param BrandingConfig Updated configuration content
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -5801,7 +6232,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param BrandingConfig Updated configuration content
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -5817,7 +6249,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ServerConfigOptionsSoftwareBuildRoleFragment
 	*/
 	public CompletableFuture<ServerConfigOptionsSoftwareBuildRoleFragment> AdminMetaBuildConfigGetAsync()  {
@@ -5839,7 +6272,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ServerConfigOptionsSoftwareBuildRoleFragment
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -5853,7 +6287,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SoftwareBuildRoleConfig Updated configuration content
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -5880,7 +6315,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SoftwareBuildRoleConfig Updated configuration content
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -5896,7 +6332,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ConstellationRoleOptions
 	*/
 	public CompletableFuture<ConstellationRoleOptions> AdminMetaConstellationConfigGetAsync()  {
@@ -5918,7 +6355,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ConstellationRoleOptions
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -5932,7 +6370,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param ConstellationRoleOptions Constellation role options to set
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -5959,7 +6398,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Constellation Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param ConstellationRoleOptions Constellation role options to set
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -5975,7 +6415,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding an EmailOptions
 	*/
 	public CompletableFuture<EmailOptions> AdminMetaEmailOptionsGetAsync()  {
@@ -5997,7 +6438,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return an EmailOptions
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -6007,11 +6449,71 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminMetaEmailOptionsOauthCallbackAsync: Exchange an OAuth 2.0 authorization code for an encrypted SMTP refresh token
+	* The web interface calls this after the mailbox user grants consent. The response is the supplied SMTPOAuth with the
+	* refresh token added and secrets encrypted; store it in EmailOptions.SMTPOAuth and save it with the
+	* AdminMetaEmailOptionsSet API.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* Access to this API may be prevented on a per-administrator basis.
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* @param SMTPOAuth The app registration that requested the authorization code. Flow must be
+	* SMTP_OAUTH_FLOW_AUTHORIZATION_CODE. The RefreshToken field is ignored. (&gt;= 26.11.0)
+	* @param Code The authorization code returned to the redirect URI (&gt;= 26.11.0)
+	* @param RedirectURI The redirect URI used in the authorization request (&gt;= 26.11.0)
+	* @return CompletableFuture yielding a SMTPOAuthOptions
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<SMTPOAuthOptions> AdminMetaEmailOptionsOauthCallbackAsync(SMTPOAuthOptions SMTPOAuth, String Code, String RedirectURI) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("SMTPOAuth", CometAPI.getObjectMapper().writeValueAsString(SMTPOAuth));
+		data.put("Code", Code);
+		data.put("RedirectURI", RedirectURI);
+		var resultFuture = new CompletableFuture<SMTPOAuthOptions>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/meta/email-options/oauth-callback", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, SMTPOAuthOptions.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminMetaEmailOptionsOauthCallback: Exchange an OAuth 2.0 authorization code for an encrypted SMTP refresh token
+	* The web interface calls this after the mailbox user grants consent. The response is the supplied SMTPOAuth with the
+	* refresh token added and secrets encrypted; store it in EmailOptions.SMTPOAuth and save it with the
+	* AdminMetaEmailOptionsSet API.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* Access to this API may be prevented on a per-administrator basis.
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* @param SMTPOAuth The app registration that requested the authorization code. Flow must be
+	* SMTP_OAUTH_FLOW_AUTHORIZATION_CODE. The RefreshToken field is ignored. (&gt;= 26.11.0)
+	* @param Code The authorization code returned to the redirect URI (&gt;= 26.11.0)
+	* @param RedirectURI The redirect URI used in the authorization request (&gt;= 26.11.0)
+	* @return a SMTPOAuthOptions
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public SMTPOAuthOptions AdminMetaEmailOptionsOauthCallback(SMTPOAuthOptions SMTPOAuth, String Code, String RedirectURI) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminMetaEmailOptionsOauthCallbackAsync(SMTPOAuth, Code, RedirectURI).get();
+	}
+
+	/**
 	* AdminMetaEmailOptionsSetAsync: Set the email options
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param EmailOptions The replacement email reporting options.
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -6038,7 +6540,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param EmailOptions The replacement email reporting options.
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -6054,7 +6557,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding an int[]
 	*/
 	public CompletableFuture<int[]> AdminMetaListAvailableLogDaysAsync()  {
@@ -6076,7 +6580,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return an int[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -6089,7 +6594,8 @@ public class CometAPI {
 	* AdminMetaPsaConfigListGetAsync: Get the server PSA configuration
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a PSAConfig[]
 	*/
 	public CompletableFuture<PSAConfig[]> AdminMetaPsaConfigListGetAsync()  {
@@ -6110,7 +6616,8 @@ public class CometAPI {
 	* AdminMetaPsaConfigListGet: Get the server PSA configuration
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a PSAConfig[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -6123,7 +6630,8 @@ public class CometAPI {
 	* AdminMetaPsaConfigListSetAsync: Update the server PSA configuration
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PSAConfigList The replacement PSA configuration list
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -6149,7 +6657,8 @@ public class CometAPI {
 	* AdminMetaPsaConfigListSet: Update the server PSA configuration
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PSAConfigList The replacement PSA configuration list
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -6166,7 +6675,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminMetaPsaConfigListSyncNowAsync()  {
@@ -6189,7 +6699,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -6204,7 +6715,8 @@ public class CometAPI {
 	* flow.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Code The authorization code from NinjaOne
 	* @param RedirectURI The callback URI used in the authorization request
 	* @param BaseURL The NinjaOne base URL
@@ -6239,7 +6751,8 @@ public class CometAPI {
 	* flow.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Code The authorization code from NinjaOne
 	* @param RedirectURI The callback URI used in the authorization request
 	* @param BaseURL The NinjaOne base URL
@@ -6258,7 +6771,8 @@ public class CometAPI {
 	* Used to populate the NinjaOne Client ID dropdown in the admin UI.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PSAConfig The PSA configuration containing NinjaOne credentials
 	* @return CompletableFuture yielding a NinjaOneOrganization[]
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -6285,7 +6799,8 @@ public class CometAPI {
 	* Used to populate the NinjaOne Client ID dropdown in the admin UI.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PSAConfig The PSA configuration containing NinjaOne credentials
 	* @return a NinjaOneOrganization[]
 	* @throws ExecutionException if the future completed exceptionally
@@ -6305,7 +6820,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a byte[]
 	*/
 	public CompletableFuture<byte[]> AdminMetaReadAllLogsAsync()  {
@@ -6331,7 +6847,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a byte[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -6349,7 +6866,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Log A log day, selected from the options returned by the Get Log Files API (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a byte[]
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -6380,7 +6898,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Log A log day, selected from the options returned by the Get Log Files API (&gt;= 17.2.0)
 	* @return a byte[]
 	* @throws ExecutionException if the future completed exceptionally
@@ -6400,7 +6919,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Logs An array of log days, selected from the options returned by the Get Log Files API
 	* @return CompletableFuture yielding a byte[]
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -6431,7 +6951,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Logs An array of log days, selected from the options returned by the Get Log Files API
 	* @return a byte[]
 	* @throws ExecutionException if the future completed exceptionally
@@ -6447,7 +6968,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a RemoteStorageOption[]
 	*/
 	public CompletableFuture<RemoteStorageOption[]> AdminMetaRemoteStorageVaultGetAsync()  {
@@ -6469,7 +6991,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a RemoteStorageOption[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -6483,7 +7006,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param RemoteStorageOptions Updated configuration content
 	* @param ReplacementAutoVaultID (Optional) Replacement Storage Template ID for auto Storage Vault configurations that
 	* use deleted Storage Templates (&gt;= 24.12.0)
@@ -6513,7 +7037,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param RemoteStorageOptions Updated configuration content
 	* @param ReplacementAutoVaultID (Optional) Replacement Storage Template ID for auto Storage Vault configurations that
 	* use deleted Storage Templates (&gt;= 24.12.0)
@@ -6531,7 +7056,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TemplateOptions Storage Template Vault Options
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -6558,7 +7084,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TemplateOptions Storage Template Vault Options
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -6574,7 +7101,8 @@ public class CometAPI {
 	* Resources are used to upload files within the server configuration.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Hash The resource identifier
 	* @return CompletableFuture yielding a byte[]
 	*/
@@ -6600,7 +7128,8 @@ public class CometAPI {
 	* Resources are used to upload files within the server configuration.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Hash The resource identifier
 	* @return a byte[]
 	* @throws ExecutionException if the future completed exceptionally
@@ -6619,7 +7148,8 @@ public class CometAPI {
 	* by the server configuration.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param upload The uploaded file contents, as a multipart/form-data part. (&gt;= 20.11.0)
 	* @return CompletableFuture yielding an AdminResourceResponse
 	*/
@@ -6636,7 +7166,8 @@ public class CometAPI {
 	* by the server configuration.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param upload The uploaded file contents, as a multipart/form-data part. (&gt;= 20.11.0)
 	* @return an AdminResourceResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -6656,7 +7187,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminMetaRestartServiceAsync()  {
@@ -6683,7 +7215,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -6698,7 +7231,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param EmailOptions Updated configuration content
 	* @param Recipient Target email address to send test email
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -6728,7 +7262,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param EmailOptions Updated configuration content
 	* @param Recipient Target email address to send test email
 	* @return a CometAPIResponseMessage
@@ -6746,7 +7281,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param EmailReportingOption Test email reporting option for sending
 	* @param TargetOrganization (Optional) If present, Testing email with a target organization. Only allowed for top-level
 	* admins. (&gt;= 24.3.0)
@@ -6777,7 +7313,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param EmailReportingOption Test email reporting option for sending
 	* @param TargetOrganization (Optional) If present, Testing email with a target organization. Only allowed for top-level
 	* admins. (&gt;= 24.3.0)
@@ -6795,7 +7332,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @return CompletableFuture yielding a ServerConfigOptions
 	*/
@@ -6818,7 +7356,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @return a ServerConfigOptions
 	* @throws ExecutionException if the future completed exceptionally
@@ -6829,12 +7368,107 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminMetaServerConfigGetAndHashAsync: Get server configuration (atomic)
+	* The resulting hash parameter can be passed to the AdminMetaServerConfigSet API, to atomically ensure that no changes
+	* occur between get/set operations.
+	* The hash format is not publicly documented and may change in a future server version. Use server APIs to retrieve
+	* current hash values.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* Access to this API may be prevented on a per-administrator basis.
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
+	* @return CompletableFuture yielding a ServerConfigOptionsAndHashResponse
+	*/
+	public CompletableFuture<ServerConfigOptionsAndHashResponse> AdminMetaServerConfigGetAndHashAsync()  {
+		var resultFuture = new CompletableFuture<ServerConfigOptionsAndHashResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/meta/server-config/get-and-hash", null);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, ServerConfigOptionsAndHashResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminMetaServerConfigGetAndHash: Get server configuration (atomic)
+	* The resulting hash parameter can be passed to the AdminMetaServerConfigSet API, to atomically ensure that no changes
+	* occur between get/set operations.
+	* The hash format is not publicly documented and may change in a future server version. Use server APIs to retrieve
+	* current hash values.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* Access to this API may be prevented on a per-administrator basis.
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
+	* @return a ServerConfigOptionsAndHashResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public ServerConfigOptionsAndHashResponse AdminMetaServerConfigGetAndHash() throws ExecutionException, InterruptedException{
+		return AdminMetaServerConfigGetAndHashAsync().get();
+	}
+
+	/**
+	* AdminMetaServerConfigGetHashAsync: Get server configuration (hash)
+	* The hash can be used to determine if the server configuration has changed.
+	* The hash format is not publicly documented and may change in a future server version. Use server APIs to retrieve
+	* current hash values.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* Access to this API may be prevented on a per-administrator basis.
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
+	* @return CompletableFuture yielding a ServerConfigOptionsHashResponse
+	*/
+	public CompletableFuture<ServerConfigOptionsHashResponse> AdminMetaServerConfigGetHashAsync()  {
+		var resultFuture = new CompletableFuture<ServerConfigOptionsHashResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/meta/server-config/get-hash", null);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, ServerConfigOptionsHashResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminMetaServerConfigGetHash: Get server configuration (hash)
+	* The hash can be used to determine if the server configuration has changed.
+	* The hash format is not publicly documented and may change in a future server version. Use server APIs to retrieve
+	* current hash values.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* Access to this API may be prevented on a per-administrator basis.
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
+	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
+	* @return a ServerConfigOptionsHashResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public ServerConfigOptionsHashResponse AdminMetaServerConfigGetHash() throws ExecutionException, InterruptedException{
+		return AdminMetaServerConfigGetHashAsync().get();
+	}
+
+	/**
 	* AdminMetaServerConfigNetworkInterfacesAsync: List the available network interfaces on the PC running Comet Server
 	* Any IPv6 addresses are listed in compressed form without square-brackets.
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @return CompletableFuture yielding a String[]
 	*/
@@ -6858,7 +7492,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @return a String[]
 	* @throws ExecutionException if the future completed exceptionally
@@ -6877,16 +7512,21 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param Config Updated configuration content (&gt;= 17.3.8)
+	* @param RequireHash (Optional) If present, the change is only applied if the server configuration is unchanged since
+	* this hash was retrieved from the AdminMetaServerConfigGetAndHash API. Otherwise, the change is rejected with status
+	* 409 and the server does not restart. (&gt;= 26.11.0)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CompletableFuture<CometAPIResponseMessage> AdminMetaServerConfigSetAsync(ServerConfigOptions Config) throws JsonProcessingException {
+	public CompletableFuture<CometAPIResponseMessage> AdminMetaServerConfigSetAsync(ServerConfigOptions Config, String RequireHash) throws JsonProcessingException {
 		var data = new HashMap<String,String>();
 
 		data.put("Config", CometAPI.getObjectMapper().writeValueAsString(Config));
+		if (RequireHash != null) data.put("RequireHash",  RequireHash);
 		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
 		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/meta/server-config/set", data);
 		responseFuture.thenAcceptAsync(httpResponse -> {
@@ -6909,16 +7549,20 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param Config Updated configuration content (&gt;= 17.3.8)
+	* @param RequireHash (Optional) If present, the change is only applied if the server configuration is unchanged since
+	* this hash was retrieved from the AdminMetaServerConfigGetAndHash API. Otherwise, the change is rejected with status
+	* 409 and the server does not restart. (&gt;= 26.11.0)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
-	public CometAPIResponseMessage AdminMetaServerConfigSet(ServerConfigOptions Config) throws ExecutionException, InterruptedException, JsonProcessingException{
-		return AdminMetaServerConfigSetAsync(Config).get();
+	public CometAPIResponseMessage AdminMetaServerConfigSet(ServerConfigOptions Config, String RequireHash) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return AdminMetaServerConfigSetAsync(Config, RequireHash).get();
 	}
 
 	/**
@@ -6931,7 +7575,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminMetaShutdownServiceAsync()  {
@@ -6958,7 +7603,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -6971,7 +7617,8 @@ public class CometAPI {
 	* AdminMetaSoftwareUpdateNewsAsync: Get software update news from the software provider
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a SoftwareUpdateNewsResponse
 	*/
 	public CompletableFuture<SoftwareUpdateNewsResponse> AdminMetaSoftwareUpdateNewsAsync()  {
@@ -6992,7 +7639,8 @@ public class CometAPI {
 	* AdminMetaSoftwareUpdateNews: Get software update news from the software provider
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a SoftwareUpdateNewsResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -7006,7 +7654,8 @@ public class CometAPI {
 	* The returned key-value map is not necessarily ordered. Client-side code should sort the result before display.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Simple Remove redundant statistics (&gt;= 18.9.1)
 	* @return CompletableFuture yielding a HashMap&lt;Long,StatResult&gt;
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -7034,7 +7683,8 @@ public class CometAPI {
 	* The returned key-value map is not necessarily ordered. Client-side code should sort the result before display.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Simple Remove redundant statistics (&gt;= 18.9.1)
 	* @return a HashMap&lt;Long,StatResult&gt;
 	* @throws ExecutionException if the future completed exceptionally
@@ -7050,7 +7700,8 @@ public class CometAPI {
 	* Retrieve the version number and basic properties about the server.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ServerMetaVersionInfo
 	*/
 	public CompletableFuture<ServerMetaVersionInfo> AdminMetaVersionAsync()  {
@@ -7072,7 +7723,8 @@ public class CometAPI {
 	* Retrieve the version number and basic properties about the server.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ServerMetaVersionInfo
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -7086,7 +7738,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a HashMap&lt;String,WebhookOption&gt;
 	*/
 	public CompletableFuture<HashMap<String,WebhookOption>> AdminMetaWebhookOptionsGetAsync()  {
@@ -7109,7 +7762,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a HashMap&lt;String,WebhookOption&gt;
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -7124,7 +7778,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param WebhookOptions The replacement webhook target options. (&gt;= 20.6.8)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -7152,7 +7807,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param WebhookOptions The replacement webhook target options. (&gt;= 20.6.8)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -7168,7 +7824,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a HashMap&lt;String,NewsEntry&gt;
 	*/
 	public CompletableFuture<HashMap<String,NewsEntry>> AdminNewsGetAllAsync()  {
@@ -7191,7 +7848,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a HashMap&lt;String,NewsEntry&gt;
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -7205,7 +7863,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param NewsItem Selected news item GUID (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -7231,7 +7890,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param NewsItem Selected news item GUID (&gt;= 17.2.0)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -7246,7 +7906,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param NewsContent Content of news item (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -7272,7 +7933,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param NewsContent Content of news item (&gt;= 17.2.0)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -7289,7 +7951,8 @@ public class CometAPI {
 	* rules&#39; display metadata.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Selection The legacy selection to convert
 	* @param Accounts (Optional) The organization&#39;s account list, for display-name enrichment
 	* @return CompletableFuture yielding an Office365ConvertSelectionResponse
@@ -7320,7 +7983,8 @@ public class CometAPI {
 	* rules&#39; display metadata.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Selection The legacy selection to convert
 	* @param Accounts (Optional) The organization&#39;s account list, for display-name enrichment
 	* @return an Office365ConvertSelectionResponse
@@ -7339,7 +8003,8 @@ public class CometAPI {
 	* with no device round-trip.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Rules The ordered rule list to evaluate
 	* @param Accounts The organization&#39;s account list
 	* @return CompletableFuture yielding an Office365EvaluateSelectionRulesResponse
@@ -7369,7 +8034,8 @@ public class CometAPI {
 	* with no device round-trip.
 	* 
 	* You must supply administrator authentication credentials to use this API.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Rules The ordered rule list to evaluate
 	* @param Accounts The organization&#39;s account list
 	* @return an Office365EvaluateSelectionRulesResponse
@@ -7389,7 +8055,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param OrganizationID (Optional) (No description available)
 	* @param UninstallConfig (Optional) Uninstall software configuration
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -7421,7 +8088,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param OrganizationID (Optional) (No description available)
 	* @param UninstallConfig (Optional) Uninstall software configuration
 	* @return a CometAPIResponseMessage
@@ -7438,7 +8106,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Options The export config options
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -7465,7 +8134,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @param Options The export config options
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -7481,7 +8151,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a HashMap&lt;String,Organization&gt;
 	*/
 	public CompletableFuture<HashMap<String,Organization>> AdminOrganizationListAsync()  {
@@ -7504,7 +8175,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a HashMap&lt;String,Organization&gt;
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -7520,7 +8192,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param OrganizationID (Optional) (No description available)
 	* @param Organization (Optional) (No description available)
 	* @return CompletableFuture yielding an OrganizationResponse
@@ -7551,7 +8224,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param OrganizationID (Optional) (No description available)
 	* @param Organization (Optional) (No description available)
 	* @return an OrganizationResponse
@@ -7568,7 +8242,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PolicyID The policy ID to update or create
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -7594,7 +8269,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PolicyID The policy ID to update or create
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -7610,7 +8286,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PolicyID The policy ID to retrieve
 	* @return CompletableFuture yielding a GetGroupPolicyResponse
 	*/
@@ -7637,7 +8314,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PolicyID The policy ID to retrieve
 	* @return a GetGroupPolicyResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -7654,7 +8332,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization. (&gt;= 22.5.0)
 	* @return CompletableFuture yielding a HashMap&lt;String,String&gt;
@@ -7684,7 +8363,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization. (&gt;= 22.5.0)
 	* @return a HashMap&lt;String,String&gt;
@@ -7702,7 +8382,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization. (&gt;= 22.5.0)
 	* @return CompletableFuture yielding a HashMap&lt;String,GroupPolicy&gt;
@@ -7732,7 +8413,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization. (&gt;= 22.5.0)
 	* @return a HashMap&lt;String,GroupPolicy&gt;
@@ -7748,7 +8430,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Policy The policy data
 	* @return CompletableFuture yielding a CreateGroupPolicyResponse
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
@@ -7775,7 +8458,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Policy The policy data
 	* @return a CreateGroupPolicyResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -7793,7 +8477,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PolicyID The policy ID to update or create
 	* @param Policy The policy data
 	* @param CheckPolicyHash (Optional) An atomic verification hash as supplied by the AdminPoliciesGet API
@@ -7828,7 +8513,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param PolicyID The policy ID to update or create
 	* @param Policy The policy data
 	* @param CheckPolicyHash (Optional) An atomic verification hash as supplied by the AdminPoliciesGet API
@@ -7847,7 +8533,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param EmailReportConfig Email report configuration to preview
 	* @param EmailAddress (Optional) Email address that may be included in the report body (&gt;= 20.3.3)
@@ -7878,7 +8565,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param EmailReportConfig Email report configuration to preview
 	* @param EmailAddress (Optional) Email address that may be included in the report body (&gt;= 20.3.3)
@@ -7896,7 +8584,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ReplicatorStateAPIResponse[]
 	*/
 	public CompletableFuture<ReplicatorStateAPIResponse[]> AdminReplicationStateAsync()  {
@@ -7918,7 +8607,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ReplicatorStateAPIResponse[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -7936,7 +8626,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser The user to receive the new Storage Vault
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
@@ -7975,7 +8666,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser The user to receive the new Storage Vault
 	* @param StorageProvider ID for the storage template destination
 	* @param SelfAddress (Optional) The external URL for this server. Used to resolve conflicts
@@ -7995,7 +8687,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the storage template options belonging to another organization.
 	* Only allowed for administrator accounts in the top-level organization. (&gt;= 22.5.0)
 	* @return CompletableFuture yielding a HashMap&lt;String,String&gt;
@@ -8023,7 +8716,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the storage template options belonging to another organization.
 	* Only allowed for administrator accounts in the top-level organization. (&gt;= 22.5.0)
 	* @return a HashMap&lt;String,String&gt;
@@ -8040,7 +8734,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param NewPassword New account password
 	* @param OldPassword (Optional) Old account password. Required if no recovery code is present for the user account.
@@ -8072,7 +8767,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param NewPassword New account password
 	* @param OldPassword (Optional) Old account password. Required if no recovery code is present for the user account.
@@ -8092,7 +8788,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param TargetDevice Selected Device ID
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -8122,7 +8819,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param TargetDevice Selected Device ID
 	* @return a CometAPIResponseMessage
@@ -8138,7 +8836,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminSelfBackupStartAsync()  {
@@ -8160,7 +8859,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -8174,7 +8874,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param SourceID Selected Protected Item GUID
 	* @param RequireHash (Optional) Previous account profile hash
@@ -8209,7 +8910,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username
 	* @param SourceID Selected Protected Item GUID
 	* @param RequireHash (Optional) Previous account profile hash
@@ -8229,7 +8931,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @param ProfileData Modified user profile (&gt;= 17.2.0)
 	* @param AdminOptions (Optional) Instructions for modifying user profile (&gt;= 24.12.5)
@@ -8260,7 +8963,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @param ProfileData Modified user profile (&gt;= 17.2.0)
 	* @param AdminOptions (Optional) Instructions for modifying user profile (&gt;= 24.12.5)
@@ -8282,7 +8986,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @param ProfileData Modified user profile (&gt;= 17.2.0)
 	* @param RequireHash Previous hash parameter (&gt;= 17.2.0)
@@ -8319,7 +9024,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetUser Selected account username (&gt;= 17.2.0)
 	* @param ProfileData Modified user profile (&gt;= 17.2.0)
 	* @param RequireHash Previous hash parameter (&gt;= 17.2.0)
@@ -8338,7 +9044,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SharedStorageQuotaID (No description available)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -8364,7 +9071,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SharedStorageQuotaID (No description available)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -8379,7 +9087,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SharedStorageQuotaID (No description available)
 	* @return CompletableFuture yielding a GetSharedStorageQuotaResponse
 	*/
@@ -8405,7 +9114,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SharedStorageQuotaID (No description available)
 	* @return a GetSharedStorageQuotaResponse
 	* @throws ExecutionException if the future completed exceptionally
@@ -8420,7 +9130,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a ListSharedStorageQuotaResponse
 	*/
 	public CompletableFuture<ListSharedStorageQuotaResponse> AdminSquotaListAllAsync()  {
@@ -8442,7 +9153,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a ListSharedStorageQuotaResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -8456,7 +9168,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SharedStorageQuotaID (No description available)
 	* @param SharedStorageQuota (No description available)
 	* @param CheckHash (Optional) If supplied, validate the change against this hash. Omit to forcibly apply changes.
@@ -8487,7 +9200,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SharedStorageQuotaID (No description available)
 	* @param SharedStorageQuota (No description available)
 	* @param CheckHash (Optional) If supplied, validate the change against this hash. Omit to forcibly apply changes.
@@ -8507,7 +9221,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param BucketID Bucket ID
 	* @param AfterTimestamp (Optional) Allow a stale size measurement if it is at least as new as the supplied Unix
 	* timestamp. Timestamps in the future may produce a result clamped down to the Comet Server&#39;s current time. If not
@@ -8540,7 +9255,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param BucketID Bucket ID
 	* @param AfterTimestamp (Optional) Allow a stale size measurement if it is at least as new as the supplied Unix
 	* timestamp. Timestamps in the future may produce a result clamped down to the Comet Server&#39;s current time. If not
@@ -8560,7 +9276,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param BucketID Selected bucket name (&gt;= 17.2.0)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -8587,7 +9304,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param BucketID Selected bucket name (&gt;= 17.2.0)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -8603,7 +9321,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param BucketID (Optional) (This parameter is not used)
 	* @return CompletableFuture yielding a StorageFreeSpaceInfo
@@ -8631,7 +9350,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param BucketID (Optional) (This parameter is not used)
 	* @return a StorageFreeSpaceInfo
@@ -8647,7 +9367,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return CompletableFuture yielding a HashMap&lt;String,BucketProperties&gt;
 	*/
 	public CompletableFuture<HashMap<String,BucketProperties>> AdminStorageListBucketsAsync()  {
@@ -8670,7 +9391,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @return a HashMap&lt;String,BucketProperties&gt;
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -8684,7 +9406,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param ExtraData The destination location settings
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -8712,7 +9435,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* Access to this API may be prevented on a per-administrator basis.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* @param ExtraData The destination location settings
 	* @return a CometAPIResponseMessage
@@ -8732,7 +9456,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SetBucketValue (Optional) Bucket ID (&gt;= 17.2.0)
 	* @param SetKeyHashFormat (Optional) Bucket key hashing format (&gt;= 17.2.0)
 	* @param SetKeyHashValue (Optional) Bucket key hash (&gt;= 17.2.0)
@@ -8767,7 +9492,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Storage Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param SetBucketValue (Optional) Bucket ID (&gt;= 17.2.0)
 	* @param SetKeyHashFormat (Optional) Bucket key hashing format (&gt;= 17.2.0)
 	* @param SetKeyHashValue (Optional) Bucket key hash (&gt;= 17.2.0)
@@ -8781,12 +9507,62 @@ public class CometAPI {
 	}
 
 	/**
+	* AdminStorageRotateBucketKeyAsync: Issue a new key for an existing bucket, replacing the previous one
+	* The previous key stops working immediately. Any device or Storage Vault still using it loses access to the bucket
+	* until it is given the new key, so this can be used to cut off a backup job that is no longer supposed to be writing.
+	* The new key is returned in the response message. It is not recoverable afterwards; if it is lost, issue another one.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Storage Role to be enabled.
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
+	* @param BucketID Selected bucket name
+	* @return CompletableFuture yielding an AddBucketResponseMessage
+	*/
+	public CompletableFuture<AddBucketResponseMessage> AdminStorageRotateBucketKeyAsync(String BucketID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("BucketID", BucketID);
+		var resultFuture = new CompletableFuture<AddBucketResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/admin/storage/rotate-bucket-key", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, AddBucketResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* AdminStorageRotateBucketKey: Issue a new key for an existing bucket, replacing the previous one
+	* The previous key stops working immediately. Any device or Storage Vault still using it loses access to the bucket
+	* until it is given the new key, so this can be used to cut off a backup job that is no longer supposed to be writing.
+	* The new key is returned in the response message. It is not recoverable afterwards; if it is lost, issue another one.
+	* 
+	* You must supply administrator authentication credentials to use this API.
+	* This API requires the Storage Role to be enabled.
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
+	* @param BucketID Selected bucket name
+	* @return an AddBucketResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public AddBucketResponseMessage AdminStorageRotateBucketKey(String BucketID) throws ExecutionException, InterruptedException{
+		return AdminStorageRotateBucketKeyAsync(BucketID).get();
+	}
+
+	/**
 	* AdminUpdateCampaignStartAsync: Start a new software update campaign
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* This API requires the Software Build Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API requires the Auth Role to be enabled.
 	* @param Options Configure targets for the software update campaign
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -8815,7 +9591,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* This API requires the Software Build Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API requires the Auth Role to be enabled.
 	* @param Options Configure targets for the software update campaign
 	* @return a CometAPIResponseMessage
@@ -8833,7 +9610,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* This API requires the Software Build Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API requires the Auth Role to be enabled.
 	* @return CompletableFuture yielding an UpdateCampaignStatus
 	*/
@@ -8857,7 +9635,8 @@ public class CometAPI {
 	* You must supply administrator authentication credentials to use this API.
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* This API requires the Software Build Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* This API requires the Auth Role to be enabled.
 	* @return an UpdateCampaignStatus
 	* @throws ExecutionException if the future completed exceptionally
@@ -8872,7 +9651,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param GroupID The user group ID to delete
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
@@ -8898,7 +9678,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param GroupID The user group ID to delete
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
@@ -8913,7 +9694,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param GroupID The user group ID to retrieve
 	* @param IncludeUsers (Optional) If present, includes the users array in the response.
 	* @return CompletableFuture yielding a GetUserGroupWithUsersResponse
@@ -8942,7 +9724,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param GroupID The user group ID to retrieve
 	* @param IncludeUsers (Optional) If present, includes the users array in the response.
 	* @return a GetUserGroupWithUsersResponse
@@ -8961,7 +9744,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the user groups belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization.
 	* @return CompletableFuture yielding a HashMap&lt;String,String&gt;
@@ -8991,7 +9775,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the user groups belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization.
 	* @return a HashMap&lt;String,String&gt;
@@ -9009,7 +9794,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the user groups belonging to the specified organization. Only
 	* allowed for administrator accounts in the top-level organization.
 	* @return CompletableFuture yielding a HashMap&lt;String,UserGroup&gt;
@@ -9039,7 +9825,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param TargetOrganization (Optional) If present, list the user groups belonging to the specified organization. Only
 	* allowed for administrator accounts in the top-level organization.
 	* @return a HashMap&lt;String,UserGroup&gt;
@@ -9055,7 +9842,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Name this is the name of the group.
 	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization.
@@ -9084,7 +9872,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param Name this is the name of the group.
 	* @param TargetOrganization (Optional) If present, list the policies belonging to another organization. Only allowed
 	* for administrator accounts in the top-level organization.
@@ -9101,7 +9890,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param GroupID The user group ID to update or create
 	* @param Group The user group data
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -9130,7 +9920,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param GroupID The user group ID to update or create
 	* @param Group The user group data
 	* @return a CometAPIResponseMessage
@@ -9149,7 +9940,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param GroupID The user group ID to update
 	* @param Users An array of usernames.
 	* @return CompletableFuture yielding a CometAPIResponseMessage
@@ -9180,7 +9972,8 @@ public class CometAPI {
 	* 
 	* You must supply administrator authentication credentials to use this API.
 	* This API requires the Auth Role to be enabled.
-	* This API accepts admin personal API token authentication (AuthType=Token).
+	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
+	* AuthType=Password).
 	* @param GroupID The user group ID to update
 	* @param Users An array of usernames.
 	* @return a CometAPIResponseMessage
@@ -9226,7 +10019,8 @@ public class CometAPI {
 	* This API behaves like either AdminAccountSessionStart or UserWebSessionStart, depending on what the supplied
 	* credentials were valid for.
 	* 
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return CompletableFuture yielding a SessionKeyRegeneratedResponse
 	*/
 	public CompletableFuture<SessionKeyRegeneratedResponse> HybridSessionStartAsync()  {
@@ -9249,7 +10043,8 @@ public class CometAPI {
 	* This API behaves like either AdminAccountSessionStart or UserWebSessionStart, depending on what the supplied
 	* credentials were valid for.
 	* 
-	* This API does not accept admin personal API token authentication (AuthType=Token).
+	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
+	* password with AuthType=Password).
 	* @return a SessionKeyRegeneratedResponse
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -9534,6 +10329,53 @@ public class CometAPI {
 	*/
 	public DispatcherListSnapshotVirtualMachinesResponse UserWebDispatcherBrowseVirtualMachines(String TargetID, String DestinationID, String SnapshotID) throws ExecutionException, InterruptedException{
 		return UserWebDispatcherBrowseVirtualMachinesAsync(TargetID, DestinationID, SnapshotID).get();
+	}
+
+	/**
+	* UserWebDispatcherClearLoginPasswordAsync: Instruct a live connected device to discard its stored login password and
+	* return to the login screen
+	* The device keeps its username and server URL, so only the new password needs to be re-entered. Devices older than
+	* 26.11.3 cannot retain the login details and discard all stored credentials instead.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> UserWebDispatcherClearLoginPasswordAsync(String TargetID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/clear-login-password", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherClearLoginPassword: Instruct a live connected device to discard its stored login password and return
+	* to the login screen
+	* The device keeps its username and server URL, so only the new password needs to be re-entered. Devices older than
+	* 26.11.3 cannot retain the login details and discard all stored credentials instead.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage UserWebDispatcherClearLoginPassword(String TargetID) throws ExecutionException, InterruptedException{
+		return UserWebDispatcherClearLoginPasswordAsync(TargetID).get();
 	}
 
 	/**
@@ -10171,6 +11013,52 @@ public class CometAPI {
 	*/
 	public BrowseSQLServerResponse UserWebDispatcherRequestBrowseMysql(String TargetID, MySQLConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
 		return UserWebDispatcherRequestBrowseMysqlAsync(TargetID, Credentials).get();
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowsePostgresqlAsync: Request a list of databases in a PostgreSQL server
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID (&gt;= 26.11.0)
+	* @param Credentials The PostgreSQL database authentication settings (&gt;= 26.11.0)
+	* @return CompletableFuture yielding a BrowseSQLServerResponse
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public CompletableFuture<BrowseSQLServerResponse> UserWebDispatcherRequestBrowsePostgresqlAsync(String TargetID, PostgreSQLConnection Credentials) throws JsonProcessingException {
+		var data = new HashMap<String,String>();
+
+		data.put("TargetID", TargetID);
+		data.put("Credentials", CometAPI.getObjectMapper().writeValueAsString(Credentials));
+		var resultFuture = new CompletableFuture<BrowseSQLServerResponse>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/dispatcher/request-browse-postgresql", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, BrowseSQLServerResponse.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebDispatcherRequestBrowsePostgresql: Request a list of databases in a PostgreSQL server
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param TargetID The live connection GUID (&gt;= 26.11.0)
+	* @param Credentials The PostgreSQL database authentication settings (&gt;= 26.11.0)
+	* @return a BrowseSQLServerResponse
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	* @throws JsonProcessingException When JSON is malformed (should not happen)
+	*/
+	public BrowseSQLServerResponse UserWebDispatcherRequestBrowsePostgresql(String TargetID, PostgreSQLConnection Credentials) throws ExecutionException, InterruptedException, JsonProcessingException{
+		return UserWebDispatcherRequestBrowsePostgresqlAsync(TargetID, Credentials).get();
 	}
 
 	/**
@@ -11571,6 +12459,59 @@ public class CometAPI {
 	*/
 	public GetProfileAndHashResponseMessage UserWebGetUserProfileAndHash() throws ExecutionException, InterruptedException{
 		return UserWebGetUserProfileAndHashAsync().get();
+	}
+
+	/**
+	* UserWebJobAbandonAsync: Mark a running job as abandoned
+	* This will change the status of a running job to abandoned.
+	* This is intended to be used on jobs which are definitely no longer running but are stuck in the running state; it
+	* will not attempt to cancel the job. If the job is detected to still be running after being marked as abandoned, it
+	* will be revived.
+	* This is the user-facing counterpart to /api/v1/admin/job/abandon; it can only abandon jobs belonging to the
+	* authenticated user.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param JobID Job ID
+	* @return CompletableFuture yielding a CometAPIResponseMessage
+	*/
+	public CompletableFuture<CometAPIResponseMessage> UserWebJobAbandonAsync(String JobID)  {
+		var data = new HashMap<String,String>();
+
+		data.put("JobID", JobID);
+		var resultFuture = new CompletableFuture<CometAPIResponseMessage>(); 
+		var responseFuture = request("application/x-www-form-urlencoded", "POST", "/api/v1/user/web/job/abandon", data);
+		responseFuture.thenAcceptAsync(httpResponse -> {
+			try {
+				String jsonBody = httpResponse.body();
+				resultFuture.complete(CometAPI.getObjectMapper().readValue(jsonBody, CometAPIResponseMessage.class));
+			} catch (IOException e) {
+				resultFuture.completeExceptionally(e);
+			}
+		});
+		return resultFuture;
+	}
+
+	/**
+	* UserWebJobAbandon: Mark a running job as abandoned
+	* This will change the status of a running job to abandoned.
+	* This is intended to be used on jobs which are definitely no longer running but are stuck in the running state; it
+	* will not attempt to cancel the job. If the job is detected to still be running after being marked as abandoned, it
+	* will be revived.
+	* This is the user-facing counterpart to /api/v1/admin/job/abandon; it can only abandon jobs belonging to the
+	* authenticated user.
+	* 
+	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
+	* access.
+	* This API requires the Auth Role to be enabled.
+	* @param JobID Job ID
+	* @return a CometAPIResponseMessage
+	* @throws ExecutionException if the future completed exceptionally
+	* @throws InterruptedException if the current thread was interrupted while waiting
+	*/
+	public CometAPIResponseMessage UserWebJobAbandon(String JobID) throws ExecutionException, InterruptedException{
+		return UserWebJobAbandonAsync(JobID).get();
 	}
 
 	/**

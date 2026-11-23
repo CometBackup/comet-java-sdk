@@ -59,45 +59,63 @@ public class RestoreJobAdvancedOptions {
 	@JsonProperty("OnDiskIndexesKey")
 	public boolean OnDiskIndexesKey;
 
+	//Default disabled. For RESTORETYPE_FILE. If set, restored files are always written in full. Otherwise, large
+	//zero-filled regions may be restored as sparse regions or extended without writing, which is faster and can use
+	//less disk space, but some files (e.g. swap files, preallocated database files) require full allocation.
+	//Corresponds to the "Fully allocate restored files (disable sparse files)" option
+	@JsonProperty("PreventAutoSparsify")
+	public boolean PreventAutoSparsify;
+
 	//For RESTORETYPE_OFFICE365_CLOUD.
 	@JsonProperty("Office365Credential")
 	public Office365Credential Office365Credential;
 
-	//For RESTORETYPE_MYSQL
+	//Default disabled. For RESTORETYPE_OFFICE365_CLOUD. If set, items already present at the destination are skipped
+	//instead of being restored again.
+	//Corresponds to the "Skip items that are already present at the destination" option
+	@JsonProperty("Office365SkipExisting")
+	public boolean Office365SkipExisting;
+
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL
 	@JsonProperty("Username")
 	public String Username = "";
 
-	//For RESTORETYPE_MYSQL
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL
 	@JsonProperty("Password")
 	public String Password = "";
 
-	//For RESTORETYPE_MYSQL
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL
 	@JsonProperty("Host")
 	public String Host = "";
 
-	//For RESTORETYPE_MYSQL
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL
 	@JsonProperty("Port")
 	public String Port = "";
 
-	//For RESTORETYPE_MYSQL
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL
 	@JsonProperty("UseSsl")
 	public boolean UseSsl;
 
-	//For RESTORETYPE_MYSQL i.e.: Self signed certs
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL i.e.: Self signed certs
 	@JsonProperty("SslAllowInvalid")
 	public boolean SslAllowInvalid;
 
-	//For RESTORETYPE_MYSQL
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL
 	@JsonProperty("SslCaFile")
 	public String SslCaFile = "";
 
-	//For RESTORETYPE_MYSQL
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL
 	@JsonProperty("SslCrtFile")
 	public String SslCrtFile = "";
 
-	//For RESTORETYPE_MYSQL
+	//For RESTORETYPE_MYSQL and RESTORETYPE_POSTGRESQL
 	@JsonProperty("SslKeyFile")
 	public String SslKeyFile = "";
+
+	//For RESTORETYPE_POSTGRESQL. The database to connect to in order to
+	//create the restored databases. If blank, "postgres" is used
+	@JsonProperty("PostgresConnectDatabase")
+	public String PostgresConnectDatabase = "";
 
 	//For RESTORETYPE_MSSQL.
 	@JsonProperty("MsSqlConnection")

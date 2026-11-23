@@ -30,6 +30,16 @@ public class AdminAccountPropertiesResponse {
 	@JsonProperty("APITokenCreateRequiresPassword")
 	public boolean APITokenCreateRequiresPassword;
 
+	//True if this account logs in via an external OpenID Connect identity provider (single sign-on). The identity provider
+	//may enforce its own multi-factor authentication.
+	@JsonProperty("ExternalSourceIsOIDC")
+	public boolean ExternalSourceIsOIDC;
+
+	//True if this account logs in via an external authentication source that is configured to skip Comet multi-factor
+	//authentication. In that case, the account's TOTP and WebAuthn settings are not enforced at login.
+	@JsonProperty("ExternalSourceSkipsMFA")
+	public boolean ExternalSourceSkipsMFA;
+
 
 	public AdminAccountPropertiesResponse(){ }
 

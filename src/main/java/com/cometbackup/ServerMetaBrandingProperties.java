@@ -69,6 +69,9 @@ public class ServerMetaBrandingProperties {
 	@JsonProperty("AdminHideBrandedCloudStorage")
 	public boolean AdminHideBrandedCloudStorage;
 
+	@JsonProperty("ExperimentalOptions")
+	public ArrayList<String> ExperimentalOptions;
+
 
 	public ServerMetaBrandingProperties(){ }
 

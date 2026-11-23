@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "26.8.8";
+	public final String APPLICATION_VERSION = "26.11.2";
 	public final int APPLICATION_VERSION_MAJOR = 26;
-	public final int APPLICATION_VERSION_MINOR = 8;
-	public final int APPLICATION_VERSION_REVISION = 8;
+	public final int APPLICATION_VERSION_MINOR = 11;
+	public final int APPLICATION_VERSION_REVISION = 2;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
@@ -50,6 +50,12 @@ public class Def {
 	* BrandingStyleType: Use custom branding and colours, with a supplied image in the main logo area.
 	*/
 	public final int BRANDINGSTYLETYPE_CUSTOM_LOGO = 3;
+
+	/**
+	* The Device ID recorded on jobs and vault locks that originate from an in-browser restore. It is a fixed sentinel
+	* value shared by all in-browser restores rather than a registered device.
+	*/
+	public final String BrowserRestoreDeviceID = "browser-restore_a4130236-fba2-4cd1-8e1d-47d009eddc18";
 
 	/**
 	* ClientBrandingBuildMode: The software client will be custom-built by this Comet Server, allowing custom branding,
@@ -273,6 +279,11 @@ public class Def {
 	public final long DESTINATIONTYPE_ALL = 1101;
 
 	/**
+	* Set a device&#39;s DeviceSecretHash to this value in an admin profile update to remove its DeviceSecret binding.
+	*/
+	public final String DEVICE_SECRET_HASH_RESET = "reset";
+
+	/**
 	* EmailWorkerState: The Comet Server is still starting up and has not yet checked whether any email reports are due to
 	* be sent.
 	*/
@@ -433,6 +444,11 @@ public class Def {
 	public final String ENGINE_BUILTIN_PROXMOX = "engine1/proxmox";
 
 	/**
+	* EngineType: PostgreSQL
+	*/
+	public final String ENGINE_BUILTIN_POSTGRESQL = "engine1/postgresql";
+
+	/**
 	* FtpsModeType: Use plain FTP, do not use FTPS.
 	*/
 	public final int FTPS_MODE_PLAINTEXT = 0;
@@ -448,6 +464,14 @@ public class Def {
 	* (like STARTTLS).
 	*/
 	public final int FTPS_MODE_EXPLICIT = 2;
+
+	/**
+	* Prefix of the placeholder returned by some APIs in place of a sensitive stored value. The rest of the placeholder is
+	* a fingerprint of the stored value.
+	* Submitting any value with this prefix back to the Comet Server for a supported field leaves the stored value
+	* unchanged.
+	*/
+	public final String HIDDEN_FIELD_PLACEHOLDER = "hidden_field";
 
 	/**
 	* HypervMethod: Back up Hyper-V virtual machines using VSS mode. This includes all previous snapshots.
@@ -810,6 +834,9 @@ public class Def {
 	* will re-hash the credential automatically.
 	*/
 	public final int PASSWORD_FORMAT_PLAINTEXT = 0;
+	public final String POSTGRESQL_DEFAULT_CONNECT_DATABASE = "postgres";
+	public final String POSTGRESQL_METADATA_STREAM_NAME = ".metadata";
+	public final String POSTGRESQL_GLOBALS_STREAM_NAME = ".globals.sql";
 
 	/**
 	* OidcProvider
@@ -988,6 +1015,12 @@ public class Def {
 	public final int REPLICATOR_DISPLAYCLASS_USER = 101;
 
 	/**
+	* Set RestoreDataRecoveryKey to this value in a profile update to turn off the &#34;Allow administrator to restore
+	* data&#34; feature.
+	*/
+	public final String RESTORE_DATA_RECOVERY_KEY_DISABLE = "disable";
+
+	/**
 	* RestoreArchiveFormat: Tar file format
 	*/
 	public final int RESTOREARCHIVEFORMAT_TAR = 0;
@@ -1107,6 +1140,11 @@ public class Def {
 	* location described by a DestinationLocation
 	*/
 	public final int RESTORETYPE_VMDK_FILE_CLOUD_STORAGE = 16;
+
+	/**
+	* RestoreType: Stream restore as SQL statements into a target PostgreSQL server
+	*/
+	public final int RESTORETYPE_POSTGRESQL = 17;
 
 	/**
 	* RestoreType: Legacy name alias - Prefer to use RESTORETYPE_PROCESS_ARCHIVE since multiple archive file formats are
@@ -1473,6 +1511,12 @@ public class Def {
 	public final String SEVERITY_ERROR = "E";
 
 	/**
+	* Severity: Diagnostic detail. The server returns entries with this severity only to top-level administrators without
+	* permission restrictions.
+	*/
+	public final String SEVERITY_PRIVATE = "P";
+
+	/**
 	* StreamableEventType
 	*/
 	public final int SEVT__MIN = 4000;
@@ -1711,9 +1755,44 @@ public class Def {
 	public final int SEVT_SQUOTA_UPDATED = 4805;
 
 	/**
+	* StreamableEventType: Self-backup started. Data is a SelfBackupEventData object
+	*/
+	public final int SEVT_SELFBACKUP_START = 4900;
+
+	/**
+	* StreamableEventType: Self-backup succeeded. Data is a SelfBackupEventData object
+	*/
+	public final int SEVT_SELFBACKUP_SUCCEEDED = 4901;
+
+	/**
+	* StreamableEventType: Self-backup failed. Data is a SelfBackupEventData object
+	*/
+	public final int SEVT_SELFBACKUP_FAILED = 4902;
+
+	/**
 	* StreamableEventType
 	*/
 	public final int SEVT__MAX = 4999;
+
+	/**
+	* SMTPOAuthProvider: Microsoft Entra ID (Microsoft 365 / Exchange Online)
+	*/
+	public final int SMTP_OAUTH_PROVIDER_MICROSOFT = 1;
+
+	/**
+	* SMTPOAuthProvider: Google (Gmail / Google Workspace)
+	*/
+	public final int SMTP_OAUTH_PROVIDER_GOOGLE = 2;
+
+	/**
+	* SMTPOAuthFlow: A mailbox user grants consent interactively; the resulting refresh token is stored in RefreshToken
+	*/
+	public final int SMTP_OAUTH_FLOW_AUTHORIZATION_CODE = 1;
+
+	/**
+	* SMTPOAuthFlow: The application authenticates as itself. Only supported for SMTP_OAUTH_PROVIDER_MICROSOFT
+	*/
+	public final int SMTP_OAUTH_FLOW_CLIENT_CREDENTIALS = 2;
 
 	/**
 	* SourceFieldType
@@ -1919,6 +1998,7 @@ public class Def {
 	* StreamerType
 	*/
 	public final String STREAMER_TYPE_FILE = "file";
+	public final String SelfAddressPlaceholder = "$self$";
 
 	/**
 	* If an API response returns in failure, but it includes this value in the CometAPIResponseMessage-&gt;Message
@@ -2015,6 +2095,7 @@ public class Def {
 	* VmwareBackupType
 	*/
 	public final String VMWARE_BACKUP_COPY = "copy";
+	public final String VhdxPartitionNotNtfsData = "not a ntfs data partition";
 	public final String VhdxPartitonReadErrMsg = "ERR_VHDX_PARTITION";
 
 	/**
@@ -2064,6 +2145,33 @@ public class Def {
 	public final String WEBHOOK_FORMAT_SLACK = "slack";
 
 	/**
+	* WebhookFormat: The event is sent as an email to the address in the WebhookOption URL field, using the
+	* email settings of the organization that owns the webhook.
+	*/
+	public final String WEBHOOK_FORMAT_EMAIL = "email";
+
+	/**
+	* WebhookFormat: The raw StreamableEvent JSON object is published to an Amazon SNS topic. The URL field is the
+	* topic ARN, and the AWS field holds the credentials. The event type is attached as the
+	* &#34;TypeString&#34; message attribute.
+	*/
+	public final String WEBHOOK_FORMAT_AWS_SNS = "aws_sns";
+
+	/**
+	* WebhookFormat: The raw StreamableEvent JSON object is sent to an Amazon SQS queue. The URL field is the queue
+	* URL, and the AWS field holds the credentials. The event type is attached as the &#34;TypeString&#34;
+	* message attribute.
+	*/
+	public final String WEBHOOK_FORMAT_AWS_SQS = "aws_sqs";
+
+	/**
+	* WebhookFormat: The raw StreamableEvent JSON object is put on an Amazon EventBridge event bus as the event
+	* detail, with the event type as the detail type and &#34;cometd&#34; as the source. The URL field is
+	* the event bus ARN, and the AWS field holds the credentials.
+	*/
+	public final String WEBHOOK_FORMAT_AWS_EVENTBRIDGE = "aws_eventbridge";
+
+	/**
 	* WindowsCodesignMethod: When upgrading from a version of Comet Server prior to 23.3.0, this option will be
 	* automatically converted to a more specific type.
 	*/
@@ -2093,6 +2201,22 @@ public class Def {
 	* WindowsCodesignMethod: Use a configured SAS Relic server for Authenticode codesigning
 	*/
 	public final int WINDOWSCODESIGN_METHOD_RELICSERVER = 5;
+
+	/**
+	* WindowsCodesignMethod: Use a configured AWS Key Management Service (KMS) key for Authenticode codesigning
+	*/
+	public final int WINDOWSCODESIGN_METHOD_AWSKMS = 6;
+
+	/**
+	* WindowsCodesignMethod: Use a configured Google Cloud Key Management Service (Cloud KMS) key for Authenticode
+	* codesigning
+	*/
+	public final int WINDOWSCODESIGN_METHOD_GCPKMS = 7;
+
+	/**
+	* WindowsCodesignMethod: Use Azure Artifact Signing (formerly Azure Trusted Signing) for Authenticode codesigning
+	*/
+	public final int WINDOWSCODESIGN_METHOD_AZUREARTIFACTSIGNING = 8;
 	public final long customBrandingMaxInlineItemSize = 262144L;
 	public final long customBrandingMaxTotalSize = 1048576L;
 }

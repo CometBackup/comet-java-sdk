@@ -12,7 +12,8 @@ import java.util.*;
 * event to the webhook URL when certain events happen.
 */
 public class WebhookOption {
-	//The target URL to POST the event data to
+	//The target URL to POST the event data to. If PayloadFormat is WEBHOOK_FORMAT_EMAIL, this is
+	//instead the recipient email address.
 	@JsonProperty("URL")
 	public String URL = "";
 
@@ -34,9 +35,23 @@ public class WebhookOption {
 	//One of the WEBHOOK_FORMAT_ constants. This controls how the event payload is encoded in the
 	//outgoing POST request. If empty (WEBHOOK_FORMAT_RAW), the raw StreamableEvent JSON object is
 	//sent. When set to WEBHOOK_FORMAT_SLACK ("slack"), the event is reformatted as a Slack
-	//Incoming Webhook message so it renders natively in a Slack channel.
+	//Incoming Webhook message so it renders natively in a Slack channel. When set to
+	//WEBHOOK_FORMAT_EMAIL ("email"), the event is sent as an email instead of an HTTP request, and
+	//CustomHeaders is ignored.
 	@JsonProperty("PayloadFormat")
 	public String PayloadFormat = "";
+
+	//If set, SEVT_JOB_NEW and SEVT_JOB_COMPLETED events are only sent for jobs that match this
+	//filter, using the same fields as the job search and email report filters. Other event types
+	//are unaffected. If the filter cannot be evaluated, the job event is not sent. If unset (null),
+	//all job events are sent.
+	@JsonProperty("JobFilter")
+	public SearchClause JobFilter;
+
+	//Credentials for the WEBHOOK_FORMAT_AWS_ formats. Required for those formats, and ignored
+	//otherwise.
+	@JsonProperty("AWS")
+	public WebhookAWSOptions AWS;
 
 
 	public WebhookOption(){ }

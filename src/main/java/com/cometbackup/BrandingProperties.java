@@ -137,6 +137,78 @@ public class BrandingProperties {
 	@JsonProperty("WindowsCodeSignRelicKeyName")
 	public String WindowsCodeSignRelicKeyName = "";
 
+	//The AWS region containing the KMS key, e.g. us-east-1
+	@JsonProperty("WindowsCodeSignAWSRegion")
+	public String WindowsCodeSignAWSRegion = "";
+
+	//The access key ID of an IAM user permitted to call kms:GetPublicKey and kms:Sign on the key
+	@JsonProperty("WindowsCodeSignAWSAccessKeyID")
+	public String WindowsCodeSignAWSAccessKeyID = "";
+
+	//One of the ENCRYPTIONMETHOD_ constants
+	@JsonProperty("WindowsCodeSignAWSSecretAccessKeyFormat")
+	public long WindowsCodeSignAWSSecretAccessKeyFormat;
+
+	@JsonProperty("WindowsCodeSignAWSSecretAccessKey")
+	public String WindowsCodeSignAWSSecretAccessKey = "";
+
+	//The KMS key ID, key ARN, alias name (alias/...) or alias ARN of an asymmetric SIGN_VERIFY key
+	@JsonProperty("WindowsCodeSignAWSKMSKeyID")
+	public String WindowsCodeSignAWSKMSKeyID = "";
+
+	//The X.509 code signing certificate for the KMS key, and optionally its intermediate certificates, in PEM or DER
+	//format
+	@JsonProperty("WindowsCodeSignAWSCertfile")
+	public String WindowsCodeSignAWSCertfile = "";
+
+	//The full resource name of a Cloud KMS asymmetric signing key version:
+	//projects/PROJECT/locations/LOCATION/keyRings/KEYRING/cryptoKeys/KEY/cryptoKeyVersions/VERSION
+	@JsonProperty("WindowsCodeSignGCPKMSKeyVersion")
+	public String WindowsCodeSignGCPKMSKeyVersion = "";
+
+	//One of the ENCRYPTIONMETHOD_ constants
+	@JsonProperty("WindowsCodeSignGCPServiceAccountKeyFormat")
+	public long WindowsCodeSignGCPServiceAccountKeyFormat;
+
+	//The JSON key file contents of a Google Cloud service account with the Cloud KMS Signer/Verifier role on the key
+	//version. Only keys of type service_account are accepted.
+	@JsonProperty("WindowsCodeSignGCPServiceAccountKey")
+	public String WindowsCodeSignGCPServiceAccountKey = "";
+
+	//The X.509 code signing certificate for the Cloud KMS key, and optionally its intermediate certificates, in PEM or DER
+	//format
+	@JsonProperty("WindowsCodeSignGCPCertfile")
+	public String WindowsCodeSignGCPCertfile = "";
+
+	//The regional endpoint of the Azure Artifact Signing account, e.g. https://eus.codesigning.azure.net
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningEndpoint")
+	public String WindowsCodeSignAzureArtifactSigningEndpoint = "";
+
+	//The Azure Artifact Signing account name
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningAccount")
+	public String WindowsCodeSignAzureArtifactSigningAccount = "";
+
+	//The certificate profile name within the Azure Artifact Signing account
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningProfile")
+	public String WindowsCodeSignAzureArtifactSigningProfile = "";
+
+	//The Microsoft Entra tenant ID of the app registration
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningTenantID")
+	public String WindowsCodeSignAzureArtifactSigningTenantID = "";
+
+	//The application (client) ID of a Microsoft Entra app registration with the Artifact Signing Certificate Profile
+	//Signer role on the certificate profile
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningAppID")
+	public String WindowsCodeSignAzureArtifactSigningAppID = "";
+
+	//One of the ENCRYPTIONMETHOD_ constants
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningAppSecretFormat")
+	public long WindowsCodeSignAzureArtifactSigningAppSecretFormat;
+
+	//A client secret of the app registration
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningAppSecret")
+	public String WindowsCodeSignAzureArtifactSigningAppSecret = "";
+
 	@JsonProperty("MacOSCodeSign")
 	public MacOSCodeSignProperties MacOSCodeSign;
 
@@ -228,6 +300,23 @@ public class BrandingProperties {
 		ret.WindowsCodeSignRelicServerURL = this.WindowsCodeSignRelicServerURL;
 		ret.WindowsCodeSignRelicKeypairFile = this.WindowsCodeSignRelicKeypairFile;
 		ret.WindowsCodeSignRelicKeyName = this.WindowsCodeSignRelicKeyName;
+		ret.WindowsCodeSignAWSRegion = this.WindowsCodeSignAWSRegion;
+		ret.WindowsCodeSignAWSAccessKeyID = this.WindowsCodeSignAWSAccessKeyID;
+		ret.WindowsCodeSignAWSSecretAccessKeyFormat = this.WindowsCodeSignAWSSecretAccessKeyFormat;
+		ret.WindowsCodeSignAWSSecretAccessKey = this.WindowsCodeSignAWSSecretAccessKey;
+		ret.WindowsCodeSignAWSKMSKeyID = this.WindowsCodeSignAWSKMSKeyID;
+		ret.WindowsCodeSignAWSCertfile = this.WindowsCodeSignAWSCertfile;
+		ret.WindowsCodeSignGCPKMSKeyVersion = this.WindowsCodeSignGCPKMSKeyVersion;
+		ret.WindowsCodeSignGCPServiceAccountKeyFormat = this.WindowsCodeSignGCPServiceAccountKeyFormat;
+		ret.WindowsCodeSignGCPServiceAccountKey = this.WindowsCodeSignGCPServiceAccountKey;
+		ret.WindowsCodeSignGCPCertfile = this.WindowsCodeSignGCPCertfile;
+		ret.WindowsCodeSignAzureArtifactSigningEndpoint = this.WindowsCodeSignAzureArtifactSigningEndpoint;
+		ret.WindowsCodeSignAzureArtifactSigningAccount = this.WindowsCodeSignAzureArtifactSigningAccount;
+		ret.WindowsCodeSignAzureArtifactSigningProfile = this.WindowsCodeSignAzureArtifactSigningProfile;
+		ret.WindowsCodeSignAzureArtifactSigningTenantID = this.WindowsCodeSignAzureArtifactSigningTenantID;
+		ret.WindowsCodeSignAzureArtifactSigningAppID = this.WindowsCodeSignAzureArtifactSigningAppID;
+		ret.WindowsCodeSignAzureArtifactSigningAppSecretFormat = this.WindowsCodeSignAzureArtifactSigningAppSecretFormat;
+		ret.WindowsCodeSignAzureArtifactSigningAppSecret = this.WindowsCodeSignAzureArtifactSigningAppSecret;
 		ret.MacOSCodeSign = this.MacOSCodeSign;
 		ret.LinuxRpmCodeSign = this.LinuxRpmCodeSign;
 		return ret;
@@ -261,6 +350,23 @@ public class BrandingProperties {
 		this.WindowsCodeSignRelicServerURL = other.WindowsCodeSignRelicServerURL;
 		this.WindowsCodeSignRelicKeypairFile = other.WindowsCodeSignRelicKeypairFile;
 		this.WindowsCodeSignRelicKeyName = other.WindowsCodeSignRelicKeyName;
+		this.WindowsCodeSignAWSRegion = other.WindowsCodeSignAWSRegion;
+		this.WindowsCodeSignAWSAccessKeyID = other.WindowsCodeSignAWSAccessKeyID;
+		this.WindowsCodeSignAWSSecretAccessKeyFormat = other.WindowsCodeSignAWSSecretAccessKeyFormat;
+		this.WindowsCodeSignAWSSecretAccessKey = other.WindowsCodeSignAWSSecretAccessKey;
+		this.WindowsCodeSignAWSKMSKeyID = other.WindowsCodeSignAWSKMSKeyID;
+		this.WindowsCodeSignAWSCertfile = other.WindowsCodeSignAWSCertfile;
+		this.WindowsCodeSignGCPKMSKeyVersion = other.WindowsCodeSignGCPKMSKeyVersion;
+		this.WindowsCodeSignGCPServiceAccountKeyFormat = other.WindowsCodeSignGCPServiceAccountKeyFormat;
+		this.WindowsCodeSignGCPServiceAccountKey = other.WindowsCodeSignGCPServiceAccountKey;
+		this.WindowsCodeSignGCPCertfile = other.WindowsCodeSignGCPCertfile;
+		this.WindowsCodeSignAzureArtifactSigningEndpoint = other.WindowsCodeSignAzureArtifactSigningEndpoint;
+		this.WindowsCodeSignAzureArtifactSigningAccount = other.WindowsCodeSignAzureArtifactSigningAccount;
+		this.WindowsCodeSignAzureArtifactSigningProfile = other.WindowsCodeSignAzureArtifactSigningProfile;
+		this.WindowsCodeSignAzureArtifactSigningTenantID = other.WindowsCodeSignAzureArtifactSigningTenantID;
+		this.WindowsCodeSignAzureArtifactSigningAppID = other.WindowsCodeSignAzureArtifactSigningAppID;
+		this.WindowsCodeSignAzureArtifactSigningAppSecretFormat = other.WindowsCodeSignAzureArtifactSigningAppSecretFormat;
+		this.WindowsCodeSignAzureArtifactSigningAppSecret = other.WindowsCodeSignAzureArtifactSigningAppSecret;
 		this.MacOSCodeSign = other.MacOSCodeSign;
 		this.LinuxRpmCodeSign = other.LinuxRpmCodeSign;
 	}

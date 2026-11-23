@@ -40,6 +40,19 @@ public class DeviceConfig {
 	@JsonProperty("NinjaOneNodeId")
 	public long NinjaOneNodeId;
 
+	//A hash of a hardware-derived secret that the device supplies on every device-scoped API call, binding the device to
+	//its DeviceID.
+	//The server sets it when the device registers, or on first use for devices registered before this field existed. It is
+	//never returned to devices or to the user web interface.
+	//In an admin profile update, an empty value leaves the stored hash unchanged, and DEVICE_SECRET_HASH_RESET removes it
+	//so that the device binds a new secret on its next connection.
+	@JsonProperty("DeviceSecretHash")
+	public String DeviceSecretHash = "";
+
+	//One of the PASSWORD_FORMAT_ constants
+	@JsonProperty("DeviceSecretHashFormat")
+	public int DeviceSecretHashFormat;
+
 
 	public DeviceConfig(){ }
 

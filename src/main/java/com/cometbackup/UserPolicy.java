@@ -68,6 +68,9 @@ public class UserPolicy {
 	@JsonProperty("ModeAdminViewFilenames")
 	public int ModeAdminViewFilenames;
 
+	@JsonProperty("ModeAdminRestoreData")
+	public int ModeAdminRestoreData;
+
 	@JsonProperty("ModeRequireUserResetPassword")
 	public int ModeRequireUserResetPassword;
 

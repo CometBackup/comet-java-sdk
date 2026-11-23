@@ -76,6 +76,78 @@ public class WindowsCodeSignProperties {
 	@JsonProperty("WindowsCodeSignRelicKeyName")
 	public String WindowsCodeSignRelicKeyName = "";
 
+	//The AWS region containing the KMS key, e.g. us-east-1
+	@JsonProperty("WindowsCodeSignAWSRegion")
+	public String WindowsCodeSignAWSRegion = "";
+
+	//The access key ID of an IAM user permitted to call kms:GetPublicKey and kms:Sign on the key
+	@JsonProperty("WindowsCodeSignAWSAccessKeyID")
+	public String WindowsCodeSignAWSAccessKeyID = "";
+
+	//One of the ENCRYPTIONMETHOD_ constants
+	@JsonProperty("WindowsCodeSignAWSSecretAccessKeyFormat")
+	public long WindowsCodeSignAWSSecretAccessKeyFormat;
+
+	@JsonProperty("WindowsCodeSignAWSSecretAccessKey")
+	public String WindowsCodeSignAWSSecretAccessKey = "";
+
+	//The KMS key ID, key ARN, alias name (alias/...) or alias ARN of an asymmetric SIGN_VERIFY key
+	@JsonProperty("WindowsCodeSignAWSKMSKeyID")
+	public String WindowsCodeSignAWSKMSKeyID = "";
+
+	//The X.509 code signing certificate for the KMS key, and optionally its intermediate certificates, in PEM or DER
+	//format
+	@JsonProperty("WindowsCodeSignAWSCertfile")
+	public String WindowsCodeSignAWSCertfile = "";
+
+	//The full resource name of a Cloud KMS asymmetric signing key version:
+	//projects/PROJECT/locations/LOCATION/keyRings/KEYRING/cryptoKeys/KEY/cryptoKeyVersions/VERSION
+	@JsonProperty("WindowsCodeSignGCPKMSKeyVersion")
+	public String WindowsCodeSignGCPKMSKeyVersion = "";
+
+	//One of the ENCRYPTIONMETHOD_ constants
+	@JsonProperty("WindowsCodeSignGCPServiceAccountKeyFormat")
+	public long WindowsCodeSignGCPServiceAccountKeyFormat;
+
+	//The JSON key file contents of a Google Cloud service account with the Cloud KMS Signer/Verifier role on the key
+	//version. Only keys of type service_account are accepted.
+	@JsonProperty("WindowsCodeSignGCPServiceAccountKey")
+	public String WindowsCodeSignGCPServiceAccountKey = "";
+
+	//The X.509 code signing certificate for the Cloud KMS key, and optionally its intermediate certificates, in PEM or DER
+	//format
+	@JsonProperty("WindowsCodeSignGCPCertfile")
+	public String WindowsCodeSignGCPCertfile = "";
+
+	//The regional endpoint of the Azure Artifact Signing account, e.g. https://eus.codesigning.azure.net
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningEndpoint")
+	public String WindowsCodeSignAzureArtifactSigningEndpoint = "";
+
+	//The Azure Artifact Signing account name
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningAccount")
+	public String WindowsCodeSignAzureArtifactSigningAccount = "";
+
+	//The certificate profile name within the Azure Artifact Signing account
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningProfile")
+	public String WindowsCodeSignAzureArtifactSigningProfile = "";
+
+	//The Microsoft Entra tenant ID of the app registration
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningTenantID")
+	public String WindowsCodeSignAzureArtifactSigningTenantID = "";
+
+	//The application (client) ID of a Microsoft Entra app registration with the Artifact Signing Certificate Profile
+	//Signer role on the certificate profile
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningAppID")
+	public String WindowsCodeSignAzureArtifactSigningAppID = "";
+
+	//One of the ENCRYPTIONMETHOD_ constants
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningAppSecretFormat")
+	public long WindowsCodeSignAzureArtifactSigningAppSecretFormat;
+
+	//A client secret of the app registration
+	@JsonProperty("WindowsCodeSignAzureArtifactSigningAppSecret")
+	public String WindowsCodeSignAzureArtifactSigningAppSecret = "";
+
 
 	public WindowsCodeSignProperties(){ }
 
