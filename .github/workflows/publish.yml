@@ -1,0 +1,61 @@
+# Publishes com.cometbackup:comet-sdk to Maven Central when a version tag (v1.2.3) is pushed.
+#
+# Maven Central has no trusted publishing, so this uses secrets of the "release" environment, which
+# should only allow v* tags to deploy:
+#   MAVEN_USERNAME, MAVEN_PASSWORD  Central Portal user token (Maven server id "central")
+#   MAVEN_GPG_PRIVATE_KEY           ASCII-armored signing key (26AEFA88E4C0759B)
+#   MAVEN_GPG_PASSPHRASE            its passphrase
+
+name: Publish to Maven Central
+
+on:
+  push:
+    tags:
+      - 'v*'
+  # Fallback: run it from the Actions tab, choosing the tag, if a tag push did not start a run
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    # The internal mirror receives the same tags, but has none of the secrets
+    if: github.repository == 'CometBackup/comet-java-sdk'
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          server-id: central
+          server-username-env-var: MAVEN_USERNAME
+          server-password-env-var: MAVEN_PASSWORD
+
+      - name: Check the tag matches the pom.xml version
+        run: |
+          version="$(sed -n 's:^  <version>\(.*\)</version>$:\1:p' pom.xml)"
+          if [ "${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::${GITHUB_REF_NAME} does not match the pom.xml version ${version}"
+            exit 1
+          fi
+
+      # maven-gpg-plugin 1.5 runs the gpg binary against the default keyring
+      - name: Import the signing key
+        env:
+          MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+        run: echo "${MAVEN_GPG_PRIVATE_KEY}" | gpg --batch --import
+
+      - name: Deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: mvn --batch-mode --no-transfer-progress clean deploy -Dgpg.passphrase="${MAVEN_GPG_PASSPHRASE}"

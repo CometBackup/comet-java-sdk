@@ -30,6 +30,15 @@ public class AdminListUsers {
 
 More demo code can be found in the `/demos` directory
 
+## Releasing
+
+The package is published to Maven Central by the [Publish to Maven Central](.github/workflows/publish.yml) workflow.
+
+- Update the changelog
+- Set the same version in `pom.xml`, and commit
+- Tag the commit with that version (e.g. `v1.2.0`) and push the tag to https://github.com/CometBackup/comet-java-sdk
+
+Pushing the tag runs the workflow, which checks that the tag matches `pom.xml`, then signs and deploys the artifacts through the Central Portal. Its credentials are secrets of the repository's `release` environment.
 
 
 ## Getting Help
