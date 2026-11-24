@@ -30,12 +30,32 @@ public class CometAPI {
 	private final String serverURL;
 	private final String username;
 	private final String password;
+	private final String token;
 	static private ObjectMapper objectMapper;
 
 	public CometAPI(String serverURL, String username, String password){
+		this(serverURL, username, password, "");
+	}
+
+	private CometAPI(String serverURL, String username, String password, String token){
 		this.serverURL = serverURL;
 		this.username = username;
 		this.password = password;
+		this.token = token;
+	}
+
+	/**
+	* withToken: Creates a CometAPI that authenticates using an admin personal API token.
+	* A token is not asked for 2FA, but is only accepted by APIs documented as accepting it.
+	* Admin personal API tokens require Comet Server 26.8.3 or later. Since Comet Server 26.11.3, a
+	* token can also be passed as the password to the CometAPI constructor.
+	* @param serverURL Address of the Comet Server
+	* @param username Username of the admin that owns the token
+	* @param token Admin personal API token
+	* @return A CometAPI using token authentication
+	*/
+	public static CometAPI withToken(String serverURL, String username, String token){
+		return new CometAPI(serverURL, username, "", token);
 	}
 
 	/**
@@ -56,9 +76,14 @@ public class CometAPI {
 
 		switch (contentType) {
 			case "application/x-www-form-urlencoded":
-				data.put("AuthType", "Password");
 				data.put("Username", username);
-				data.put("Password", password);
+				if (token != null && !token.isEmpty()) {
+					data.put("AuthType", "Token");
+					data.put("Token", token);
+				} else {
+					data.put("AuthType", "Password");
+					data.put("Password", password);
+				}
 
 				String formData = data.entrySet().stream()
 						.map(entry -> URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "=" + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
@@ -71,10 +96,15 @@ public class CometAPI {
 			case "multipart/form-data":
 				String boundary = "Boundary-" + System.currentTimeMillis();
 				byte[] multipartBytes = createMultipartFormData(data, boundary);
-				requestBuilder.header("X-Comet-Admin-AuthType", "Password")
-						.header("X-Comet-Admin-Username", username)
-						.header("X-Comet-Admin-Password", password)
-						.header("Content-Type", contentType + "; boundary=" + boundary)
+				requestBuilder.header("X-Comet-Admin-Username", username);
+				if (token != null && !token.isEmpty()) {
+					requestBuilder.header("X-Comet-Admin-AuthType", "Token")
+							.header("X-Comet-Admin-Token", token);
+				} else {
+					requestBuilder.header("X-Comet-Admin-AuthType", "Password")
+							.header("X-Comet-Admin-Password", password);
+				}
+				requestBuilder.header("Content-Type", contentType + "; boundary=" + boundary)
 						.POST(HttpRequest.BodyPublishers.ofByteArray(multipartBytes));
 				break;
 
@@ -973,7 +1003,7 @@ public class CometAPI {
 	* password with AuthType=Password).
 	* @param TargetUser the username of the admin to be deleted
 	* @param TargetOrgID (Optional) the organization ID of the admin to be deleted. If omitted, defaults to the top-level
-	* organization. (&gt;= 26.11.0)
+	* organization. (&gt;= 26.10.2)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminAdminUserDeleteAsync(String TargetUser, String TargetOrgID)  {
@@ -1004,7 +1034,7 @@ public class CometAPI {
 	* password with AuthType=Password).
 	* @param TargetUser the username of the admin to be deleted
 	* @param TargetOrgID (Optional) the organization ID of the admin to be deleted. If omitted, defaults to the top-level
-	* organization. (&gt;= 26.11.0)
+	* organization. (&gt;= 26.10.2)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -1022,7 +1052,7 @@ public class CometAPI {
 	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
 	* password with AuthType=Password).
 	* @param TargetOrgID (Optional) If present, only list the administrators belonging to this organization. Otherwise,
-	* administrators from all organizations are listed. (&gt;= 26.11.0)
+	* administrators from all organizations are listed. (&gt;= 26.10.2)
 	* @return CompletableFuture yielding an AllowedAdminUser[]
 	*/
 	public CompletableFuture<AllowedAdminUser[]> AdminAdminUserListAsync(String TargetOrgID)  {
@@ -1051,7 +1081,7 @@ public class CometAPI {
 	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
 	* password with AuthType=Password).
 	* @param TargetOrgID (Optional) If present, only list the administrators belonging to this organization. Otherwise,
-	* administrators from all organizations are listed. (&gt;= 26.11.0)
+	* administrators from all organizations are listed. (&gt;= 26.10.2)
 	* @return an AllowedAdminUser[]
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -1130,10 +1160,10 @@ public class CometAPI {
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
 	* password with AuthType=Password).
-	* @param TargetUser the username of the admin to be updated (&gt;= 26.11.0)
-	* @param Profile the updated administrator account (&gt;= 26.11.0)
+	* @param TargetUser the username of the admin to be updated (&gt;= 26.10.2)
+	* @param Profile the updated administrator account (&gt;= 26.10.2)
 	* @param TargetOrgID (Optional) the organization ID of the admin to be updated. If omitted, defaults to the top-level
-	* organization. (&gt;= 26.11.0)
+	* organization. (&gt;= 26.10.2)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
@@ -1173,10 +1203,10 @@ public class CometAPI {
 	* This API is only available for top-level administrator accounts, not for Tenant administrator accounts.
 	* This API does not accept admin personal API token authentication (AuthType=Token, or the token supplied as the
 	* password with AuthType=Password).
-	* @param TargetUser the username of the admin to be updated (&gt;= 26.11.0)
-	* @param Profile the updated administrator account (&gt;= 26.11.0)
+	* @param TargetUser the username of the admin to be updated (&gt;= 26.10.2)
+	* @param Profile the updated administrator account (&gt;= 26.10.2)
 	* @param TargetOrgID (Optional) the organization ID of the admin to be updated. If omitted, defaults to the top-level
-	* organization. (&gt;= 26.11.0)
+	* organization. (&gt;= 26.10.2)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -2461,7 +2491,7 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
 	* AuthType=Password).
-	* @param TargetID The live connection GUID
+	* @param TargetID The live connection GUID (&gt;= 26.11.3)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> AdminDispatcherClearLoginPasswordAsync(String TargetID)  {
@@ -2493,7 +2523,7 @@ public class CometAPI {
 	* This API requires the Auth Role to be enabled.
 	* This API accepts admin personal API token authentication (AuthType=Token, or the token supplied as the password with
 	* AuthType=Password).
-	* @param TargetID The live connection GUID
+	* @param TargetID The live connection GUID (&gt;= 26.11.3)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -7518,7 +7548,7 @@ public class CometAPI {
 	* @param Config Updated configuration content (&gt;= 17.3.8)
 	* @param RequireHash (Optional) If present, the change is only applied if the server configuration is unchanged since
 	* this hash was retrieved from the AdminMetaServerConfigGetAndHash API. Otherwise, the change is rejected with status
-	* 409 and the server does not restart. (&gt;= 26.11.0)
+	* 409 and the server does not restart. (&gt;= 26.10.2)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	* @throws JsonProcessingException When JSON is malformed (should not happen)
 	*/
@@ -7555,7 +7585,7 @@ public class CometAPI {
 	* @param Config Updated configuration content (&gt;= 17.3.8)
 	* @param RequireHash (Optional) If present, the change is only applied if the server configuration is unchanged since
 	* this hash was retrieved from the AdminMetaServerConfigGetAndHash API. Otherwise, the change is rejected with status
-	* 409 and the server does not restart. (&gt;= 26.11.0)
+	* 409 and the server does not restart. (&gt;= 26.10.2)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting
@@ -10340,7 +10370,7 @@ public class CometAPI {
 	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
 	* access.
 	* This API requires the Auth Role to be enabled.
-	* @param TargetID The live connection GUID
+	* @param TargetID The live connection GUID (&gt;= 26.11.3)
 	* @return CompletableFuture yielding a CometAPIResponseMessage
 	*/
 	public CompletableFuture<CometAPIResponseMessage> UserWebDispatcherClearLoginPasswordAsync(String TargetID)  {
@@ -10369,7 +10399,7 @@ public class CometAPI {
 	* You must supply user authentication credentials to use this API, and the user account must be authorized for web
 	* access.
 	* This API requires the Auth Role to be enabled.
-	* @param TargetID The live connection GUID
+	* @param TargetID The live connection GUID (&gt;= 26.11.3)
 	* @return a CometAPIResponseMessage
 	* @throws ExecutionException if the future completed exceptionally
 	* @throws InterruptedException if the current thread was interrupted while waiting

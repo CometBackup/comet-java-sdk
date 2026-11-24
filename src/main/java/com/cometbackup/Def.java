@@ -3,10 +3,10 @@
 
 package com.cometbackup;
 public class Def {
-	public final String APPLICATION_VERSION = "26.11.2";
+	public final String APPLICATION_VERSION = "26.11.3";
 	public final int APPLICATION_VERSION_MAJOR = 26;
 	public final int APPLICATION_VERSION_MINOR = 11;
-	public final int APPLICATION_VERSION_REVISION = 2;
+	public final int APPLICATION_VERSION_REVISION = 3;
 
 	/**
 	* AutoRetentionLevel: The system will automatically choose how often to run an automatic Retention Pass after each
