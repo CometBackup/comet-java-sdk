@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-11-25 v1.2.0
+
+- No changes (First release published from Github Actions CI)
+
 ## 2026-11-25 v1.1.0
 
 - Based on Comet 26.11.3
